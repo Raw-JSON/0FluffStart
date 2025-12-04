@@ -19,6 +19,7 @@
             <button onclick="toggleSettings()" class="icon-btn">⚙️</button>
         </div>
         <div id="clockDisplay" class="clock">00:00:00</div>
+        <div id="greetingDisplay" class="greeting">Hello, User.</div>
     </header>
 
     <div class="search-bar">
@@ -53,6 +54,11 @@
         <div class="modal-header">
             <h2>Settings</h2>
             <button onclick="closeModal('settingsModal')" class="icon-btn">✕</button>
+        </div>
+        
+        <div class="setting-group">
+            <h3>Your Name</h3>
+            <input type="text" id="userNameInput" placeholder="Name for greeting...">
         </div>
         
         <div class="setting-group">
