@@ -1,9 +1,9 @@
 :root {
-    --bg: #000000; /* Absolute Black for OLED */
+    --bg: #000000;
     --card: #141418;
     --card-hover: #1e1e24;
     --text: #ffffff;
-    --accent: #00aaff; /* Sharp Utility Blue */
+    --accent: #00aaff;
     --dim: #888;
     --border: #333;
     --delete: #ff4d4d;
@@ -19,292 +19,129 @@ body {
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
 }
 
-/* Theme Classes */
 body.light {
-    --bg: #f0f0f5;
+    --bg: #f2f2f7;
     --card: #ffffff;
-    --card-hover: #e8e8f0;
-    --text: #111;
-    --dim: #666;
-    --border: #ccc;
-    --delete: #cc0000;
+    --text: #000000;
+    --border: #d1d1d6;
 }
 
-/* Typography & Layout */
-.container { 
-    width: 100%; 
-    max-width: 600px; 
-    padding-bottom: 40px; 
+/* Container */
+.container { width: 100%; max-width: 600px; padding-bottom: 50px; }
+
+/* Header & Clock */
+.header-row { display: flex; justify-content: space-between; align-items: center; }
+h1 { margin: 0; font-size: 2rem; letter-spacing: -1px; }
+.clock { font-size: 1.8rem; font-weight: 200; color: var(--accent); margin-bottom: 20px; }
+
+/* Search */
+.search-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+#searchInput { 
+    flex-grow: 1; padding: 12px; border-radius: 12px; 
+    border: none; background: var(--card-hover); color: var(--text); font-size: 1rem; 
+}
+.search-icon { 
+    width: 45px; height: 45px; border-radius: 12px; 
+    background: var(--accent); color: var(--bg); font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center; border: none;
 }
 
-.header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 5px;
-}
+/* Action Bar */
+.action-bar { display: flex; gap: 10px; margin-bottom: 25px; align-items: center; }
+.add-link-btn { flex-grow: 1; padding: 12px; border-radius: 12px; background: var(--accent); color: var(--bg); font-weight: bold; border: none; }
+.icon-btn { background: transparent; border: none; color: var(--text); font-size: 1.2rem; cursor: pointer; }
 
-h1 { 
-    margin-bottom: 0; 
-    letter-spacing: -1px; 
-    font-size: 2.2rem;
-}
-
-.clock {
-    font-size: 1.8rem;
-    font-weight: 200;
-    color: var(--accent);
-    margin-bottom: 30px;
-}
-
-.subtitle { 
-    color: var(--dim); 
-    font-size: 0.95rem; 
-    margin-bottom: 15px; 
-    font-weight: 400;
-}
-
-/* Search Bar & Icon */
-.search-bar {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 25px;
-    align-items: center;
-}
-
-#searchInput {
-    flex-grow: 1;
-    padding: 16px;
-    border-radius: 14px;
-    border: 1px solid transparent;
-    background: var(--card);
-    color: var(--text);
-    font-size: 1rem;
-    margin-bottom: 0; /* Override default input margin */
-}
-
-.search-icon {
-    width: 50px;
-    height: 50px;
-    padding: 0;
-    margin: 0;
-    border-radius: 14px;
-    background: var(--accent);
-    color: var(--bg);
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-/* Inputs & Forms (General) */
-input[type="text"], input[type="url"], select {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--card-hover);
-    color: var(--text);
-    font-size: 1rem;
-    margin-bottom: 15px;
-    box-sizing: border-box;
-}
-
-/* Buttons & Actions */
-button {
-    padding: 12px 18px;
-    border-radius: 10px;
-    font-weight: 700;
-    cursor: pointer;
-    border: none;
-    background: var(--accent);
-    color: var(--bg);
-    transition: transform 0.1s;
-}
-
-button:active { transform: scale(0.96); }
-
-button.icon-btn { 
-    width: auto; 
-    padding: 10px; 
-    margin: 0; 
-    background: transparent;
-    color: var(--text);
-    font-size: 1.5rem;
-}
-button.secondary { 
-    background: var(--card-hover); 
-    border: 1px solid var(--border);
-    color: var(--text);
-}
-
-.action-bar {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.add-link-btn {
-    flex-grow: 1;
-}
-
-.edit-mode-btn {
-    width: auto;
-    flex-shrink: 0;
-}
-
-.action-row { 
-    display: flex; 
-    gap: 12px; 
-    margin-top: 25px; 
-}
-
-/* Link Grid & Items */
+/* Link Grid */
 .link-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Smaller grid items */
-    gap: 15px;
-    margin-top: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 20px;
     justify-content: center;
 }
 
-.link-card {
-    background: none;
-    border-radius: 0;
-    padding: 0;
-    text-align: center;
-    text-decoration: none;
-    color: var(--text);
+/* Link Item */
+.link-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    height: 100px;
+    text-decoration: none;
     position: relative;
     cursor: pointer;
 }
 
-.link-card.edit-mode-active {
-    cursor: default;
-}
-
-.icon-container {
+/* Round Icon Container */
+.link-icon-circle {
     width: 60px;
     height: 60px;
-    border-radius: 50%;
     background: var(--card);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-bottom: 8px;
     overflow: hidden;
-    margin-bottom: 5px;
+    transition: transform 0.2s;
 }
 
-.link-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
+.link-icon-circle img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 
 .link-name {
-    font-weight: 500;
-    font-size: 0.8rem;
-    word-break: break-word;
-    max-width: 100%;
-}
-
-/* Edit Mode Overlays */
-.edit-actions {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    display: flex;
-    gap: 5px;
-    z-index: 20;
-}
-
-.edit-actions .icon-btn {
-    background: var(--card-hover);
     color: var(--text);
+    font-size: 0.8rem;
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* EDIT MODE STYLES */
+.link-item.editing .link-icon-circle {
+    animation: shake 0.3s infinite alternate;
+    border: 2px solid var(--accent);
+}
+
+.edit-badge {
+    position: absolute;
+    top: -5px; right: 0px;
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    padding: 0;
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
     font-size: 0.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
-
-.edit-actions .delete-btn {
+.delete-badge {
+    position: absolute;
+    top: -5px; left: 0px;
     background: var(--delete);
-    color: var(--text);
-    border: 1px solid var(--delete);
+    color: white;
+    border-radius: 50%;
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
 
-
-/* Modal Styling */
-.modal {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(5px);
-    display: none;
-    justify-content: center;
-    align-items: center; 
-    z-index: 100;
+@keyframes shake {
+    from { transform: rotate(-3deg); }
+    to { transform: rotate(3deg); }
 }
 
+/* Modal */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 100; }
 .modal.active { display: flex; }
-
-.modal-content {
-    background: var(--bg);
-    width: 90%; 
-    max-width: 400px;
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    padding: 25px;
-    box-sizing: border-box;
-    animation: fadeIn 0.3s ease-out;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 20px;
-}
-
-.setting-group {
-    margin-bottom: 20px;
-}
-
-.setting-group h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 1.1rem;
-    color: var(--accent);
-}
-
-.setting-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 400;
-}
-
-.setting-group input[type="radio"] {
-    width: auto;
-    margin-right: 10px;
-}
-
-.hidden { display: none !important; }
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+.modal-content { background: var(--bg); padding: 25px; border-radius: 20px; width: 90%; max-width: 350px; border: 1px solid var(--border); }
+input, select { width: 100%; padding: 12px; margin-bottom: 15px; background: var(--card-hover); border: 1px solid var(--border); color: var(--text); border-radius: 8px; box-sizing: border-box; }
+.action-row { display: flex; gap: 10px; margin-top: 10px; }
+button { cursor: pointer; }
+.secondary { background: var(--card-hover); border: 1px solid var(--border); color: var(--text); padding: 10px 15px; border-radius: 10px; }
