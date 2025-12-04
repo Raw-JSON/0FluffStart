@@ -1,6 +1,6 @@
 // --- STATE ---
 let links = JSON.parse(localStorage.getItem('0fluff_links') || '[]');
-let settings = JSON.parse(localStorage.getItem('0fluff_settings') || '{"theme":"dark","clockFormat":"24h","searchEngine":"Google"}');
+let settings = JSON.parse(localStorage.getItem('0fluff_settings') || '{"theme":"dark","clockFormat":"24h","searchEngine":"Google", "userName": ""}');
 let isEditMode = false;
 let isEditingId = null;
 
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSettings();
     setInterval(updateClock, 1000);
     populateSearchEngines();
-    updateClock(); // Initial call to avoid 00:00:00 delay
+    updateClock(); 
 });
 
 // --- CORE FUNCTIONS ---
@@ -135,7 +135,11 @@ function deleteLink(id, e) {
 }
 
 // --- UTILS ---
-function toggleSettings() { document.getElementById('settingsModal').classList.add('active'); }
+function toggleSettings() { 
+    // Load current user name into the input before opening
+    document.getElementById('userNameInput').value = settings.userName;
+    document.getElementById('settingsModal').classList.add('active'); 
+}
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
 function handleSearch(e) {
@@ -152,6 +156,20 @@ function handleSearch(e) {
     }
 }
 
+// NEW: Dynamic Greeting Function
+function getGreeting(userName) {
+    const hour = new Date().getHours();
+    let greeting = "Hello";
+    if (hour < 5) greeting = "Good Night";
+    else if (hour < 12) greeting = "Good Morning";
+    else if (hour < 17) greeting = "Good Afternoon";
+    else if (hour < 22) greeting = "Good Evening";
+    else greeting = "Good Night";
+    
+    const name = userName ? `, ${userName}` : '';
+    return `${greeting}${name}.`;
+}
+
 function updateClock() {
     const now = new Date();
     let h = now.getHours();
@@ -162,14 +180,23 @@ function updateClock() {
     if (settings.clockFormat === '12h') {
         suffix = h >= 12 ? ' PM' : ' AM';
         h = h % 12 || 12;
+        
+        // FIX: Remove leading zero padding for 12h format
+        if (h < 10) h = String(h).replace(/^0+/, ''); 
+    } else {
+         h = String(h).padStart(2, '0'); // Keep padding for 24h
     }
-    h = String(h).padStart(2, '0');
+    
+    // Update Clock
     document.getElementById('clockDisplay').innerText = `${h}:${m}:${s}${suffix}`;
+
+    // Update Greeting (Less frequent, perhaps every 60s, but we'll do it here for simplicity)
+    document.getElementById('greetingDisplay').innerText = getGreeting(settings.userName);
 }
 
 function populateSearchEngines() {
     const sel = document.getElementById('searchEngineSelect');
-    sel.innerHTML = ''; // Clear existing
+    sel.innerHTML = ''; 
     searchEngines.forEach(e => {
         const opt = document.createElement('option');
         opt.value = e.name;
@@ -188,11 +215,15 @@ function loadSettings() {
     for(let r of radios) {
         if(r.value === settings.clockFormat) r.checked = true;
     }
+    
+    // Update the greeting text in the header
+    updateClock(); 
 }
 
 function saveSettings() {
     settings.theme = document.getElementById('themeSelect').value;
     settings.searchEngine = document.getElementById('searchEngineSelect').value;
+    settings.userName = document.getElementById('userNameInput').value.trim(); // NEW: Save user name
     
     const radios = document.getElementsByName('clockFormat');
     for(let r of radios) {
