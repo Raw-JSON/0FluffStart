@@ -10,19 +10,24 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
-<body>
+<body class="dark">
 
 <div class="container">
     <header>
         <div class="header-row">
             <h1>0FluffStart</h1>
-            <button onclick="openEditor()" class="icon-btn">➕</button>
+            <button onclick="toggleSettings()" class="icon-btn">⚙️</button>
         </div>
-        <div class="subtitle">Quick access. Zero clutter.</div>
+        <div id="clockDisplay" class="clock">00:00:00</div>
     </header>
 
     <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search or Type URL to Open">
+        <input type="text" id="searchInput" placeholder="Search or Type URL to Open" onkeypress="handleSearch(event)">
+        <button class="search-icon" onclick="handleSearch({ key: 'Enter', preventDefault: () => {} })">🔍</button>
+    </div>
+
+    <div class="action-bar">
+        <button onclick="openEditor()" class="add-link-btn">+ Add Link</button>
     </div>
 
     <div id="linkGrid" class="link-grid">
@@ -39,6 +44,38 @@
         <div class="action-row">
             <button onclick="saveLink()">💾 Save Link</button>
             <button class="secondary" onclick="closeModal('linkEditorModal')">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="settingsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Settings</h2>
+            <button onclick="closeModal('settingsModal')" class="icon-btn">✕</button>
+        </div>
+        
+        <div class="setting-group">
+            <h3>Theme</h3>
+            <select id="themeSelect">
+                <option value="dark">Dark (OLED Optimized)</option>
+                <option value="light">Light (WIP)</option>
+            </select>
+        </div>
+
+        <div class="setting-group">
+            <h3>Clock Format</h3>
+            <label><input type="radio" name="clockFormat" value="12h"> 12-Hour (AM/PM)</label>
+            <label><input type="radio" name="clockFormat" value="24h"> 24-Hour (Military)</label>
+        </div>
+
+        <div class="setting-group">
+            <h3>Default Search Engine</h3>
+            <select id="searchEngineSelect"></select>
+        </div>
+        
+        <div class="action-row">
+            <button onclick="saveSettings()">💾 Save Settings</button>
         </div>
     </div>
 </div>
