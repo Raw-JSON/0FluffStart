@@ -1,31 +1,111 @@
 // --- STATE MANAGEMENT ---
 let links = JSON.parse(localStorage.getItem('0fluff_links') || '[]');
+
+let settings = JSON.parse(localStorage.getItem('0fluff_settings') || JSON.stringify({
+    theme: 'dark',
+    clockFormat: '24h',
+    searchEngine: 'Google' // Default search engine
+}));
+
 let isEditingId = null;
+
+const searchEngines = [
+    { name: 'Google', url: 'https://www.google.com/search?q=' },
+    { name: 'DuckDuckGo', url: 'https://duckduckgo.com/?q=' },
+    { name: 'Brave', url: 'https://search.brave.com/search?q=' },
+    { name: 'Qwant', url: 'https://www.qwant.com/?q=' },
+    { name: 'Bing', url: 'https://www.bing.com/search?q=' },
+    { name: 'Startpage', url: 'https://www.startpage.com/sp/search?query=' },
+    { name: 'Ecosia', url: 'https://www.ecosia.org/search?q=' }
+];
 
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Set up initial state and listeners
     renderLinks();
+    loadSettings();
+    setInterval(updateClock, 1000); // Start the functional clock
     
-    // Attach event listener for the search bar
     document.getElementById('searchInput').addEventListener('keypress', handleSearch);
+    
+    // Populate search engine dropdown
+    const searchSelect = document.getElementById('searchEngineSelect');
+    searchEngines.forEach(engine => {
+        const option = document.createElement('option');
+        option.value = engine.name;
+        option.innerText = engine.name;
+        searchSelect.appendChild(option);
+    });
 });
 
-// --- DATA MANAGEMENT ---
+// --- DATA & SETTINGS MANAGEMENT ---
 function saveLinks() {
     localStorage.setItem('0fluff_links', JSON.stringify(links));
 }
 
-// --- RENDERING ---
+function saveSettings() {
+    settings.theme = document.getElementById('themeSelect').value;
+    settings.clockFormat = document.querySelector('input[name="clockFormat"]:checked').value;
+    settings.searchEngine = document.getElementById('searchEngineSelect').value;
+    
+    localStorage.setItem('0fluff_settings', JSON.stringify(settings));
+    
+    // Apply changes immediately
+    applySettings();
+    updateClock(); 
+    toggleSettings();
+}
+
+function loadSettings() {
+    // Apply theme
+    applySettings();
+
+    // Set form defaults
+    document.getElementById('themeSelect').value = settings.theme;
+    document.getElementById('searchEngineSelect').value = settings.searchEngine;
+    document.querySelector(`input[value="${settings.clockFormat}"]`).checked = true;
+}
+
+function applySettings() {
+    document.body.className = settings.theme;
+}
+
+// --- CLOCK MODULE ---
+function updateClock() {
+    const now = new Date();
+    const timeEl = document.getElementById('clockDisplay');
+    
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let seconds = now.getSeconds();
+    let period = '';
+    
+    if (settings.clockFormat === '12h') {
+        period = hours >= 12 ? ' PM' : ' AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // The hour '0' should be '12'
+    }
+    
+    hours = String(hours).padStart(2, '0');
+    minutes = String(minutes).padStart(2, '0');
+    seconds = String(seconds).padStart(2, '0');
+    
+    timeEl.innerText = `${hours}:${minutes}:${seconds}${period}`;
+}
+
+
+// --- RENDERING & BUG FIX (Link Navigation) ---
 function renderLinks() {
     const grid = document.getElementById('linkGrid');
     grid.innerHTML = '';
 
     links.forEach(link => {
-        const card = document.createElement('div');
+        // FIX: Using <a> tag fixes the event propagation bug
+        const card = document.createElement('a'); 
         card.className = 'link-card';
-        card.setAttribute('data-id', link.id);
+        card.setAttribute('href', link.url.startsWith('http') ? link.url : `http://${link.url}`);
+        card.setAttribute('target', '_blank'); // Open in new tab
         
-        // Use the first letter of the name as a minimal "icon"
         const initial = link.name.charAt(0).toUpperCase();
 
         card.innerHTML = `
@@ -37,13 +117,6 @@ function renderLinks() {
                 <button onclick="deleteLink('${link.id}', event)" style="color: var(--delete); border-color: var(--delete);">🗑 Delete</button>
             </div>
         `;
-        
-        // Primary action: navigate on click
-        card.onclick = (e) => {
-            // Check if the click was inside the edit overlay buttons
-            if (e.target.closest('.edit-overlay')) return;
-            window.location.href = link.url.startsWith('http') ? link.url : `http://${link.url}`;
-        };
         
         grid.appendChild(card);
     });
@@ -59,7 +132,6 @@ function openEditor(id = null) {
     isEditingId = id;
     
     if (id) {
-        // Edit mode
         const link = links.find(l => l.id === id);
         if (link) {
             nameInput.value = link.name;
@@ -67,7 +139,6 @@ function openEditor(id = null) {
             modal.querySelector('h2').innerText = "Edit Link";
         }
     } else {
-        // Create mode
         nameInput.value = '';
         urlInput.value = '';
         modal.querySelector('h2').innerText = "Add New Link";
@@ -82,16 +153,14 @@ function saveLink() {
     if (!name || !url) return alert("Both name and URL are required.");
 
     if (isEditingId) {
-        // Update existing link
         const index = links.findIndex(l => l.id === isEditingId);
         if (index !== -1) {
             links[index].name = name;
             links[index].url = url;
         }
     } else {
-        // Create new link
         const newLink = {
-            id: Date.now().toString(), // Use timestamp as unique ID
+            id: Date.now().toString(), 
             name,
             url
         };
@@ -104,13 +173,12 @@ function saveLink() {
 }
 
 function editLink(id, e) {
-    // Prevent the card's primary navigation click
+    // Crucial fix: stop the event from bubbling up to the modal close logic
     e.stopPropagation(); 
     openEditor(id);
 }
 
 function deleteLink(id, e) {
-    // Prevent the card's primary navigation click
     e.stopPropagation(); 
     if(confirm(`Are you sure you want to delete this link?`)) {
         links = links.filter(l => l.id !== id);
@@ -129,20 +197,27 @@ function handleSearch(e) {
         const input = document.getElementById('searchInput').value.trim();
         if (!input) return;
 
-        // Simple check: is it a URL or a search query?
         let url = input;
         
         if (!input.includes('.') || input.includes(' ')) {
-            // It's likely a search query. Use Google as the default engine.
-            url = `https://www.google.com/search?q=${encodeURIComponent(input)}`;
+            // It's a search query. Find the engine URL.
+            const engine = searchEngines.find(s => s.name === settings.searchEngine);
+            const baseUrl = engine ? engine.url : searchEngines[0].url; 
+            url = `${baseUrl}${encodeURIComponent(input)}`;
         } else if (!input.startsWith('http')) {
             // It's a domain, but missing protocol. Assume HTTPS.
             url = `https://${input}`;
         }
         
         window.location.href = url;
-        e.preventDefault(); // Stop form submission behavior
+        e.preventDefault(); 
     }
+}
+
+// --- SETTINGS MODAL ---
+function toggleSettings() {
+    const modal = document.getElementById('settingsModal');
+    modal.classList.toggle('active');
 }
 
 
@@ -152,3 +227,6 @@ window.saveLink = saveLink;
 window.editLink = editLink;
 window.deleteLink = deleteLink;
 window.closeModal = closeModal;
+window.handleSearch = handleSearch;
+window.toggleSettings = toggleSettings;
+window.saveSettings = saveSettings;
