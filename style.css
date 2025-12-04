@@ -38,22 +38,31 @@ h1 { margin: 0; font-size: 2rem; letter-spacing: -1px; }
     font-size: 1.8rem; 
     font-weight: 300; 
     color: var(--accent); 
-    margin-bottom: 30px; 
-    font-variant-numeric: tabular-nums; /* Prevents jumping numbers */
+    margin-bottom: 5px; /* Shrunk spacing */
+    font-variant-numeric: tabular-nums; 
 }
+
+/* NEW: Greeting Style */
+.greeting {
+    font-size: 1rem;
+    color: var(--dim);
+    margin-bottom: 30px; /* Space before search bar */
+    font-weight: 500;
+}
+
 
 /* Search Bar - Height Fixed */
 .search-bar { display: flex; gap: 10px; margin-bottom: 20px; height: 50px; }
 #searchInput { 
     flex-grow: 1; 
     height: 100%; 
-    padding: 0 16px; /* Horizontal padding only */
+    padding: 0 16px; 
     border-radius: 12px; 
     border: none; 
     background: var(--card-hover); 
     color: var(--text); 
     font-size: 1rem;
-    box-sizing: border-box; /* Crucial for height calc */
+    box-sizing: border-box; 
 }
 .search-icon { 
     width: 50px; 
@@ -104,7 +113,7 @@ h1 { margin: 0; font-size: 2rem; letter-spacing: -1px; }
 /* Link Grid */
 .link-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Force 4 per row on mobile */
+    grid-template-columns: repeat(4, 1fr); 
     gap: 15px;
     justify-content: center;
 }
@@ -134,7 +143,7 @@ h1 { margin: 0; font-size: 2rem; letter-spacing: -1px; }
     margin-bottom: 8px;
     overflow: hidden;
     transition: transform 0.2s;
-    border: 1px solid transparent; /* Prevents layout shift on border add */
+    border: 1px solid transparent; 
 }
 .link-icon-circle img { width: 100%; height: 100%; object-fit: cover; }
 .link-name { color: var(--text); font-size: 0.75rem; text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9; }
@@ -188,7 +197,7 @@ input:focus, select:focus { border-color: var(--accent); }
     border-radius: 10px; cursor: pointer; flex: 1;
     border: 1px solid var(--border);
 }
-.radio-option input { margin: 0; width: auto; } /* Reset default input width */
+.radio-option input { margin: 0; width: auto; } 
 
 /* Buttons */
 .save-btn { width: 100%; background: var(--accent); color: var(--bg); padding: 14px; border-radius: 12px; font-weight: bold; border: none; font-size: 1rem; margin-top: 10px; }
