@@ -22,28 +22,27 @@
     </header>
 
     <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search or Type URL to Open" onkeypress="handleSearch(event)">
+        <input type="text" id="searchInput" placeholder="Search or Type URL..." onkeypress="handleSearch(event)">
         <button class="search-icon" onclick="handleSearch({ key: 'Enter', type: 'click', preventDefault: () => {} })">🔍</button>
     </div>
 
     <div class="action-bar">
-        <button onclick="openEditor()" class="add-link-btn">+ Add Link</button>
-        <button onclick="toggleEditMode()" class="secondary edit-mode-btn">✏️ Edit Links</button>
+        <button onclick="openEditor()" class="add-link-btn" id="addLinkMainBtn">+ Add Link</button>
+        <button onclick="toggleEditMode()" id="editToggleBtn" class="secondary icon-btn" style="border-radius: 50%; width: 45px; height: 45px; padding: 0;">✎</button>
     </div>
 
     <div id="linkGrid" class="link-grid">
         </div>
-    
 </div>
 
 <div class="modal" id="linkEditorModal">
     <div class="modal-content">
-        <h2>Link Editor</h2>
-        <input type="text" id="editName" placeholder="Name (e.g., GitHub)">
-        <input type="url" id="editUrl" placeholder="URL (e.g., https://https://github.com)">
+        <h2>Link Details</h2>
+        <input type="text" id="editName" placeholder="Name (e.g. YouTube)">
+        <input type="url" id="editUrl" placeholder="URL (e.g. youtube.com)">
         
         <div class="action-row">
-            <button onclick="saveLink()">💾 Save Link</button>
+            <button onclick="saveLink()">💾 Save</button>
             <button class="secondary" onclick="closeModal('linkEditorModal')">Cancel</button>
         </div>
     </div>
@@ -59,8 +58,8 @@
         <div class="setting-group">
             <h3>Theme</h3>
             <select id="themeSelect">
-                <option value="dark">Dark (OLED Optimized)</option>
-                <option value="light">Light (WIP)</option>
+                <option value="dark">Dark (OLED)</option>
+                <option value="light">Light</option>
             </select>
         </div>
 
@@ -71,7 +70,7 @@
         </div>
 
         <div class="setting-group">
-            <h3>Default Search Engine</h3>
+            <h3>Search Engine</h3>
             <select id="searchEngineSelect"></select>
         </div>
         
