@@ -3,7 +3,7 @@
     --card: #141418;
     --card-hover: #1e1e24;
     --text: #ffffff;
-    --accent: #00c49a; /* Green for speed/utility */
+    --accent: #00aaff; /* Sharp Utility Blue */
     --dim: #888;
     --border: #333;
     --delete: #ff4d4d;
@@ -22,6 +22,17 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* Theme Classes */
+body.light {
+    --bg: #f0f0f5;
+    --card: #ffffff;
+    --card-hover: #e8e8f0;
+    --text: #111;
+    --dim: #666;
+    --border: #ccc;
+    --delete: #cc0000;
+}
+
 /* Typography & Layout */
 .container { 
     width: 100%; 
@@ -33,42 +44,74 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 5px;
 }
 
 h1 { 
-    margin-bottom: 5px; 
+    margin-bottom: 0; 
     letter-spacing: -1px; 
     font-size: 2.2rem;
+}
+
+.clock {
+    font-size: 1.8rem;
+    font-weight: 200;
+    color: var(--accent);
+    margin-bottom: 30px;
 }
 
 .subtitle { 
     color: var(--dim); 
     font-size: 0.95rem; 
-    margin-bottom: 30px; 
+    margin-bottom: 15px; 
     font-weight: 400;
 }
 
-/* Inputs & Search */
-input {
-    width: 100%;
+/* Search Bar & Icon */
+.search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    align-items: center;
+}
+
+#searchInput {
+    flex-grow: 1;
     padding: 16px;
     border-radius: 14px;
     border: 1px solid transparent;
     background: var(--card);
     color: var(--text);
     font-size: 1rem;
-    margin-bottom: 25px;
-    box-sizing: border-box;
-    outline: none;
-    transition: all 0.2s ease;
+    margin-bottom: 0; /* Override default input margin */
 }
 
-input:focus {
-    border-color: var(--accent);
-    background: var(--card-hover);
+.search-icon {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    margin: 0;
+    border-radius: 14px;
+    background: var(--accent);
+    color: var(--bg);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-input::placeholder {
-    color: var(--dim);
+
+
+/* Inputs & Forms (General) */
+input[type="text"], input[type="url"], select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card-hover);
+    color: var(--text);
+    font-size: 1rem;
+    margin-bottom: 15px;
+    box-sizing: border-box;
 }
 
 /* Buttons */
@@ -97,6 +140,10 @@ button.secondary {
     background: var(--card-hover); 
     border: 1px solid var(--border);
     color: var(--text);
+}
+
+.action-bar {
+    margin-bottom: 20px;
 }
 
 .action-row { 
@@ -192,6 +239,35 @@ button.secondary {
     padding: 25px;
     box-sizing: border-box;
     animation: fadeIn 0.3s ease-out;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.setting-group {
+    margin-bottom: 20px;
+}
+
+.setting-group h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    color: var(--accent);
+}
+
+.setting-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 400;
+}
+
+.setting-group input[type="radio"] {
+    width: auto;
+    margin-right: 10px;
 }
 
 @keyframes fadeIn {
