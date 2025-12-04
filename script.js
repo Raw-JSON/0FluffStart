@@ -8,7 +8,9 @@ const searchEngines = [
     { name: 'Google', url: 'https://www.google.com/search?q=' },
     { name: 'DuckDuckGo', url: 'https://duckduckgo.com/?q=' },
     { name: 'Brave', url: 'https://search.brave.com/search?q=' },
-    { name: 'Bing', url: 'https://www.bing.com/search?q=' }
+    { name: 'Bing', url: 'https://www.bing.com/search?q=' },
+    { name: 'Qwant', url: 'https://www.qwant.com/?q=' },
+    { name: 'Startpage', url: 'https://www.startpage.com/sp/search?query=' }
 ];
 
 // --- INIT ---
@@ -17,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSettings();
     setInterval(updateClock, 1000);
     populateSearchEngines();
+    updateClock(); // Initial call to avoid 00:00:00 delay
 });
 
 // --- CORE FUNCTIONS ---
@@ -25,13 +28,12 @@ function toggleEditMode() {
     isEditMode = !isEditMode;
     const btn = document.getElementById('editToggleBtn');
     
-    // Visual feedback for the button itself
     if(isEditMode) {
-        btn.style.background = 'var(--accent)';
-        btn.style.color = 'var(--bg)';
+        btn.classList.add('active');
+        btn.innerText = '✓'; // Change icon to Checkmark when done
     } else {
-        btn.style.background = 'transparent';
-        btn.style.color = 'var(--text)';
+        btn.classList.remove('active');
+        btn.innerText = '✎';
     }
     
     renderLinks();
@@ -42,49 +44,41 @@ function renderLinks() {
     grid.innerHTML = '';
 
     links.forEach(link => {
-        // Safe URL parsing for favicon
         let domain = 'example.com';
         try {
-            // Add https if missing to parse correctly
             let urlForParse = link.url.startsWith('http') ? link.url : `https://${link.url}`;
             domain = new URL(urlForParse).hostname;
         } catch(e) { console.error(e); }
 
-        // Use Google's service for high-quality favicons
         const iconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
         const initial = link.name.charAt(0).toUpperCase();
 
         const item = document.createElement('div');
         item.className = `link-item ${isEditMode ? 'editing' : ''}`;
         
-        // HTML Structure
         let html = `
             <div class="link-icon-circle">
                 <img src="${iconUrl}" onerror="this.style.display='none';this.nextElementSibling.style.display='block';" alt="icon">
-                <span style="display:none; font-size:1.5rem; color:var(--accent);">${initial}</span>
+                <span style="display:none; font-size:1.5rem; color:var(--accent); font-weight:bold;">${initial}</span>
             </div>
             <div class="link-name">${link.name}</div>
         `;
 
-        // If Editing, add badges
         if (isEditMode) {
-            html += `
-                <div class="delete-badge" onclick="deleteLink('${link.id}', event)">✕</div>
-                <div class="edit-badge" onclick="editLink('${link.id}', event)">✎</div>
-            `;
+            // Delete badge (X)
+            html += `<div class="delete-badge" onclick="deleteLink('${link.id}', event)">✕</div>`;
+            
+            // In this specific design, clicking the main icon in edit mode opens the editor
+            item.onclick = (e) => editLink(link.id, e);
+        } else {
+            // Normal Mode: Navigate
+            item.onclick = () => {
+                const finalUrl = link.url.startsWith('http') ? link.url : `https://${link.url}`;
+                window.location.href = finalUrl;
+            };
         }
 
         item.innerHTML = html;
-
-        // Click Logic
-        item.onclick = () => {
-            if (!isEditMode) {
-                // Navigate
-                const finalUrl = link.url.startsWith('http') ? link.url : `https://${link.url}`;
-                window.location.href = finalUrl;
-            }
-        };
-
         grid.appendChild(item);
     });
 }
@@ -98,8 +92,10 @@ function openEditor(id = null) {
 
     if (id) {
         const link = links.find(l => l.id === id);
-        nameInput.value = link.name;
-        urlInput.value = link.url;
+        if(link) {
+            nameInput.value = link.name;
+            urlInput.value = link.url;
+        }
     } else {
         nameInput.value = '';
         urlInput.value = '';
@@ -110,7 +106,7 @@ function openEditor(id = null) {
 function saveLink() {
     const name = document.getElementById('editName').value.trim();
     const url = document.getElementById('editUrl').value.trim();
-    if (!name || !url) return alert("Fill in both fields.");
+    if (!name || !url) return alert("Please fill in both name and URL.");
 
     if (isEditingId) {
         const idx = links.findIndex(l => l.id === isEditingId);
@@ -124,10 +120,14 @@ function saveLink() {
     closeModal('linkEditorModal');
 }
 
-function editLink(id, e) { e.stopPropagation(); openEditor(id); }
+function editLink(id, e) { 
+    if(e) e.stopPropagation(); 
+    openEditor(id); 
+}
+
 function deleteLink(id, e) {
-    e.stopPropagation();
-    if(confirm("Delete link?")) {
+    if(e) e.stopPropagation();
+    if(confirm("Delete this link?")) {
         links = links.filter(l => l.id !== id);
         localStorage.setItem('0fluff_links', JSON.stringify(links));
         renderLinks();
@@ -144,7 +144,6 @@ function handleSearch(e) {
         if (!val) return;
         
         const engine = searchEngines.find(s => s.name === settings.searchEngine) || searchEngines[0];
-        // Check if it's a URL
         if (val.includes('.') && !val.includes(' ')) {
             window.location.href = val.startsWith('http') ? val : `https://${val}`;
         } else {
@@ -170,6 +169,7 @@ function updateClock() {
 
 function populateSearchEngines() {
     const sel = document.getElementById('searchEngineSelect');
+    sel.innerHTML = ''; // Clear existing
     searchEngines.forEach(e => {
         const opt = document.createElement('option');
         opt.value = e.name;
@@ -183,18 +183,24 @@ function loadSettings() {
     document.getElementById('themeSelect').value = settings.theme;
     document.getElementById('searchEngineSelect').value = settings.searchEngine;
     
-    // Select radio button
-    const radio = document.querySelector(`input[name="clockFormat"][value="${settings.clockFormat}"]`);
-    if(radio) radio.checked = true;
+    // Handle Radio Selection manually
+    const radios = document.getElementsByName('clockFormat');
+    for(let r of radios) {
+        if(r.value === settings.clockFormat) r.checked = true;
+    }
 }
 
 function saveSettings() {
     settings.theme = document.getElementById('themeSelect').value;
     settings.searchEngine = document.getElementById('searchEngineSelect').value;
-    settings.clockFormat = document.querySelector('input[name="clockFormat"]:checked').value;
+    
+    const radios = document.getElementsByName('clockFormat');
+    for(let r of radios) {
+        if(r.checked) settings.clockFormat = r.value;
+    }
     
     localStorage.setItem('0fluff_settings', JSON.stringify(settings));
-    loadSettings(); // Apply theme
+    loadSettings(); 
     updateClock();
     closeModal('settingsModal');
 }
