@@ -28,7 +28,7 @@
 
     <div class="action-bar">
         <button onclick="openEditor()" class="add-link-btn" id="addLinkMainBtn">+ Add Link</button>
-        <button onclick="toggleEditMode()" id="editToggleBtn" class="secondary icon-btn" style="border-radius: 50%; width: 45px; height: 45px; padding: 0;">✎</button>
+        <button onclick="toggleEditMode()" id="editToggleBtn" class="edit-toggle-btn">✎</button>
     </div>
 
     <div id="linkGrid" class="link-grid">
@@ -37,14 +37,14 @@
 
 <div class="modal" id="linkEditorModal">
     <div class="modal-content">
-        <h2>Link Details</h2>
+        <div class="modal-header">
+            <h2>Link Details</h2>
+            <button onclick="closeModal('linkEditorModal')" class="icon-btn">✕</button>
+        </div>
         <input type="text" id="editName" placeholder="Name (e.g. YouTube)">
         <input type="url" id="editUrl" placeholder="URL (e.g. youtube.com)">
         
-        <div class="action-row">
-            <button onclick="saveLink()">💾 Save</button>
-            <button class="secondary" onclick="closeModal('linkEditorModal')">Cancel</button>
-        </div>
+        <button onclick="saveLink()" class="save-btn">💾 Save Link</button>
     </div>
 </div>
 
@@ -65,8 +65,14 @@
 
         <div class="setting-group">
             <h3>Clock Format</h3>
-            <label><input type="radio" name="clockFormat" value="12h"> 12-Hour (AM/PM)</label>
-            <label><input type="radio" name="clockFormat" value="24h"> 24-Hour (Military)</label>
+            <div class="radio-row">
+                <label class="radio-option">
+                    <input type="radio" name="clockFormat" value="12h"> 12-Hour
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="clockFormat" value="24h"> 24-Hour
+                </label>
+            </div>
         </div>
 
         <div class="setting-group">
@@ -74,9 +80,7 @@
             <select id="searchEngineSelect"></select>
         </div>
         
-        <div class="action-row">
-            <button onclick="saveSettings()">💾 Save Settings</button>
-        </div>
+        <button onclick="saveSettings()" class="save-btn">💾 Save Settings</button>
     </div>
 </div>
 
