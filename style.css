@@ -32,33 +32,84 @@ body.light {
 .container { width: 100%; max-width: 600px; padding-bottom: 50px; }
 
 /* Header & Clock */
-.header-row { display: flex; justify-content: space-between; align-items: center; }
+.header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 h1 { margin: 0; font-size: 2rem; letter-spacing: -1px; }
-.clock { font-size: 1.8rem; font-weight: 200; color: var(--accent); margin-bottom: 20px; }
+.clock { 
+    font-size: 1.8rem; 
+    font-weight: 300; 
+    color: var(--accent); 
+    margin-bottom: 30px; 
+    font-variant-numeric: tabular-nums; /* Prevents jumping numbers */
+}
 
-/* Search */
-.search-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+/* Search Bar - Height Fixed */
+.search-bar { display: flex; gap: 10px; margin-bottom: 20px; height: 50px; }
 #searchInput { 
-    flex-grow: 1; padding: 12px; border-radius: 12px; 
-    border: none; background: var(--card-hover); color: var(--text); font-size: 1rem; 
+    flex-grow: 1; 
+    height: 100%; 
+    padding: 0 16px; /* Horizontal padding only */
+    border-radius: 12px; 
+    border: none; 
+    background: var(--card-hover); 
+    color: var(--text); 
+    font-size: 1rem;
+    box-sizing: border-box; /* Crucial for height calc */
 }
 .search-icon { 
-    width: 45px; height: 45px; border-radius: 12px; 
-    background: var(--accent); color: var(--bg); font-size: 1.2rem;
-    display: flex; align-items: center; justify-content: center; border: none;
+    width: 50px; 
+    height: 100%; 
+    border-radius: 12px; 
+    background: var(--accent); 
+    color: var(--bg); 
+    font-size: 1.2rem; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    border: none;
+    cursor: pointer;
 }
 
 /* Action Bar */
-.action-bar { display: flex; gap: 10px; margin-bottom: 25px; align-items: center; }
-.add-link-btn { flex-grow: 1; padding: 12px; border-radius: 12px; background: var(--accent); color: var(--bg); font-weight: bold; border: none; }
-.icon-btn { background: transparent; border: none; color: var(--text); font-size: 1.2rem; cursor: pointer; }
+.action-bar { display: flex; gap: 10px; margin-bottom: 30px; align-items: center; }
+.add-link-btn { 
+    flex-grow: 1; 
+    padding: 14px; 
+    border-radius: 12px; 
+    background: var(--accent); 
+    color: var(--bg); 
+    font-weight: 700; 
+    border: none; 
+    font-size: 1rem;
+}
+.icon-btn { background: transparent; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; padding: 5px; }
+.edit-toggle-btn {
+    background: var(--card-hover);
+    color: var(--text);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+}
+.edit-toggle-btn.active {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+}
 
 /* Link Grid */
 .link-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(4, 1fr); /* Force 4 per row on mobile */
+    gap: 15px;
     justify-content: center;
+}
+@media (max-width: 400px) {
+    .link-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
 }
 
 /* Link Item */
@@ -71,10 +122,10 @@ h1 { margin: 0; font-size: 2rem; letter-spacing: -1px; }
     cursor: pointer;
 }
 
-/* Round Icon Container */
+/* Round Icon */
 .link-icon-circle {
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
     background: var(--card);
     border-radius: 50%;
     display: flex;
@@ -83,65 +134,62 @@ h1 { margin: 0; font-size: 2rem; letter-spacing: -1px; }
     margin-bottom: 8px;
     overflow: hidden;
     transition: transform 0.2s;
+    border: 1px solid transparent; /* Prevents layout shift on border add */
 }
+.link-icon-circle img { width: 100%; height: 100%; object-fit: cover; }
+.link-name { color: var(--text); font-size: 0.75rem; text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9; }
 
-.link-icon-circle img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.link-name {
-    color: var(--text);
-    font-size: 0.8rem;
-    text-align: center;
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* EDIT MODE STYLES */
+/* Edit Mode Animations */
 .link-item.editing .link-icon-circle {
-    animation: shake 0.3s infinite alternate;
+    animation: wiggle 0.3s infinite alternate;
     border: 2px solid var(--accent);
-}
-
-.edit-badge {
-    position: absolute;
-    top: -5px; right: 0px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 50%;
-    width: 24px; height: 24px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.8rem;
-    z-index: 10;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    opacity: 0.8;
 }
 .delete-badge {
-    position: absolute;
-    top: -5px; left: 0px;
-    background: var(--delete);
-    color: white;
-    border-radius: 50%;
-    width: 24px; height: 24px;
+    position: absolute; top: -4px; right: -4px;
+    background: var(--delete); color: white;
+    border-radius: 50%; width: 22px; height: 22px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.8rem;
+    font-size: 0.7rem; font-weight: bold;
     z-index: 10;
     box-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
 
-@keyframes shake {
+@keyframes wiggle {
     from { transform: rotate(-3deg); }
     to { transform: rotate(3deg); }
 }
 
-/* Modal */
-.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 100; }
+/* Modal & Form Elements */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(5px); }
 .modal.active { display: flex; }
-.modal-content { background: var(--bg); padding: 25px; border-radius: 20px; width: 90%; max-width: 350px; border: 1px solid var(--border); }
-input, select { width: 100%; padding: 12px; margin-bottom: 15px; background: var(--card-hover); border: 1px solid var(--border); color: var(--text); border-radius: 8px; box-sizing: border-box; }
-.action-row { display: flex; gap: 10px; margin-top: 10px; }
-button { cursor: pointer; }
-.secondary { background: var(--card-hover); border: 1px solid var(--border); color: var(--text); padding: 10px 15px; border-radius: 10px; }
+.modal-content { background: var(--bg); padding: 25px; border-radius: 24px; width: 90%; max-width: 350px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.modal-header h2 { margin: 0; font-size: 1.5rem; }
+
+/* Styled Inputs */
+input[type="text"], input[type="url"], select { 
+    width: 100%; padding: 14px; margin-bottom: 15px; 
+    background: var(--card-hover); border: 1px solid var(--border); 
+    color: var(--text); border-radius: 12px; box-sizing: border-box; 
+    font-size: 1rem; outline: none; -webkit-appearance: none; appearance: none;
+}
+input:focus, select:focus { border-color: var(--accent); }
+
+/* Settings Specifics */
+.setting-group { margin-bottom: 20px; }
+.setting-group h3 { margin: 0 0 10px 0; font-size: 0.9rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Radio Button Layout Fix */
+.radio-row { display: flex; gap: 15px; }
+.radio-option {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--card-hover); padding: 10px 15px;
+    border-radius: 10px; cursor: pointer; flex: 1;
+    border: 1px solid var(--border);
+}
+.radio-option input { margin: 0; width: auto; } /* Reset default input width */
+
+/* Buttons */
+.save-btn { width: 100%; background: var(--accent); color: var(--bg); padding: 14px; border-radius: 12px; font-weight: bold; border: none; font-size: 1rem; margin-top: 10px; }
+.secondary { background: var(--card-hover); color: var(--text); }
