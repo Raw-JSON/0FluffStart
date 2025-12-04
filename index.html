@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>0FluffStart</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-row">
+            <h1>0FluffStart</h1>
+            <button onclick="openEditor()" class="icon-btn">➕</button>
+        </div>
+        <div class="subtitle">Quick access. Zero clutter.</div>
+    </header>
+
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search or Type URL to Open">
+    </div>
+
+    <div id="linkGrid" class="link-grid">
+        </div>
+    
+</div>
+
+<div class="modal" id="linkEditorModal">
+    <div class="modal-content">
+        <h2>Link Editor</h2>
+        <input type="text" id="editName" placeholder="Name (e.g., GitHub)">
+        <input type="url" id="editUrl" placeholder="URL (e.g., https://github.com)">
+        
+        <div class="action-row">
+            <button onclick="saveLink()">💾 Save Link</button>
+            <button class="secondary" onclick="closeModal('linkEditorModal')">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
