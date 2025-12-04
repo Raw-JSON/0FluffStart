@@ -2,6 +2,7 @@
 
 **The ultimate minimal, privacy-focused, client-side mobile homepage and dashboard.**
 
+**[🔗 Open OFluffStart ](https://raw-json.github.io/0FluffStart/)**
 ---
 
 ## 🔥 The Philosophy: Why 0Fluff?
