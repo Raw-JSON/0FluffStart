@@ -8,6 +8,7 @@ let settings = JSON.parse(localStorage.getItem('0fluff_settings') || JSON.string
 }));
 
 let isEditingId = null;
+let isEditMode = false; // NEW STATE: Toggle edit/navigation focus
 
 const searchEngines = [
     { name: 'Google', url: 'https://www.google.com/search?q=' },
@@ -94,29 +95,67 @@ function updateClock() {
 }
 
 
-// --- RENDERING & BUG FIX (Link Navigation) ---
+// --- RENDERING & NEW EDIT MODE TOGGLE ---
+
+function toggleEditMode(e) {
+    if (e) e.stopPropagation(); // Prevent modal close or other conflicts
+    isEditMode = !isEditMode;
+    renderLinks();
+}
+
+
 function renderLinks() {
     const grid = document.getElementById('linkGrid');
     grid.innerHTML = '';
+    
+    // Update the visibility of the primary link actions based on edit mode
+    const addLinkBtn = document.querySelector('.add-link-btn');
+    const editModeBtn = document.querySelector('.edit-mode-btn');
+
+    if (isEditMode) {
+        addLinkBtn.classList.add('hidden');
+        editModeBtn.innerText = '✅ Done';
+        editModeBtn.style.background = 'var(--accent)';
+    } else {
+        addLinkBtn.classList.remove('hidden');
+        editModeBtn.innerText = '✏️ Edit Links';
+        editModeBtn.style.background = 'var(--card-hover)';
+    }
 
     links.forEach(link => {
-        // FIX: Using <a> tag fixes the event propagation bug
-        const card = document.createElement('a'); 
-        card.className = 'link-card';
-        card.setAttribute('href', link.url.startsWith('http') ? link.url : `http://${link.url}`);
-        card.setAttribute('target', '_blank'); // Open in new tab
+        const card = document.createElement('div'); // Changed back to <div> for conditional linking
+        card.className = `link-card ${isEditMode ? 'edit-mode-active' : ''}`;
+        card.setAttribute('data-id', link.id);
         
+        // Use DuckDuckGo's non-tracking favicon service for real icons
+        // Sanitizes the URL for the favicon service
+        const safeUrl = link.url.replace(/^https?:\/\//, '').split('/')[0];
+        const iconUrl = `https://icons.duckduckgo.com/ip3/${safeUrl}.ico`;
+        
+        // Inner content structure
+        const iconHtml = `<img src="${iconUrl}" onerror="this.onerror=null;this.src='fallback.png';" alt="${link.name}" class="link-icon">`;
         const initial = link.name.charAt(0).toUpperCase();
-
+        
         card.innerHTML = `
-            <div style="font-size: 2.5rem; color: var(--accent);">${initial}</div>
+            <div class="icon-container">
+                <img src="${iconUrl}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 100 100\\'%3E%3Ctext x=\\'50%\\' y=\\'55%\\' dominant-baseline=\\'middle\\' text-anchor=\\'middle\\' font-size=\\'40\\' fill=\\'%2300aaff\\' font-family=\\'Arial, sans-serif\\'>${initial}%3C/text%3E%3C/svg%3E'" alt="${link.name}" class="link-icon">
+            </div>
             <div class="link-name">${link.name}</div>
             
-            <div class="edit-overlay">
-                <button onclick="editLink('${link.id}', event)">✏️ Edit</button>
-                <button onclick="deleteLink('${link.id}', event)" style="color: var(--delete); border-color: var(--delete);">🗑 Delete</button>
-            </div>
+            ${isEditMode ? 
+                `<div class="edit-actions">
+                    <button class="icon-btn edit-btn" onclick="editLink('${link.id}', event)">✏️</button>
+                    <button class="icon-btn delete-btn" onclick="deleteLink('${link.id}', event)">🗑</button>
+                </div>` 
+                : ''}
         `;
+        
+        // Primary action: navigation ONLY when not in edit mode
+        if (!isEditMode) {
+            card.onclick = (e) => {
+                window.location.href = link.url.startsWith('http') ? link.url : `http://${link.url}`;
+            };
+        }
         
         grid.appendChild(card);
     });
@@ -173,7 +212,7 @@ function saveLink() {
 }
 
 function editLink(id, e) {
-    // Crucial fix: stop the event from bubbling up to the modal close logic
+    // Crucial fix: stop the event from bubbling up to the card's navigation logic
     e.stopPropagation(); 
     openEditor(id);
 }
@@ -193,7 +232,7 @@ function closeModal(id) {
 
 // --- SEARCH / QUICK-LAUNCH ---
 function handleSearch(e) {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' || e.type === 'click') {
         const input = document.getElementById('searchInput').value.trim();
         if (!input) return;
 
@@ -230,3 +269,4 @@ window.closeModal = closeModal;
 window.handleSearch = handleSearch;
 window.toggleSettings = toggleSettings;
 window.saveSettings = saveSettings;
+window.toggleEditMode = toggleEditMode;
