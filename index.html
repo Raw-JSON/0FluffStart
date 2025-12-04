@@ -23,11 +23,12 @@
 
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Search or Type URL to Open" onkeypress="handleSearch(event)">
-        <button class="search-icon" onclick="handleSearch({ key: 'Enter', preventDefault: () => {} })">🔍</button>
+        <button class="search-icon" onclick="handleSearch({ key: 'Enter', type: 'click', preventDefault: () => {} })">🔍</button>
     </div>
 
     <div class="action-bar">
         <button onclick="openEditor()" class="add-link-btn">+ Add Link</button>
+        <button onclick="toggleEditMode()" class="secondary edit-mode-btn">✏️ Edit Links</button>
     </div>
 
     <div id="linkGrid" class="link-grid">
@@ -39,7 +40,7 @@
     <div class="modal-content">
         <h2>Link Editor</h2>
         <input type="text" id="editName" placeholder="Name (e.g., GitHub)">
-        <input type="url" id="editUrl" placeholder="URL (e.g., https://github.com)">
+        <input type="url" id="editUrl" placeholder="URL (e.g., https://https://github.com)">
         
         <div class="action-row">
             <button onclick="saveLink()">💾 Save Link</button>
