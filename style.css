@@ -114,7 +114,7 @@ input[type="text"], input[type="url"], select {
     box-sizing: border-box;
 }
 
-/* Buttons */
+/* Buttons & Actions */
 button {
     padding: 12px 18px;
     border-radius: 10px;
@@ -143,7 +143,18 @@ button.secondary {
 }
 
 .action-bar {
+    display: flex;
+    gap: 12px;
     margin-bottom: 20px;
+}
+
+.add-link-btn {
+    flex-grow: 1;
+}
+
+.edit-mode-btn {
+    width: auto;
+    flex-shrink: 0;
 }
 
 .action-row { 
@@ -155,15 +166,16 @@ button.secondary {
 /* Link Grid & Items */
 .link-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Smaller grid items */
     gap: 15px;
     margin-top: 20px;
+    justify-content: center;
 }
 
 .link-card {
-    background: var(--card);
-    border-radius: 16px;
-    padding: 15px;
+    background: none;
+    border-radius: 0;
+    padding: 0;
     text-align: center;
     text-decoration: none;
     color: var(--text);
@@ -172,50 +184,70 @@ button.secondary {
     align-items: center;
     justify-content: center;
     height: 100px;
-    transition: background 0.2s;
     position: relative;
+    cursor: pointer;
 }
 
-.link-card:hover {
-    background: var(--card-hover);
+.link-card.edit-mode-active {
+    cursor: default;
+}
+
+.icon-container {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.link-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .link-name {
-    margin-top: 8px;
-    font-weight: 600;
-    font-size: 1rem;
+    font-weight: 500;
+    font-size: 0.8rem;
     word-break: break-word;
+    max-width: 100%;
 }
 
-.edit-overlay {
+/* Edit Mode Overlays */
+.edit-actions {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.8);
-    border-radius: 16px;
+    top: -5px;
+    right: -5px;
     display: flex;
-    flex-direction: column;
+    gap: 5px;
+    z-index: 20;
+}
+
+.edit-actions .icon-btn {
+    background: var(--card-hover);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    font-size: 0.8rem;
+    display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0;
-    transition: opacity 0.2s ease;
 }
 
-.link-card:hover .edit-overlay {
-    opacity: 1;
-}
-
-.edit-overlay button {
-    background: transparent;
+.edit-actions .delete-btn {
+    background: var(--delete);
     color: var(--text);
-    padding: 5px;
-    font-size: 1rem;
-    font-weight: 400;
-    border: 1px solid var(--dim);
-    margin-top: 5px;
+    border: 1px solid var(--delete);
 }
+
 
 /* Modal Styling */
 .modal {
@@ -269,6 +301,8 @@ button.secondary {
     width: auto;
     margin-right: 10px;
 }
+
+.hidden { display: none !important; }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
