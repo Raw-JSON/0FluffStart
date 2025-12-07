@@ -1,6 +1,75 @@
-/* 0FluffStart-main (7).zip/0FluffStart-main/style.css */
+/* style.css */
 
-/* ... (Keep all previous Theme Definitions & Core Styles) ... */
+/* --- THEME DEFINITIONS --- */
+:root {
+    /* DEFAULT (OLED DARK) */
+    --bg: #000000;
+    --card: #141418;
+    --card-hover: #1e1e24;
+    --text: #ffffff;
+    --accent: #00aaff;
+    --dim: #888;
+    --border: #333;
+    --delete: #ff4d4d;
+    --radius: 12px;
+    --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --shadow: none;
+}
+
+body.light {
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --card-hover: #e5e5ea;
+    --text: #000000;
+    --accent: #007aff;
+    --dim: #8e8e93;
+    --border: #d1d1d6;
+    --radius: 12px;
+    --shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+body.cyberpunk {
+    --bg: #050505;
+    --card: #121212;
+    --card-hover: #1a1a1a;
+    --text: #00ff41; /* Matrix Greenish */
+    --accent: #f0e600; /* Cyber Yellow */
+    --dim: #008f11;
+    --border: #333;
+    --delete: #ff003c;
+    --radius: 0px; /* Sharp edges */
+    --font-main: "Courier New", Courier, monospace;
+    --shadow: 0 0 10px rgba(0, 255, 65, 0.1);
+}
+
+body.sunset {
+    --bg: #2d1b2e;
+    --card: #442646; /* Deep Purple */
+    --card-hover: #58335a;
+    --text: #ffd5e5;
+    --accent: #ff9a76; /* Peach */
+    --dim: #b08ea2;
+    --border: #58335a;
+    --delete: #ff5e78;
+    --radius: 20px; /* Super round */
+    --font-main: "Trebuchet MS", sans-serif;
+    --shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+body.paper {
+    --bg: #fdfbf7; /* Warm white */
+    --card: #fff;
+    --card-hover: #f0eee9;
+    --text: #2c2c2c;
+    --accent: #2c2c2c; /* Black accent */
+    --dim: #999;
+    --border: #2c2c2c;
+    --delete: #d32f2f;
+    --radius: 4px;
+    --font-main: "Times New Roman", Times, serif;
+    --shadow: 4px 4px 0px rgba(0,0,0,0.1); /* Hard shadow */
+}
+
 
 /* --- CORE STYLES --- */
 body {
@@ -16,11 +85,136 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* ... (Keep Container, Header, Clock, Search Bar styles) ... */
+/* Container */
+.container { width: 100%; max-width: 600px; padding-bottom: 50px; }
 
-/* ... (Keep Engine Switcher, Input, Search Icon, Hidden styles) ... */
+/* Header & Clock */
+.header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+h1 { margin: 0; font-size: 2rem; letter-spacing: -1px; }
 
-/* Link Grid */
+.clock { 
+    font-size: 1.8rem; 
+    font-weight: 300; 
+    color: var(--accent); 
+    margin-bottom: 5px; 
+    font-variant-numeric: tabular-nums; 
+}
+
+.greeting {
+    font-size: 1rem;
+    color: var(--dim);
+    margin-bottom: 30px; 
+    font-weight: 500;
+}
+
+
+/* --- SEARCH BAR (With Switcher) --- */
+.search-bar { 
+    display: flex; 
+    gap: 0; 
+    margin-bottom: 20px; 
+    height: 50px; 
+    position: relative;
+    background: var(--card-hover);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+/* Engine Switcher Button */
+.engine-switcher {
+    position: relative;
+    height: 100%;
+    border-right: 1px solid var(--border);
+}
+
+.engine-btn {
+    height: 100%;
+    padding: 0 15px;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-weight: bold;
+    font-family: var(--font-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1rem;
+}
+
+/* Dropdown */
+.engine-dropdown {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 180px;
+    z-index: 9999; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    overflow: hidden;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.engine-dropdown.hidden { display: none; }
+
+.engine-option {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: calc(var(--radius) - 4px);
+    transition: background 0.2s;
+    font-size: 0.9rem;
+    color: var(--text);
+    display: flex;
+    justify-content: space-between;
+}
+
+.engine-option:hover {
+    background: var(--card-hover);
+    color: var(--accent);
+}
+
+.engine-option.selected {
+    color: var(--accent);
+    font-weight: bold;
+}
+
+/* Input & Search Icon */
+#searchInput { 
+    flex-grow: 1; 
+    height: 100%; 
+    padding: 0 16px; 
+    border: none; 
+    background: transparent; 
+    color: var(--text); 
+    font-size: 1rem;
+    box-sizing: border-box; 
+    font-family: var(--font-main);
+}
+#searchInput:focus { outline: none; }
+
+.search-icon { 
+    width: 50px; 
+    height: 100%; 
+    border-radius: 0 var(--radius) var(--radius) 0; 
+    background: transparent; 
+    color: var(--accent); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    border: none;
+    cursor: pointer;
+}
+
+/* Utility Class */
+.hidden { display: none !important; }
+
+/* --- LINK GRID (Homepage) --- */
 .link-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr); 
@@ -56,7 +250,7 @@ body {
     border: 1px solid var(--border); 
     box-shadow: var(--shadow);
 }
-/* Cyberpunk specific override for circles */
+/* Cyberpunk specific override */
 body.cyberpunk .link-icon-circle { border-radius: 0; }
 body.sunset .link-icon-circle { border-radius: 50%; }
 
@@ -161,7 +355,9 @@ input:focus, select:focus { border-color: var(--accent); }
 }
 .radio-option input { margin: 0; width: auto; } 
 
+/* Buttons */
 .save-btn { width: 100%; background: var(--accent); color: var(--bg); padding: 14px; border-radius: var(--radius); font-weight: bold; border: none; font-size: 1rem; margin-top: 10px; font-family: var(--font-main); }
+
 .add-link-btn { width: 100%; background: var(--card-hover); color: var(--accent); padding: 12px; border-radius: var(--radius); font-weight: bold; border: 1px solid var(--accent); font-size: 0.95rem; font-family: var(--font-main); cursor: pointer; transition: background 0.2s; }
 .add-link-btn:hover { background: var(--accent); color: var(--bg); }
 
@@ -185,7 +381,7 @@ button.github-btn {
 body.light button.github-btn { background: #000; }
 body.cyberpunk button.github-btn { background: #111; border: 1px solid var(--accent); color: var(--accent); }
 
-/* --- Auto-Suggestion Styles (Keep existing) --- */
+/* --- Auto-Suggestion Styles --- */
 .suggestions-container {
     position: absolute;
     top: 58px; 
@@ -206,7 +402,7 @@ body.cyberpunk button.github-btn { background: #111; border: 1px solid var(--acc
 .suggestion-item:hover { background: var(--card-hover); }
 .suggestion-type { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; background: var(--card-hover); padding: 3px 8px; border-radius: 6px; }
 
-/* --- Link Manager List Styles --- */
+/* --- Link Manager List Styles (Settings Panel) --- */
 .link-manager-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
 .link-manager-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: var(--card-hover); border-radius: var(--radius); border: 1px solid var(--border); }
 .link-manager-item .link-name { flex-grow: 1; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 1; text-align: left; }
