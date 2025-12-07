@@ -3,6 +3,7 @@
 /* global links, settings, searchHistory, searchEngines, NEWS_TOPICS */ 
 
 // --- GENERIC PROXY FETCH (Reusable) ---
+// Kept for other uses (like suggestions), but News now uses a dedicated bridge.
 async function fetchViaProxy(targetUrl) {
     const proxies = [
         { url: `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`, type: 'raw' },
@@ -14,7 +15,7 @@ async function fetchViaProxy(targetUrl) {
             const res = await fetch(proxy.url);
             if (!res.ok) throw new Error(`Status ${res.status}`);
             
-            if (proxy.type === 'raw') return await res.text(); // Return text (JSON or XML)
+            if (proxy.type === 'raw') return await res.text();
             
             // Wrapped (AllOrigins)
             const json = await res.json();
@@ -33,66 +34,70 @@ async function fetchExternalSuggestions(query) {
         const rawData = await fetchViaProxy(url);
         if(!rawData) return [];
         
-        const data = JSON.parse(rawData); // DuckDuckGo returns JSON
+        const data = JSON.parse(rawData); 
         if (Array.isArray(data)) return data.map(item => item.phrase).filter(p => p);
     } catch(e) { console.error("Suggestion Parse Error", e); }
     return [];
 }
 
-// --- NEWS FEED LOGIC (Enhanced) ---
+// --- NEWS FEED LOGIC (RSS2JSON Bridge) ---
 async function fetchNews() {
     if (!settings.newsEnabled) return [];
     
-    // Get URL based on topic setting
+    // 1. Get the correct Google News RSS URL based on topic
     const topicKey = settings.newsTopic || "TOP";
     const feedUrl = NEWS_TOPICS[topicKey] ? NEWS_TOPICS[topicKey].url : NEWS_TOPICS["TOP"].url;
     
-    try {
-        const rawXML = await fetchViaProxy(feedUrl);
-        if (!rawXML) throw new Error("No data from proxies");
+    // 2. Use RSS2JSON Bridge (Bypasses Google's CORS/Scraper blocks)
+    // We request 20 items to support the "scrollable feed" feel.
+    const bridgeUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}&count=20`;
 
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(rawXML, "text/xml");
-        const items = xmlDoc.querySelectorAll("item");
+    try {
+        const res = await fetch(bridgeUrl);
+        if (!res.ok) throw new Error("Bridge connection failed");
         
-        const headlines = [];
-        // No limit - get all available items for "Endless Scroll" feel
-        items.forEach(item => {
-            let titleRaw = item.querySelector("title")?.textContent || "No Title";
-            const link = item.querySelector("link")?.textContent || "#";
-            const pubDate = item.querySelector("pubDate")?.textContent || "";
-            
-            // Google News Format: "Headline - Source Name"
-            // We split this to make visual cards
+        const data = await res.json();
+        
+        if (data.status !== 'ok') throw new Error("Feed parsing error");
+
+        // 3. Map Data to our Visual Card Format
+        return data.items.map(item => {
+            let titleRaw = item.title;
             let source = "News";
             let title = titleRaw;
-            
+
+            // Google News Format: "Headline - Source Name"
+            // We split this to display the Source visually
             const lastDash = titleRaw.lastIndexOf(" - ");
             if (lastDash !== -1) {
                 title = titleRaw.substring(0, lastDash);
                 source = titleRaw.substring(lastDash + 3);
             }
-            
-            // Format time (simple relative or short date)
-            let timeDisplay = "";
-            if (pubDate) {
-                const date = new Date(pubDate);
-                const now = new Date();
-                const diffMs = now - date;
-                const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
-                
-                if (diffHrs < 1) timeDisplay = "Just now";
-                else if (diffHrs < 24) timeDisplay = `${diffHrs}h ago`;
-                else timeDisplay = date.toLocaleDateString();
-            }
 
-            headlines.push({ title, source, time: timeDisplay, link });
+            // Format Time (Relative)
+            let timeDisplay = "";
+            const date = new Date(item.pubDate);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+
+            if (diffHrs < 1) timeDisplay = "Just now";
+            else if (diffHrs < 24) timeDisplay = `${diffHrs}h ago`;
+            else timeDisplay = date.toLocaleDateString();
+
+            return {
+                title: title,
+                source: source,
+                time: timeDisplay,
+                link: item.link,
+                thumbnail: item.thumbnail // Google sometimes provides this
+            };
         });
-        
-        return headlines;
+
     } catch (e) {
         console.error("News Fetch Error:", e);
-        return [{ title: "Unable to load news feed.", source: "System", time: "Now", link: "#" }];
+        // Fallback error object for UI
+        return [{ title: "Unable to load news feed. (API Limit or Network)", source: "System", time: "Now", link: "#" }];
     }
 }
 
@@ -112,7 +117,7 @@ function handleSuggestions() {
     
     let suggestions = [];
     
-    // Internal
+    // Internal Matches
     const linkMatches = links
         .filter(l => l.name.toLowerCase().includes(input))
         .map(l => ({ name: l.name, url: l.url, type: 'Link' }));
@@ -123,7 +128,7 @@ function handleSuggestions() {
         .map(h => ({ name: h, type: 'History' }));
     suggestions.push(...historyMatches);
     
-    // External (Async)
+    // External Matches
     if (settings.externalSuggest) {
         fetchExternalSuggestions(input).then(external => {
              if(container.classList.contains('hidden')) return;
@@ -190,7 +195,7 @@ function updateClock() {
     document.getElementById('greetingDisplay').innerText = getGreeting(settings.userName);
 }
 
-// Expose
+// Expose Globals
 window.fetchNews = fetchNews;
 window.handleSuggestions = handleSuggestions;
 window.logSearch = logSearch;
