@@ -22,7 +22,7 @@
     <header>
         <div class="header-row">
             <button onclick="toggleSettings()" class="icon-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
             </button>
         </div>
         <div id="clockDisplay" class="clock">00:00:00</div>
@@ -49,11 +49,7 @@
 
     <div id="linkGrid" class="link-grid"></div>
 
-    <div id="newsContainer" class="news-container hidden">
-        <div class="news-header">Latest Headlines</div>
-        <div id="newsList" class="news-list">Loading news...</div>
     </div>
-</div>
 
 <div class="modal" id="settingsModal">
     <div class="modal-content">
@@ -115,24 +111,6 @@
         </button>
 
         <div id="advancedSettings" class="advanced-content">
-            <div class="setting-group">
-                <h3>News Feed <span class="beta-tag">BETA</span></h3>
-                <label class="radio-option" style="justify-content: flex-start; margin-bottom: 10px;">
-                    <input type="checkbox" id="newsToggle" onchange="autoSaveSettings()"> Enable News Feed
-                </label>
-                
-                <p style="font-size:0.8rem; color:var(--dim); margin-bottom: 5px;">Filter Topic:</p>
-                <select id="newsTopicSelect" onchange="autoSaveSettings()">
-                    <option value="TOP">Top Stories</option>
-                    <option value="TECH">Technology</option>
-                    <option value="BUSINESS">Business</option>
-                    <option value="SCIENCE">Science</option>
-                    <option value="HEALTH">Health</option>
-                    <option value="SPORTS">Sports</option>
-                    <option value="ENTERTAINMENT">Entertainment</option>
-                </select>
-            </div>
-
             <div class="setting-group">
                 <h3>Clock Format</h3>
                 <div class="radio-row">
