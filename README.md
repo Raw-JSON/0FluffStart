@@ -23,16 +23,17 @@ This project eliminates external dependencies to offer maximum speed and privacy
 
 The URL is: `https://raw-json.github.io/0FluffStart/`
 
-### 2. Set as Default Homepage
+### 2. Set as Default Homepage / Install as App
 
 The setup steps vary depending on your device and browser:
 
-| Browser | Step-by-Step Instructions |
+| Device / Browser | Step-by-Step Instructions |
 | :--- | :--- |
 | **Google Chrome (Desktop)** | 1. Open **Settings** (⋮) > **You and Google** > **On startup**. <br> 2. Select **'Open a specific page or set of pages'**. <br> 3. Click **'Add a new page'** and paste the 0FluffStart URL. |
 | **Mozilla Firefox (Desktop)** | 1. Open **Settings** (☰) > **Home** > **New windows and tabs**. <br> 2. Select **'Custom URLs'** in the dropdown. <br> 3. Paste the 0FluffStart URL. |
 | **Microsoft Edge (Desktop)** | 1. Open **Settings** (•••) > **Start, home, and new tabs**. <br> 2. Under 'When Edge starts', select **'Open these pages'**. <br> 3. Click **'Add a new page'** and paste the 0FluffStart URL. |
-| **Mobile (iOS/Android)** | Use **"Add to Home Screen"** feature for a dedicated, app-like experience. |
+| **Android (Chrome)** | 1. Navigate to the 0FluffStart URL. <br> 2. Tap the **Menu icon** (⋮) in the top right corner. <br> 3. Select **'Add to Home screen'** (or **'Install app'**) from the menu. |
+| **iOS / iPadOS (Safari)** | 1. Navigate to the 0FluffStart URL. <br> 2. Tap the **Share icon** ($\square$ with an upward arrow) at the bottom of the screen. <br> 3. Scroll down and select **'Add to Home Screen'**. |
 
 ---
 
