@@ -1,7 +1,6 @@
 // utilities.js
 
-// Import required state from state.js
-/* global links, settings, searchHistory, searchEngines, DEFAULT_RSS */ 
+/* global links, settings, searchHistory, searchEngines, NEWS_TOPICS */ 
 
 // --- GENERIC PROXY FETCH (Reusable) ---
 async function fetchViaProxy(targetUrl) {
@@ -40,12 +39,16 @@ async function fetchExternalSuggestions(query) {
     return [];
 }
 
-// --- NEW: NEWS FEED LOGIC ---
+// --- NEWS FEED LOGIC (Enhanced) ---
 async function fetchNews() {
     if (!settings.newsEnabled) return [];
     
+    // Get URL based on topic setting
+    const topicKey = settings.newsTopic || "TOP";
+    const feedUrl = NEWS_TOPICS[topicKey] ? NEWS_TOPICS[topicKey].url : NEWS_TOPICS["TOP"].url;
+    
     try {
-        const rawXML = await fetchViaProxy(DEFAULT_RSS);
+        const rawXML = await fetchViaProxy(feedUrl);
         if (!rawXML) throw new Error("No data from proxies");
 
         const parser = new DOMParser();
@@ -53,16 +56,43 @@ async function fetchNews() {
         const items = xmlDoc.querySelectorAll("item");
         
         const headlines = [];
-        // Limit to top 5
-        for(let i=0; i < Math.min(5, items.length); i++) {
-            const title = items[i].querySelector("title")?.textContent;
-            const link = items[i].querySelector("link")?.textContent;
-            if(title && link) headlines.push({ title, link });
-        }
+        // No limit - get all available items for "Endless Scroll" feel
+        items.forEach(item => {
+            let titleRaw = item.querySelector("title")?.textContent || "No Title";
+            const link = item.querySelector("link")?.textContent || "#";
+            const pubDate = item.querySelector("pubDate")?.textContent || "";
+            
+            // Google News Format: "Headline - Source Name"
+            // We split this to make visual cards
+            let source = "News";
+            let title = titleRaw;
+            
+            const lastDash = titleRaw.lastIndexOf(" - ");
+            if (lastDash !== -1) {
+                title = titleRaw.substring(0, lastDash);
+                source = titleRaw.substring(lastDash + 3);
+            }
+            
+            // Format time (simple relative or short date)
+            let timeDisplay = "";
+            if (pubDate) {
+                const date = new Date(pubDate);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+                
+                if (diffHrs < 1) timeDisplay = "Just now";
+                else if (diffHrs < 24) timeDisplay = `${diffHrs}h ago`;
+                else timeDisplay = date.toLocaleDateString();
+            }
+
+            headlines.push({ title, source, time: timeDisplay, link });
+        });
+        
         return headlines;
     } catch (e) {
         console.error("News Fetch Error:", e);
-        return [{ title: "Unable to load news feed.", link: "#" }];
+        return [{ title: "Unable to load news feed.", source: "System", time: "Now", link: "#" }];
     }
 }
 
@@ -96,11 +126,7 @@ function handleSuggestions() {
     // External (Async)
     if (settings.externalSuggest) {
         fetchExternalSuggestions(input).then(external => {
-             // We render immediately with internal, then append external if valid
-             // This simple version waits for user typing; a robust one would debounce.
-             // For 0Fluff, we just update if the container is still open
              if(container.classList.contains('hidden')) return;
-             
              external.forEach(term => {
                 if (!suggestions.some(s => s.name.toLowerCase() === term.toLowerCase())) {
                     const item = document.createElement('div');
@@ -113,7 +139,6 @@ function handleSuggestions() {
         });
     }
 
-    // Render Sync Results First
     suggestions.slice(0, 8).forEach(s => { 
         const item = document.createElement('div');
         item.className = 'suggestion-item';
