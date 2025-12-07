@@ -1,10 +1,9 @@
 // ui-logic.js
 
-// Import required state and utilities (Assumes state.js and utilities.js are loaded first)
+// Import required state and utilities
 /* global links, settings, isEditMode, isEditingId, searchEngines */
 /* global renderEngineDropdown, loadSettings, updateClock, autoSaveSettings, logSearch, handleSuggestions */
 
-// --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
     renderLinks();
     loadSettings(); 
@@ -25,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// --- CORE FUNCTIONS ---
+// --- CORE RENDER ---
 
 function renderLinks() {
     const grid = document.getElementById('linkGrid');
@@ -52,8 +51,7 @@ function renderLinks() {
             </div>
             <div class="link-name">${link.name}</div>
         `;
-
-        // Normal Click: Go to URL
+        
         item.onclick = () => {
             const finalUrl = link.url.startsWith('http') ? link.url : `https://${link.url}`;
             window.location.href = finalUrl;
@@ -64,7 +62,7 @@ function renderLinks() {
 }
 
 
-// --- LINK MANAGER (SETTINGS PANEL) ---
+// --- INLINE LINK MANAGER (Settings Modal) ---
 
 function renderLinkManager() {
     const linkManagerContent = document.getElementById('linkManagerContent');
@@ -76,7 +74,6 @@ function renderLinkManager() {
         return;
     }
 
-    // SVG Icons
     const editIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>`;
     const deleteIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`;
 
@@ -94,11 +91,15 @@ function renderLinkManager() {
     });
 }
 
-
-// --- CRUD OPERATIONS ---
+// --- INLINE EDITOR LOGIC ---
 
 function openEditor(id = null) {
-    const modal = document.getElementById('linkEditorModal');
+    // 1. Swap Views
+    document.getElementById('linkListContainer').classList.add('hidden');
+    document.getElementById('linkEditorContainer').classList.remove('hidden');
+
+    // 2. Setup Inputs
+    const titleEl = document.getElementById('editorTitle');
     const nameInput = document.getElementById('editName');
     const urlInput = document.getElementById('editUrl');
     isEditingId = id;
@@ -106,14 +107,22 @@ function openEditor(id = null) {
     if (id) {
         const link = links.find(l => l.id === id);
         if(link) {
+            titleEl.innerText = "Edit Link";
             nameInput.value = link.name;
             urlInput.value = link.url;
         }
     } else {
+        titleEl.innerText = "Add New Link";
         nameInput.value = '';
         urlInput.value = '';
     }
-    modal.classList.add('active');
+}
+
+function cancelEdit() {
+    // Return to List View
+    document.getElementById('linkEditorContainer').classList.add('hidden');
+    document.getElementById('linkListContainer').classList.remove('hidden');
+    isEditingId = null;
 }
 
 function saveLink() {
@@ -130,11 +139,9 @@ function saveLink() {
     
     localStorage.setItem('0fluff_links', JSON.stringify(links));
     
-    // Update both views
-    renderLinks();
-    renderLinkManager();
-    
-    closeModal('linkEditorModal');
+    renderLinks();       // Update Home
+    renderLinkManager(); // Update List
+    cancelEdit();        // Close Form
 }
 
 function editLink(id, e) { 
@@ -147,8 +154,6 @@ function deleteLink(id, e) {
     if(confirm("Delete this link?")) {
         links = links.filter(l => l.id !== id);
         localStorage.setItem('0fluff_links', JSON.stringify(links));
-        
-        // Update both views
         renderLinks();
         renderLinkManager();
     }
@@ -158,6 +163,8 @@ function deleteLink(id, e) {
 // --- UI UTILITIES ---
 
 function toggleSettings() { 
+    // Always start in List view when opening settings
+    cancelEdit(); 
     renderLinkManager(); 
     document.getElementById('userNameInput').value = settings.userName;
     document.getElementById('settingsModal').classList.add('active'); 
@@ -241,3 +248,4 @@ window.toggleSettings = toggleSettings;
 window.closeModal = closeModal;
 window.handleSearch = handleSearch;
 window.selectSuggestion = selectSuggestion;
+window.cancelEdit = cancelEdit;
