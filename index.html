@@ -12,6 +12,8 @@
 </head>
 <body class="dark">
 
+<div id="bgOverlay" class="bg-overlay"></div>
+
 <div class="container">
     <header>
         <div class="header-row">
@@ -43,6 +45,11 @@
     </div>
 
     <div id="linkGrid" class="link-grid"></div>
+
+    <div id="newsContainer" class="news-container hidden">
+        <div class="news-header">Latest Headlines</div>
+        <div id="newsList" class="news-list">Loading news...</div>
+    </div>
 </div>
 
 <div class="modal" id="settingsModal">
@@ -56,13 +63,10 @@
         
         <div class="setting-group">
             <h3>Quick Link Management</h3>
-            
             <div id="linkListContainer">
                 <button onclick="openEditor()" class="add-link-btn" style="margin-bottom: 15px;">+ Add New Link</button>
-                <div id="linkManagerContent" class="link-manager-list">
-                    </div>
+                <div id="linkManagerContent" class="link-manager-list"></div>
             </div>
-
             <div id="linkEditorContainer" class="hidden" style="background: var(--card-hover); padding: 15px; border-radius: var(--radius); border: 1px solid var(--border);">
                 <h4 id="editorTitle" style="margin: 0 0 15px 0; color: var(--accent);">Add New Link</h4>
                 <input type="text" id="editName" placeholder="Name (e.g. YouTube)">
@@ -72,6 +76,22 @@
                     <button onclick="cancelEdit()" class="secondary" style="margin-top:0; width:100%; border-radius: var(--radius); font-weight:bold; border:1px solid var(--border);">Cancel</button>
                 </div>
             </div>
+        </div>
+        
+        <div class="setting-group">
+            <h3>Custom Background</h3>
+            <div class="file-input-wrapper">
+                <input type="file" id="bgImageInput" accept="image/*" onchange="handleImageUpload(this)">
+                <p style="font-size: 0.8rem; color: var(--dim); margin-top: 5px;">Max 3MB recommended. Stored locally.</p>
+            </div>
+            <button onclick="clearBackground()" class="secondary" style="margin-top: 10px; width: auto; font-size: 0.8rem; padding: 8px 12px;">Reset to Theme</button>
+        </div>
+
+        <div class="setting-group">
+            <h3>News Feed</h3>
+            <label class="radio-option" style="justify-content: flex-start;">
+                <input type="checkbox" id="newsToggle" onchange="autoSaveSettings()"> Show Global Headlines
+            </label>
         </div>
         
         <div class="setting-group">
