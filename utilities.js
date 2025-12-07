@@ -1,107 +1,24 @@
 // utilities.js
 
-/* global links, settings, searchHistory, searchEngines, NEWS_TOPICS */ 
-
-// --- GENERIC PROXY FETCH (Reusable) ---
-// Kept for other uses (like suggestions), but News now uses a dedicated bridge.
-async function fetchViaProxy(targetUrl) {
-    const proxies = [
-        { url: `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`, type: 'raw' },
-        { url: `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`, type: 'wrapped' }
-    ];
-
-    for (const proxy of proxies) {
-        try {
-            const res = await fetch(proxy.url);
-            if (!res.ok) throw new Error(`Status ${res.status}`);
-            
-            if (proxy.type === 'raw') return await res.text();
-            
-            // Wrapped (AllOrigins)
-            const json = await res.json();
-            return json.contents; 
-        } catch (e) {
-            console.warn(`Proxy ${proxy.type} failed:`, e);
-        }
-    }
-    return null;
-}
+/* global links, settings, searchHistory, searchEngines */ 
 
 // --- SUGGESTIONS ---
+// Keeps external suggestion functionality if user enables it, but simplifies everything else.
 async function fetchExternalSuggestions(query) {
-    const url = `https://duckduckgo.com/ac/?q=${encodeURIComponent(query)}&type=json`;
+    const targetUrl = `https://duckduckgo.com/ac/?q=${encodeURIComponent(query)}&type=json`;
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+    
     try {
-        const rawData = await fetchViaProxy(url);
-        if(!rawData) return [];
-        
-        const data = JSON.parse(rawData); 
-        if (Array.isArray(data)) return data.map(item => item.phrase).filter(p => p);
-    } catch(e) { console.error("Suggestion Parse Error", e); }
+        const res = await fetch(proxyUrl);
+        if (!res.ok) return [];
+        const data = await res.json();
+        const innerData = JSON.parse(data.contents);
+        if (Array.isArray(innerData)) return innerData.map(item => item.phrase).filter(p => p);
+    } catch(e) { console.error("Suggestion Error", e); }
     return [];
 }
 
-// --- NEWS FEED LOGIC (RSS2JSON Bridge) ---
-async function fetchNews() {
-    if (!settings.newsEnabled) return [];
-    
-    // 1. Get the correct Google News RSS URL based on topic
-    const topicKey = settings.newsTopic || "TOP";
-    const feedUrl = NEWS_TOPICS[topicKey] ? NEWS_TOPICS[topicKey].url : NEWS_TOPICS["TOP"].url;
-    
-    // 2. Use RSS2JSON Bridge (Bypasses Google's CORS/Scraper blocks)
-    // We request 20 items to support the "scrollable feed" feel.
-    const bridgeUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}&count=20`;
-
-    try {
-        const res = await fetch(bridgeUrl);
-        if (!res.ok) throw new Error("Bridge connection failed");
-        
-        const data = await res.json();
-        
-        if (data.status !== 'ok') throw new Error("Feed parsing error");
-
-        // 3. Map Data to our Visual Card Format
-        return data.items.map(item => {
-            let titleRaw = item.title;
-            let source = "News";
-            let title = titleRaw;
-
-            // Google News Format: "Headline - Source Name"
-            // We split this to display the Source visually
-            const lastDash = titleRaw.lastIndexOf(" - ");
-            if (lastDash !== -1) {
-                title = titleRaw.substring(0, lastDash);
-                source = titleRaw.substring(lastDash + 3);
-            }
-
-            // Format Time (Relative)
-            let timeDisplay = "";
-            const date = new Date(item.pubDate);
-            const now = new Date();
-            const diffMs = now - date;
-            const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
-
-            if (diffHrs < 1) timeDisplay = "Just now";
-            else if (diffHrs < 24) timeDisplay = `${diffHrs}h ago`;
-            else timeDisplay = date.toLocaleDateString();
-
-            return {
-                title: title,
-                source: source,
-                time: timeDisplay,
-                link: item.link,
-                thumbnail: item.thumbnail // Google sometimes provides this
-            };
-        });
-
-    } catch (e) {
-        console.error("News Fetch Error:", e);
-        // Fallback error object for UI
-        return [{ title: "Unable to load news feed. (API Limit or Network)", source: "System", time: "Now", link: "#" }];
-    }
-}
-
-// --- UTILS --- (Keep existing logSearch, getGreeting, updateClock)
+// --- UTILS ---
 
 function handleSuggestions() {
     const inputEl = document.getElementById('searchInput');
@@ -195,8 +112,7 @@ function updateClock() {
     document.getElementById('greetingDisplay').innerText = getGreeting(settings.userName);
 }
 
-// Expose Globals
-window.fetchNews = fetchNews;
+// Expose
 window.handleSuggestions = handleSuggestions;
 window.logSearch = logSearch;
 window.updateClock = updateClock;
