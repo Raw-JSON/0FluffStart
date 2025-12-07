@@ -318,6 +318,7 @@ body.sunset .link-icon-circle { border-radius: 50%; }
     height: 100%; 
     background: rgba(0,0,0,0.85); 
     display: none; 
+    /* Force centering regardless of screen size */
     justify-content: center; 
     align-items: center; 
     z-index: 100; 
@@ -331,7 +332,7 @@ body.sunset .link-icon-circle { border-radius: 50%; }
     border-radius: var(--radius); 
     width: 90%; 
     max-width: 450px; 
-    max-height: 90vh;
+    max-height: 90vh; /* Critical: Stops modal from taking full height on desktop/tablet */
     overflow-y: auto;
     border: 1px solid var(--border); 
     box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
@@ -532,4 +533,4 @@ body.cyberpunk button.github-btn { background: #111; border: 1px solid var(--acc
     .link-name {
         font-size: 0.8rem;
     }
-    }
+}
