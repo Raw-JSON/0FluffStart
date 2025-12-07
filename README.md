@@ -8,6 +8,18 @@ No ads. No trackers. No backend nonsense. Just vibes.
 ---
 ## 📸 Preview
 
+### Homepage
+![Homepage](https://github.com/user-attachments/assets/5e76a00a-bdc6-41a5-9cd5-2abeff6a0559)
+
+### Themes / Vibes
+![Themes](https://github.com/user-attachments/assets/9c7a463c-3620-43c9-8b27-97834874570d)
+
+### Quick Links
+![Quick Links](https://github.com/user-attachments/assets/bbe9087d-e885-4d40-ab50-9da7ce222105)
+
+### Search + Suggestions
+![Search and Suggestions](https://github.com/user-attachments/assets/587be5a7-86ee-4635-8db6-2a68ad015b39)
+
 
 ---
 
