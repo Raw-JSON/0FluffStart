@@ -30,8 +30,7 @@
                 <span id="currentEngineIcon">G</span>
                 <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
             </button>
-            <div id="engineDropdown" class="engine-dropdown hidden">
-                </div>
+            <div id="engineDropdown" class="engine-dropdown hidden"></div>
         </div>
 
         <input type="text" id="searchInput" placeholder="Search or Type URL..." onkeypress="handleSearch(event)" oninput="handleSuggestions()">
@@ -40,27 +39,10 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </button>
         
-        <div id="suggestionsContainer" class="suggestions-container hidden">
-            </div>
+        <div id="suggestionsContainer" class="suggestions-container hidden"></div>
     </div>
 
-    <div id="linkGrid" class="link-grid">
-        </div>
-</div>
-
-<div class="modal" id="linkEditorModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Link Details</h2>
-            <button onclick="closeModal('linkEditorModal')" class="icon-btn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-        </div>
-        <input type="text" id="editName" placeholder="Name (e.g. YouTube)">
-        <input type="url" id="editUrl" placeholder="URL (e.g. youtube.com)">
-        
-        <button onclick="saveLink()" class="save-btn">💾 Save Link</button>
-    </div>
+    <div id="linkGrid" class="link-grid"></div>
 </div>
 
 <div class="modal" id="settingsModal">
@@ -74,9 +56,22 @@
         
         <div class="setting-group">
             <h3>Quick Link Management</h3>
-            <button onclick="openEditor()" class="add-link-btn" style="margin-bottom: 15px;">+ Add New Link</button>
-            <div id="linkManagerContent" class="link-manager-list">
+            
+            <div id="linkListContainer">
+                <button onclick="openEditor()" class="add-link-btn" style="margin-bottom: 15px;">+ Add New Link</button>
+                <div id="linkManagerContent" class="link-manager-list">
+                    </div>
+            </div>
+
+            <div id="linkEditorContainer" class="hidden" style="background: var(--card-hover); padding: 15px; border-radius: var(--radius); border: 1px solid var(--border);">
+                <h4 id="editorTitle" style="margin: 0 0 15px 0; color: var(--accent);">Add New Link</h4>
+                <input type="text" id="editName" placeholder="Name (e.g. YouTube)">
+                <input type="url" id="editUrl" placeholder="URL (e.g. youtube.com)">
+                <div style="display:flex; gap:10px;">
+                    <button onclick="saveLink()" class="save-btn" style="margin-top:0;">Save</button>
+                    <button onclick="cancelEdit()" class="secondary" style="margin-top:0; width:100%; border-radius: var(--radius); font-weight:bold; border:1px solid var(--border);">Cancel</button>
                 </div>
+            </div>
         </div>
         
         <div class="setting-group">
