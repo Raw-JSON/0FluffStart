@@ -14,35 +14,36 @@ This project eliminates external dependencies to offer maximum speed and privacy
 
 ---
 
+## 🛠 Quick Setup (The Homepage Install)
 
-## 🛠 Quick Setup (The Homepage / App Install)
-
-0FluffStart is designed to replace your browser's default start screen. Note the setup method differs significantly between Desktop (true homepage) and Mobile (PWA/App).
+0FluffStart is designed to replace your browser's default start page.
 
 ### 1. Locate the Live Link
 
 The URL is: `https://raw-json.github.io/0FluffStart/`
 
-### 2. Installation Instructions
+### 2. Set as Browser Homepage
 
-| Device / Browser | Goal | Step-by-Step Instructions |
-| :--- | :--- | :--- |
-| **Google Chrome (Desktop)** | **SET HOMEPAGE** | 1. Open **Settings** (⋮) > **You and Google** > **On startup**. <br> 2. Select **'Open a specific page or set of pages'**. <br> 3. Click **'Add a new page'** and paste the 0FluffStart URL. |
-| **Mozilla Firefox (Desktop)** | **SET HOMEPAGE** | 1. Open **Settings** (☰) > **Home** > **New windows and tabs**. <br> 2. Select **'Custom URLs'** in the dropdown. <br> 3. Paste the 0FluffStart URL. |
-| **Microsoft Edge (Desktop)** | **SET HOMEPAGE** | 1. Open **Settings** (•••) > **Start, home, and new tabs**. <br> 2. Under 'When Edge starts', select **'Open these pages'**. <br> 3. Click **'Add a new page'** and paste the 0FluffStart URL. |
-| **Android (Chrome)** | **INSTALL AS APP** (PWA) | 1. Navigate to the 0FluffStart URL. <br> 2. Tap the **Menu icon** (⋮). <br> 3. Select **'Install app'** or **'Add to Home screen'** to get a dedicated launcher icon. |
-| **iOS / iPadOS (Safari)** | **INSTALL AS APP** (PWA) | 1. Navigate to the 0FluffStart URL. <br> 2. Tap the **Share icon** ($\square$ with an upward arrow) at the bottom. <br> 3. Select **'Add to Home Screen'** (iOS does not allow custom homepages). |
+Follow the instructions for your specific browser:
+
+| Device / Browser | Step-by-Step Instructions |
+| :--- | :--- |
+| **Android (Chrome)** | 1. Open Chrome **Settings** (⋮). <br> 2. Tap **Homepage**. <br> 3. Toggle it **On**. <br> 4. Select **'Enter custom web address'** and paste the URL. |
+| **Android (Firefox)** | 1. Open **Settings** (⋮). <br> 2. Tap **Homepage**. <br> 3. Select **'Set a Homepage'** > **'Custom'** and paste the URL. |
+| **Desktop (Chrome)** | 1. **Settings** > **On startup**. <br> 2. Select **'Open a specific page'**. <br> 3. Add the 0FluffStart URL. |
+| **Desktop (Edge)** | 1. **Settings** > **Start, home, and new tabs**. <br> 2. Select **'Open these pages'**. <br> 3. Add the 0FluffStart URL. |
+| **iOS (Safari)** | **Not Supported.** Apple does not allow custom homepages in Safari. <br> *Alternative:* Use **Share** > **'Add to Home Screen'** for a quick-launch icon. |
 
 ---
 
 ## 💡 Core Features
 
-* **Cross-Device Optimization:** Ensures the dashboard displays perfectly and efficiently on large desktop monitors (6-column grid) as well as mobile devices.
-* **Instant Auto-Save:** All settings (Name, Vibe, Clock Format) save immediately upon change. No "Save" button required.
-* **Deep Theming ("Vibes"):** Switch between high-contrast themes like **OLED Dark**, **Cyberpunk**, **Paper**, and **Sunset Drive** that alter colors, fonts, and geometry.
-* **External Auto-Suggest (Opt-in):** Offers high-utility, real-time search predictions (powered by the privacy-respecting DuckDuckGo API) without compromising the internal system.
-* **Quick Search Switcher:** Instantly toggle your default search engine (Google, DuckDuckGo, Brave, etc.) directly from the main search bar for a zero-friction workflow.
-* **Custom Links (CRUD):** Add, Edit, and Delete links directly from the dashboard interface.
+* **Cross-Device Optimization:** Ensures the dashboard displays perfectly on desktop monitors (6-column grid) and mobile screens.
+* **Instant Auto-Save:** All settings (Name, Vibe, Clock Format) save immediately upon change.
+* **Deep Theming ("Vibes"):** Switch between high-contrast themes like **OLED Dark**, **Cyberpunk**, **Paper**, and **Sunset Drive**.
+* **External Auto-Suggest (Opt-in):** Offers high-utility, real-time search predictions (via DuckDuckGo API).
+* **Quick Search Switcher:** Instantly toggle your default search engine (Google, DDG, Brave, etc.) from the search bar.
+* **Custom Links (CRUD):** Add, Edit, and Delete links directly from the interface.
 
 ---
 
