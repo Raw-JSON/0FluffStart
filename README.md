@@ -47,8 +47,7 @@ Everything on the internet is bloated trash.
 
 ---
 
-## 📸 Screenshots (Optional)
-_Add screenshots or GIF previews here if you want more star power._
+## 📸 Screenshots 
 
 ---
 
