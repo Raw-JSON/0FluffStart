@@ -1,0 +1,102 @@
+/* themes.css */
+
+/* --- GLOBAL VARIABLES (DEFAULT: OLED DARK) --- */
+:root {
+    --bg: #000000;
+    --card: #141418;
+    --card-hover: #1e1e24;
+    --text: #ffffff;
+    --accent: #00aaff;
+    --dim: #888;
+    --border: #333;
+    --delete: #ff4d4d;
+    --radius: 12px;
+    --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --shadow: none;
+}
+
+/* --- THEME OVERRIDES --- */
+
+/* Clean Light */
+body.light {
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --card-hover: #e5e5ea;
+    --text: #000000;
+    --accent: #007aff;
+    --dim: #8e8e93;
+    --border: #d1d1d6;
+    --radius: 12px;
+    --shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Cyberpunk */
+body.cyberpunk {
+    --bg: #050505;
+    --card: #121212;
+    --card-hover: #1a1a1a;
+    --text: #00ff41; /* Matrix Greenish */
+    --accent: #f0e600; /* Cyber Yellow */
+    --dim: #008f11;
+    --border: #333;
+    --delete: #ff003c;
+    --radius: 0px; /* Sharp edges */
+    --font-main: "Courier New", Courier, monospace;
+    --shadow: 0 0 10px rgba(0, 255, 65, 0.1);
+}
+
+/* Sunset Drive */
+body.sunset {
+    --bg: #2d1b2e;
+    --card: #442646; /* Deep Purple */
+    --card-hover: #58335a;
+    --text: #ffd5e5;
+    --accent: #ff9a76; /* Peach */
+    --dim: #b08ea2;
+    --border: #58335a;
+    --delete: #ff5e78;
+    --radius: 20px; /* Super round */
+    --font-main: "Trebuchet MS", sans-serif;
+    --shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* Paper & Ink */
+body.paper {
+    --bg: #fdfbf7; /* Warm white */
+    --card: #fff;
+    --card-hover: #f0eee9;
+    --text: #2c2c2c;
+    --accent: #2c2c2c; /* Black accent */
+    --dim: #999;
+    --border: #2c2c2c;
+    --delete: #d32f2f;
+    --radius: 4px;
+    --font-main: "Times New Roman", Times, serif;
+    --shadow: 4px 4px 0px rgba(0,0,0,0.1); /* Hard shadow */
+}
+
+/* --- BACKGROUND IMAGE SUPPORT --- */
+
+/* Applied to body for full cover */
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    transition: background-color 0.3s, color 0.3s;
+    /* Ensure background image sits correctly behind everything */
+    position: relative;
+    z-index: 1;
+}
+
+/* Dark Overlay for Custom Images */
+.bg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Darkens the image by 60% */
+    z-index: -1; /* Behind content */
+    opacity: 0; /* Hidden by default, toggled via JS */
+    pointer-events: none;
+    transition: opacity 0.5s;
+}
