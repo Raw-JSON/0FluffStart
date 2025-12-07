@@ -36,34 +36,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// --- UPDATED EXTERNAL FETCH UTILITY (Dual-Proxy) ---
+// --- UPDATED EXTERNAL FETCH UTILITY (Dual-Proxy FIX) ---
 
 async function fetchExternalSuggestions(query) {
     const duckduckgoSuggestUrl = `https://duckduckgo.com/ac/?q=${encodeURIComponent(query)}&type=json`;
     const proxies = [
-        `https://corsproxy.io/?${encodeURIComponent(duckduckgoSuggestUrl)}`, // Primary
-        `https://api.allorigins.win/get?url=${encodeURIComponent(duckduckgoSuggestUrl)}` // Secondary Fallback
+        { url: `https://corsproxy.io/?${encodeURIComponent(duckduckgoSuggestUrl)}`, type: 'raw' }, // Primary
+        { url: `https://api.allorigins.win/get?url=${encodeURIComponent(duckduckgoSuggestUrl)}`, type: 'wrapped' } // Secondary
     ];
 
-    for (let i = 0; i < proxies.length; i++) {
-        const proxyUrl = proxies[i];
+    for (const proxy of proxies) {
         try {
-            const res = await fetch(proxyUrl);
+            console.log(`Attempting fetch via: ${proxy.url}`);
+            const res = await fetch(proxy.url);
             
             if (!res.ok) {
-                // If the status is bad, throw and try the next proxy
                 throw new Error(`Proxy status: ${res.status}`);
             }
 
             let data;
-            if (i === 0) {
-                // Primary Proxy: Expects raw JSON directly from DDG
+            if (proxy.type === 'raw') {
+                // Type 'raw' (corsproxy.io): Expects direct JSON response
                 data = await res.json(); 
             } else {
-                // Secondary Proxy: AllOrigins wraps the result in a 'contents' string
+                // Type 'wrapped' (allorigins.win): Response is wrapped in { contents: "..." }
                 const wrappedData = await res.json();
                 if (wrappedData.contents) {
-                     // Parse the contents string to get the final JSON array
+                     // Crucial step: Parse the contents string to get the final JSON array
                     data = JSON.parse(wrappedData.contents); 
                 } else {
                     throw new Error("AllOrigins contents missing.");
@@ -71,15 +70,12 @@ async function fetchExternalSuggestions(query) {
             }
 
             // DuckDuckGo returns an array of objects: [{phrase: "suggestion1"}, ...]
-            if (Array.isArray(data)) {
-                return data.map(item => item.phrase).filter(p => p); // Extract the phrase
+            if (Array.isArray(data) && data.length > 0) {
+                console.log("Successfully fetched and parsed data.");
+                return data.map(item => item.phrase).filter(p => p); 
             }
         } catch (e) {
-            console.warn(`Proxy ${i + 1} failed: ${e.message}`);
-            // If it's the last proxy, log the error and let it return []
-            if (i === proxies.length - 1) {
-                console.error("All proxies failed for external suggestions.");
-            }
+            console.warn(`Proxy failed (${proxy.type}): ${e.message}`);
         }
     }
     return [];
