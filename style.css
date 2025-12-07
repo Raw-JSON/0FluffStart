@@ -1,16 +1,380 @@
-/* Update to the bottom of style.css */
+/* --- THEME DEFINITIONS --- */
+:root {
+    /* DEFAULT (OLED DARK) */
+    --bg: #000000;
+    --card: #141418;
+    --card-hover: #1e1e24;
+    --text: #ffffff;
+    --accent: #00aaff;
+    --dim: #888;
+    --border: #333;
+    --delete: #ff4d4d;
+    --radius: 12px;
+    --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --shadow: none;
+}
+
+body.light {
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --card-hover: #e5e5ea;
+    --text: #000000;
+    --accent: #007aff;
+    --dim: #8e8e93;
+    --border: #d1d1d6;
+    --radius: 12px;
+    --shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+body.cyberpunk {
+    --bg: #050505;
+    --card: #121212;
+    --card-hover: #1a1a1a;
+    --text: #00ff41; /* Matrix Greenish */
+    --accent: #f0e600; /* Cyber Yellow */
+    --dim: #008f11;
+    --border: #333;
+    --delete: #ff003c;
+    --radius: 0px; /* Sharp edges */
+    --font-main: "Courier New", Courier, monospace;
+    --shadow: 0 0 10px rgba(0, 255, 65, 0.1);
+}
+
+body.sunset {
+    --bg: #2d1b2e;
+    --card: #442646; /* Deep Purple */
+    --card-hover: #58335a;
+    --text: #ffd5e5;
+    --accent: #ff9a76; /* Peach */
+    --dim: #b08ea2;
+    --border: #58335a;
+    --delete: #ff5e78;
+    --radius: 20px; /* Super round */
+    --font-main: "Trebuchet MS", sans-serif;
+    --shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+body.paper {
+    --bg: #fdfbf7; /* Warm white */
+    --card: #fff;
+    --card-hover: #f0eee9;
+    --text: #2c2c2c;
+    --accent: #2c2c2c; /* Black accent */
+    --dim: #999;
+    --border: #2c2c2c;
+    --delete: #d32f2f;
+    --radius: 4px;
+    --font-main: "Times New Roman", Times, serif;
+    --shadow: 4px 4px 0px rgba(0,0,0,0.1); /* Hard shadow */
+}
+
+
+/* --- CORE STYLES --- */
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-main);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Container */
+.container { width: 100%; max-width: 600px; padding-bottom: 50px; }
+
+/* Header & Clock */
+.header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+h1 { margin: 0; font-size: 2rem; letter-spacing: -1px; }
+
+.clock { 
+    font-size: 1.8rem; 
+    font-weight: 300; 
+    color: var(--accent); 
+    margin-bottom: 5px; 
+    font-variant-numeric: tabular-nums; 
+}
+
+.greeting {
+    font-size: 1rem;
+    color: var(--dim);
+    margin-bottom: 30px; 
+    font-weight: 500;
+}
+
+
+/* --- NEW SEARCH BAR (With Switcher) --- */
+.search-bar { 
+    display: flex; 
+    gap: 0; /* Gap handled by borders/margins internally */
+    margin-bottom: 20px; 
+    height: 50px; 
+    position: relative;
+    background: var(--card-hover);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+/* Engine Switcher Button */
+.engine-switcher {
+    position: relative;
+    height: 100%;
+    border-right: 1px solid var(--border);
+}
+
+.engine-btn {
+    height: 100%;
+    padding: 0 15px;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-weight: bold;
+    font-family: var(--font-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1rem;
+}
+
+/* Dropdown */
+.engine-dropdown {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 180px;
+    z-index: 9999; /* Critical: Overlay everything */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    overflow: hidden;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.engine-dropdown.hidden { display: none; }
+
+.engine-option {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: calc(var(--radius) - 4px);
+    transition: background 0.2s;
+    font-size: 0.9rem;
+    color: var(--text);
+    display: flex;
+    justify-content: space-between;
+}
+
+.engine-option:hover {
+    background: var(--card-hover);
+    color: var(--accent);
+}
+
+.engine-option.selected {
+    color: var(--accent);
+    font-weight: bold;
+}
+
+/* Input & Search Icon */
+#searchInput { 
+    flex-grow: 1; 
+    height: 100%; 
+    padding: 0 16px; 
+    border: none; 
+    background: transparent; 
+    color: var(--text); 
+    font-size: 1rem;
+    box-sizing: border-box; 
+    font-family: var(--font-main);
+}
+#searchInput:focus { outline: none; }
+
+.search-icon { 
+    width: 50px; 
+    height: 100%; 
+    border-radius: 0 var(--radius) var(--radius) 0; 
+    background: transparent; 
+    color: var(--accent); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    border: none;
+    cursor: pointer;
+}
+
+/* Action Bar */
+.action-bar { display: flex; gap: 10px; margin-bottom: 30px; align-items: center; }
+.add-link-btn { 
+    flex-grow: 1; 
+    padding: 14px; 
+    border-radius: var(--radius); 
+    background: var(--accent); 
+    color: var(--bg); 
+    font-weight: 700; 
+    border: none; 
+    font-size: 1rem;
+    font-family: var(--font-main);
+    box-shadow: var(--shadow);
+}
+.icon-btn { background: transparent; border: none; color: var(--text); cursor: pointer; padding: 5px; }
+
+.edit-toggle-btn {
+    background: var(--card-hover);
+    color: var(--text);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* Always round for circle button */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow);
+}
+.edit-toggle-btn.active {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+}
+
+.hidden { display: none !important; }
+
+/* Link Grid */
+.link-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 15px;
+    justify-content: center;
+}
+@media (max-width: 400px) {
+    .link-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+}
+
+.link-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    position: relative;
+    cursor: pointer;
+}
+
+.link-icon-circle {
+    width: 56px;
+    height: 56px;
+    background: var(--card);
+    border-radius: 40%; /* Slightly squared off looks good with var(--radius) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    overflow: hidden;
+    transition: transform 0.2s;
+    border: 1px solid var(--border); 
+    box-shadow: var(--shadow);
+}
+/* Cyberpunk specific override for circles */
+body.cyberpunk .link-icon-circle { border-radius: 0; }
+body.sunset .link-icon-circle { border-radius: 50%; }
+
+.link-icon-circle img { width: 100%; height: 100%; object-fit: cover; }
+.link-name { color: var(--text); font-size: 0.75rem; text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9; }
+
+/* Edit Mode Animations */
+.link-item.editing .link-icon-circle {
+    animation: wiggle 0.3s infinite alternate;
+    border: 2px solid var(--accent);
+    opacity: 0.8;
+}
+.delete-badge {
+    position: absolute; top: -4px; right: -4px;
+    background: var(--delete); color: white;
+    border-radius: 50%; width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: bold;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+@keyframes wiggle {
+    from { transform: rotate(-3deg); }
+    to { transform: rotate(3deg); }
+}
+
+/* Modal & Form Elements */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(5px); }
+.modal.active { display: flex; }
+
+.modal-content { 
+    background: var(--bg); 
+    padding: 25px; 
+    border-radius: var(--radius); 
+    width: 90%; 
+    max-width: 350px; 
+    border: 1px solid var(--border); 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+}
+
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.modal-header h2 { margin: 0; font-size: 1.5rem; }
+
+/* Styled Inputs */
+input[type="text"], input[type="url"], select { 
+    width: 100%; padding: 14px; margin-bottom: 15px; 
+    background: var(--card-hover); border: 1px solid var(--border); 
+    color: var(--text); border-radius: var(--radius); box-sizing: border-box; 
+    font-size: 1rem; outline: none; -webkit-appearance: none; appearance: none;
+    font-family: var(--font-main);
+}
+input:focus, select:focus { border-color: var(--accent); }
+
+.setting-group { margin-bottom: 20px; }
+.setting-group h3 { margin: 0 0 10px 0; font-size: 0.9rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Radio Button Layout */
+.radio-row { display: flex; gap: 15px; }
+.radio-option {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--card-hover); padding: 10px 15px;
+    border-radius: var(--radius); cursor: pointer; flex: 1;
+    border: 1px solid var(--border);
+}
+.radio-option input { margin: 0; width: auto; } 
+
+.save-btn { width: 100%; background: var(--accent); color: var(--bg); padding: 14px; border-radius: var(--radius); font-weight: bold; border: none; font-size: 1rem; margin-top: 10px; font-family: var(--font-main); }
+.secondary { background: var(--card-hover); color: var(--text); }
+
+/* GitHub Button */
+button.github-btn {
+    background: #24292e; 
+    color: white;
+    width: 100%;
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: var(--radius);
+    border: none;
+    font-weight: 600;
+}
+/* In Light Mode, make github button black still */
+body.light button.github-btn { background: #000; }
+body.cyberpunk button.github-btn { background: #111; border: 1px solid var(--accent); color: var(--accent); }
 
 /* --- NEW: Auto-Suggestion Styles --- */
 
-.search-bar { 
-    /* Must be relative for the suggestion box to position itself */
-    position: relative;
-    /* ... rest of .search-bar styles ... */
-}
-
 .suggestions-container {
     position: absolute;
-    /* Adjust top: 50px (height of search bar) + 8px for visual separation */
+    /* Adjusted top for visual separation */
     top: 58px; 
     left: 0;
     right: 0;
@@ -22,7 +386,7 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     max-height: 250px; /* Limit height for scroll */
     overflow-y: auto;
-    padding: 0; /* Remove padding here, add to item for clean edges */
+    padding: 0; /* Items handle padding */
 }
 
 .suggestion-item {
@@ -54,4 +418,4 @@
     background: var(--card-hover); /* Give the tag a subtle background */
     padding: 3px 8px;
     border-radius: 6px;
-}
+    }
