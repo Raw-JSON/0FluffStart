@@ -35,6 +35,7 @@ function toggleEditMode() {
     isEditMode = !isEditMode;
     const btn = document.getElementById('editToggleBtn');
     
+    // This is now the "Done" button in the settings modal
     if(isEditMode) {
         btn.classList.add('active');
         btn.querySelector('.edit-icon-svg').classList.add('hidden');
@@ -45,7 +46,13 @@ function toggleEditMode() {
         btn.querySelector('.check-icon-svg').classList.add('hidden');
     }
     
+    // Crucially, render the links on the main page.
     renderLinks();
+    
+    // If we're toggling edit mode *from* the settings panel, also update the list in the panel.
+    if(document.getElementById('settingsModal').classList.contains('active')) {
+        renderLinkManager();
+    }
 }
 
 function renderLinks() {
@@ -59,6 +66,7 @@ function renderLinks() {
             domain = new URL(urlForParse).hostname;
         } catch(e) { console.error(e); }
 
+        // Handle icons from links or settings
         const iconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
         const initial = link.name.charAt(0).toUpperCase();
 
@@ -74,8 +82,9 @@ function renderLinks() {
         `;
 
         if (isEditMode) {
-            // Delete badge (X)
+            // Delete badge (X) - Still on the home page for quick removal
             html += `<div class="delete-badge" onclick="deleteLink('${link.id}', event)">✕</div>`;
+            // Clicks in edit mode now open the editor modal directly from the homepage
             item.onclick = (e) => editLink(link.id, e);
         } else {
             // Normal Mode
@@ -90,7 +99,7 @@ function renderLinks() {
     });
 }
 
-// --- SEARCH ENGINE UI LOGIC ---
+// --- SEARCH ENGINE UI LOGIC (No change) ---
 
 function renderEngineDropdown() {
     const dropdown = document.getElementById('engineDropdown');
@@ -120,6 +129,27 @@ function selectEngine(name) {
     renderEngineDropdown(); // Re-render to update checkmarks/selected state
     toggleEngineDropdown(); // Close
 }
+
+// --- LINK MANAGER (NEW FUNCTION) ---
+
+function renderLinkManager() {
+    const linkManagerContent = document.getElementById('linkManagerContent');
+    linkManagerContent.innerHTML = '';
+
+    links.forEach(link => {
+        const item = document.createElement('div');
+        item.className = 'link-manager-item';
+        item.innerHTML = `
+            <span class="link-name">${link.name}</span>
+            <div class="link-actions">
+                <button class="icon-btn secondary" onclick="editLink('${link.id}')">✏️ Edit</button>
+                <button class="icon-btn delete-btn" onclick="deleteLink('${link.id}')">🗑️ Delete</button>
+            </div>
+        `;
+        linkManagerContent.appendChild(item);
+    });
+}
+
 
 // --- CRUD ---
 function openEditor(id = null) {
@@ -155,6 +185,12 @@ function saveLink() {
     
     localStorage.setItem('0fluff_links', JSON.stringify(links));
     renderLinks();
+    
+    // CRITICAL: If settings modal is open, re-render the manager list
+    if(document.getElementById('settingsModal').classList.contains('active')) {
+        renderLinkManager();
+    }
+    
     closeModal('linkEditorModal');
 }
 
@@ -169,15 +205,25 @@ function deleteLink(id, e) {
         links = links.filter(l => l.id !== id);
         localStorage.setItem('0fluff_links', JSON.stringify(links));
         renderLinks();
+        
+        // CRITICAL: If settings modal is open, re-render the manager list
+        if(document.getElementById('settingsModal').classList.contains('active')) {
+            renderLinkManager();
+        }
     }
 }
 
-// --- UTILS ---
+// --- UTILS (MODIFIED) ---
 function toggleSettings() { 
+    // CRITICAL: Populate link manager before showing settings modal
+    renderLinkManager(); 
     document.getElementById('userNameInput').value = settings.userName;
     document.getElementById('settingsModal').classList.add('active'); 
 }
-function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+function closeModal(id) { 
+    document.getElementById(id).classList.remove('active'); 
+}
 
 
 function handleSearch(e) {
@@ -232,3 +278,6 @@ window.toggleSettings = toggleSettings;
 window.closeModal = closeModal;
 window.handleSearch = handleSearch;
 window.selectSuggestion = selectSuggestion;
+
+// Expose the new manager function
+window.renderLinkManager = renderLinkManager;
