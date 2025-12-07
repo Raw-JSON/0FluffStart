@@ -79,22 +79,6 @@
         </div>
         
         <div class="setting-group">
-            <h3>Custom Background</h3>
-            <div class="file-input-wrapper">
-                <input type="file" id="bgImageInput" accept="image/*" onchange="handleImageUpload(this)">
-                <p style="font-size: 0.8rem; color: var(--dim); margin-top: 5px;">Max 3MB recommended. Stored locally.</p>
-            </div>
-            <button onclick="clearBackground()" class="secondary" style="margin-top: 10px; width: auto; font-size: 0.8rem; padding: 8px 12px;">Reset to Theme</button>
-        </div>
-
-        <div class="setting-group">
-            <h3>News Feed</h3>
-            <label class="radio-option" style="justify-content: flex-start;">
-                <input type="checkbox" id="newsToggle" onchange="autoSaveSettings()"> Show Global Headlines
-            </label>
-        </div>
-        
-        <div class="setting-group">
             <h3>Your Name</h3>
             <input type="text" id="userNameInput" placeholder="Name for greeting..." oninput="autoSaveSettings()">
         </div>
@@ -111,25 +95,51 @@
         </div>
 
         <div class="setting-group">
-            <h3>Clock Format</h3>
-            <div class="radio-row">
-                <label class="radio-option">
-                    <input type="radio" name="clockFormat" value="12h" onchange="autoSaveSettings()"> 12-Hour
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="clockFormat" value="24h" onchange="autoSaveSettings()"> 24-Hour
+            <h3>Custom Background</h3>
+            <div class="bg-control-row">
+                <input type="file" id="bgImageInput" accept="image/*" onchange="handleImageUpload(this)" class="hidden-input">
+                <label for="bgImageInput" class="custom-file-btn">Choose Image</label>
+                <button onclick="clearBackground()" id="resetBgBtn" class="secondary small-btn" style="display:none;">Reset</button>
+            </div>
+            <p id="bgFileName" style="font-size: 0.8rem; color: var(--dim); margin-top: 8px;">No image selected.</p>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--border); margin: 25px 0;">
+
+        <button onclick="toggleAdvanced()" id="advancedToggleBtn" class="advanced-toggle">
+            <span>Advanced Settings</span>
+            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+
+        <div id="advancedSettings" class="advanced-content hidden">
+            <div class="setting-group">
+                <h3>News Feed <span class="beta-tag">BETA</span></h3>
+                <label class="radio-option" style="justify-content: flex-start;">
+                    <input type="checkbox" id="newsToggle" onchange="autoSaveSettings()"> Show Global Headlines
                 </label>
             </div>
-        </div>
-        
-        <div class="setting-group" style="margin-top: 25px;">
-            <h3>External Search Suggestions</h3>
-            <p style="font-size:0.8rem; color:var(--dim); margin-bottom: 10px;">
-                ⚠️ Sends keystrokes to **DuckDuckGo**. Disabling keeps search 100% local.
-            </p>
-            <label class="radio-option" style="justify-content: flex-start;">
-                <input type="checkbox" id="externalSuggestToggle" onchange="autoSaveSettings()"> Enable Live Suggestions
-            </label>
+
+            <div class="setting-group">
+                <h3>Clock Format</h3>
+                <div class="radio-row">
+                    <label class="radio-option">
+                        <input type="radio" name="clockFormat" value="12h" onchange="autoSaveSettings()"> 12-Hour
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="clockFormat" value="24h" onchange="autoSaveSettings()"> 24-Hour
+                    </label>
+                </div>
+            </div>
+            
+            <div class="setting-group">
+                <h3>External Search Suggestions</h3>
+                <p style="font-size:0.8rem; color:var(--dim); margin-bottom: 10px;">
+                    ⚠️ Sends keystrokes to **DuckDuckGo**. Disabling keeps search 100% local.
+                </p>
+                <label class="radio-option" style="justify-content: flex-start;">
+                    <input type="checkbox" id="externalSuggestToggle" onchange="autoSaveSettings()"> Enable Live Suggestions
+                </label>
+            </div>
         </div>
 
         <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
