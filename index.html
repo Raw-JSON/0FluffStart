@@ -44,14 +44,6 @@
             </div>
     </div>
 
-    <div class="action-bar">
-        <button onclick="openEditor()" class="add-link-btn" id="addLinkMainBtn">+ Add Link</button>
-        <button onclick="toggleEditMode()" id="editToggleBtn" class="edit-toggle-btn">
-            <svg class="edit-icon-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-            <svg class="check-icon-svg hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        </button>
-    </div>
-
     <div id="linkGrid" class="link-grid">
         </div>
 </div>
@@ -75,9 +67,17 @@
     <div class="modal-content">
         <div class="modal-header">
             <h2>Settings</h2>
-            <button onclick="closeModal('settingsModal')" class="icon-btn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <button onclick="toggleEditMode()" id="editToggleBtn" class="edit-toggle-btn icon-btn">
+                <svg class="edit-icon-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                <svg class="check-icon-svg hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
             </button>
+        </div>
+        
+        <div class="setting-group">
+            <h3>Quick Link Management</h3>
+            <button onclick="openEditor()" class="add-link-btn" style="margin-bottom: 10px;">+ Add New Link</button>
+            <div id="linkManagerContent" class="link-manager-list">
+                </div>
         </div>
         
         <div class="setting-group">
