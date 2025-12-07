@@ -9,8 +9,8 @@
 
 This project eliminates external dependencies to offer maximum speed and privacy.
 * **100% Client-Side:** All logic runs locally. No servers. No backends.
-* **Instant Speed:** Zero latency due to no network calls.
-* **Absolute Privacy:** Your data never leaves your device.
+* **Instant Speed:** Zero latency due to no network calls (*exception: opt-in Live Suggestions*).
+* **Absolute Privacy:** Your data never leaves your device (*unless you explicitly enable external search suggestions*).
 
 ---
 
@@ -38,7 +38,7 @@ Follow the instructions for your specific browser:
 
 ## 💡 Core Features
 
-* **Cross-Device Optimization:** Ensures the dashboard displays perfectly on desktop monitors (6-column grid) and mobile screens.
+* **Cross-Device Optimization:** Ensures the dashboard displays perfectly on desktop monitors (6-column grid) as well as mobile screens.
 * **Instant Auto-Save:** All settings (Name, Vibe, Clock Format) save immediately upon change.
 * **Deep Theming ("Vibes"):** Switch between high-contrast themes like **OLED Dark**, **Cyberpunk**, **Paper**, and **Sunset Drive**.
 * **External Auto-Suggest (Opt-in):** Offers high-utility, real-time search predictions (via DuckDuckGo API).
