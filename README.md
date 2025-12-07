@@ -39,17 +39,16 @@ The setup steps vary depending on your browser:
 ## 💡 Core Features
 
 * **Custom Links (CRUD):** Add, Edit, and Delete links directly from the dashboard interface.
+* **Deep Theming ("Vibes"):** Switch between high-contrast themes like **OLED Dark**, **Cyberpunk**, **Paper**, and **Sunset Drive** that alter colors, fonts, and geometry.
+* **Instant Auto-Save:** All settings (Name, Vibe, Clock Format) save immediately upon change. No "Save" button required.
+* **Quick Search Switcher:** Instantly toggle your default search engine (Google, DuckDuckGo, Brave, etc.) directly from the main search bar for a zero-friction workflow.
 * **Edit Mode Toggle:** Enter a dedicated Edit Mode (✎) to manage links without accidentally navigating.
 * **Real Favicons:** Automatically fetches and displays real website icons for an app-like feel.
 * **Personalized Experience:** Displays a dynamic greeting ("Good Morning, [Name]") that changes based on the time of day and your custom settings.
-* **Custom Search:** Select your default search engine (Google, DuckDuckGo, Brave, etc.) from the Settings.
 
 ---
 
-
-## 📄 License
-MIT License.
-
+## 📄 MIT License: free and open source forever.
 
 ---
 
