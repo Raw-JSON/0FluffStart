@@ -1,74 +1,6 @@
-// 0FluffStart-main (6).zip/0FluffStart-main/style.css
-/* --- THEME DEFINITIONS --- */
-:root {
-    /* DEFAULT (OLED DARK) */
-    --bg: #000000;
-    --card: #141418;
-    --card-hover: #1e1e24;
-    --text: #ffffff;
-    --accent: #00aaff;
-    --dim: #888;
-    --border: #333;
-    --delete: #ff4d4d;
-    --radius: 12px;
-    --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --shadow: none;
-}
+/* 0FluffStart-main (7).zip/0FluffStart-main/style.css */
 
-body.light {
-    --bg: #f2f2f7;
-    --card: #ffffff;
-    --card-hover: #e5e5ea;
-    --text: #000000;
-    --accent: #007aff;
-    --dim: #8e8e93;
-    --border: #d1d1d6;
-    --radius: 12px;
-    --shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-body.cyberpunk {
-    --bg: #050505;
-    --card: #121212;
-    --card-hover: #1a1a1a;
-    --text: #00ff41; /* Matrix Greenish */
-    --accent: #f0e600; /* Cyber Yellow */
-    --dim: #008f11;
-    --border: #333;
-    --delete: #ff003c;
-    --radius: 0px; /* Sharp edges */
-    --font-main: "Courier New", Courier, monospace;
-    --shadow: 0 0 10px rgba(0, 255, 65, 0.1);
-}
-
-body.sunset {
-    --bg: #2d1b2e;
-    --card: #442646; /* Deep Purple */
-    --card-hover: #58335a;
-    --text: #ffd5e5;
-    --accent: #ff9a76; /* Peach */
-    --dim: #b08ea2;
-    --border: #58335a;
-    --delete: #ff5e78;
-    --radius: 20px; /* Super round */
-    --font-main: "Trebuchet MS", sans-serif;
-    --shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-body.paper {
-    --bg: #fdfbf7; /* Warm white */
-    --card: #fff;
-    --card-hover: #f0eee9;
-    --text: #2c2c2c;
-    --accent: #2c2c2c; /* Black accent */
-    --dim: #999;
-    --border: #2c2c2c;
-    --delete: #d32f2f;
-    --radius: 4px;
-    --font-main: "Times New Roman", Times, serif;
-    --shadow: 4px 4px 0px rgba(0,0,0,0.1); /* Hard shadow */
-}
-
+/* ... (Keep all previous Theme Definitions & Core Styles) ... */
 
 /* --- CORE STYLES --- */
 body {
@@ -84,175 +16,9 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* Container */
-.container { width: 100%; max-width: 600px; padding-bottom: 50px; }
+/* ... (Keep Container, Header, Clock, Search Bar styles) ... */
 
-/* Header & Clock */
-.header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-h1 { margin: 0; font-size: 2rem; letter-spacing: -1px; }
-
-.clock { 
-    font-size: 1.8rem; 
-    font-weight: 300; 
-    color: var(--accent); 
-    margin-bottom: 5px; 
-    font-variant-numeric: tabular-nums; 
-}
-
-.greeting {
-    font-size: 1rem;
-    color: var(--dim);
-    margin-bottom: 30px; 
-    font-weight: 500;
-}
-
-
-/* --- NEW SEARCH BAR (With Switcher) --- */
-.search-bar { 
-    display: flex; 
-    gap: 0; /* Gap handled by borders/margins internally */
-    margin-bottom: 20px; 
-    height: 50px; 
-    position: relative;
-    background: var(--card-hover);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow);
-}
-
-/* Engine Switcher Button */
-.engine-switcher {
-    position: relative;
-    height: 100%;
-    border-right: 1px solid var(--border);
-}
-
-.engine-btn {
-    height: 100%;
-    padding: 0 15px;
-    background: transparent;
-    border: none;
-    color: var(--text);
-    font-weight: bold;
-    font-family: var(--font-main);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 1rem;
-}
-
-/* Dropdown */
-.engine-dropdown {
-    position: absolute;
-    top: 60px;
-    left: 0;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    width: 180px;
-    z-index: 9999; /* Critical: Overlay everything */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    overflow: hidden;
-    padding: 5px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.engine-dropdown.hidden { display: none; }
-
-.engine-option {
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: calc(var(--radius) - 4px);
-    transition: background 0.2s;
-    font-size: 0.9rem;
-    color: var(--text);
-    display: flex;
-    justify-content: space-between;
-}
-
-.engine-option:hover {
-    background: var(--card-hover);
-    color: var(--accent);
-}
-
-.engine-option.selected {
-    color: var(--accent);
-    font-weight: bold;
-}
-
-/* Input & Search Icon */
-#searchInput { 
-    flex-grow: 1; 
-    height: 100%; 
-    padding: 0 16px; 
-    border: none; 
-    background: transparent; 
-    color: var(--text); 
-    font-size: 1rem;
-    box-sizing: border-box; 
-    font-family: var(--font-main);
-}
-#searchInput:focus { outline: none; }
-
-.search-icon { 
-    width: 50px; 
-    height: 100%; 
-    border-radius: 0 var(--radius) var(--radius) 0; 
-    background: transparent; 
-    color: var(--accent); 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    border: none;
-    cursor: pointer;
-}
-
-/* Action Bar (Only for residual styles) */
-/* The action bar elements were removed, but keeping general button styles */
-.add-link-btn { 
-    flex-grow: 1; 
-    padding: 14px; 
-    border-radius: var(--radius); 
-    background: var(--accent); 
-    color: var(--bg); 
-    font-weight: 700; 
-    border: none; 
-    font-size: 1rem;
-    font-family: var(--font-main);
-    box-shadow: var(--shadow);
-}
-.icon-btn { 
-    background: transparent; 
-    border: none; 
-    color: var(--text); 
-    cursor: pointer; 
-    padding: 5px; 
-}
-
-/* Edit Toggle is now only in Modal Header */
-.edit-toggle-btn {
-    background: var(--card-hover);
-    color: var(--text);
-    width: 36px; /* Smaller in modal header */
-    height: 36px;
-    border-radius: 50%; /* Always round for circle button */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--border);
-    transition: all 0.2s ease;
-    box-shadow: var(--shadow);
-}
-.edit-toggle-btn.active {
-    background: var(--accent);
-    color: var(--bg);
-    border-color: var(--accent);
-}
-
-.hidden { display: none !important; }
+/* ... (Keep Engine Switcher, Input, Search Icon, Hidden styles) ... */
 
 /* Link Grid */
 .link-grid {
@@ -272,13 +38,15 @@ h1 { margin: 0; font-size: 2rem; letter-spacing: -1px; }
     text-decoration: none;
     position: relative;
     cursor: pointer;
+    transition: transform 0.1s;
 }
+.link-item:active { transform: scale(0.96); }
 
 .link-icon-circle {
     width: 56px;
     height: 56px;
     background: var(--card);
-    border-radius: 40%; /* Slightly squared off looks good with var(--radius) */
+    border-radius: 40%; 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -295,28 +63,7 @@ body.sunset .link-icon-circle { border-radius: 50%; }
 .link-icon-circle img { width: 100%; height: 100%; object-fit: cover; }
 .link-name { color: var(--text); font-size: 0.75rem; text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9; }
 
-/* Edit Mode Animations */
-.link-item.editing .link-icon-circle {
-    animation: wiggle 0.3s infinite alternate;
-    border: 2px solid var(--accent);
-    opacity: 0.8;
-}
-.delete-badge {
-    position: absolute; top: -4px; right: -4px;
-    background: var(--delete); color: white;
-    border-radius: 50%; width: 22px; height: 22px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.7rem; font-weight: bold;
-    z-index: 10;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-}
-
-@keyframes wiggle {
-    from { transform: rotate(-3deg); }
-    to { transform: rotate(3deg); }
-}
-
-/* --- MODAL STYLES (Cleaned up) --- */
+/* --- MODAL STYLES --- */
 
 .modal { 
     position: fixed; 
@@ -328,11 +75,16 @@ body.sunset .link-icon-circle { border-radius: 50%; }
     display: none; 
     justify-content: center; 
     align-items: center; 
-    z-index: 100; 
+    z-index: 100; /* Standard Modal Layer */
     backdrop-filter: blur(5px); 
     overflow-y: auto; 
 }
 .modal.active { display: flex; }
+
+/* CRITICAL FIX: Ensure Editor sits ON TOP of Settings */
+#linkEditorModal {
+    z-index: 200; 
+}
 
 .modal-content { 
     background: var(--bg); 
@@ -355,7 +107,7 @@ body.sunset .link-icon-circle { border-radius: 50%; }
     margin-bottom: 20px; 
 }
 
-/* Mobile Adjustment: Full screen modal for small screens */
+/* Mobile Adjustment */
 @media (max-height: 700px) and (max-width: 600px) {
     .modal-content {
         width: 100%;
@@ -366,8 +118,8 @@ body.sunset .link-icon-circle { border-radius: 50%; }
     }
 }
 
-/* Settings Modal Header Icon (Done/Edit Button) */
-.modal-header .edit-toggle-btn {
+/* Modal Header Buttons */
+.modal-header .icon-btn {
     width: 36px;
     height: 36px;
     border: 1px solid var(--border);
@@ -378,15 +130,15 @@ body.sunset .link-icon-circle { border-radius: 50%; }
     justify-content: center;
     cursor: pointer;
     padding: 0;
+    color: var(--text);
 }
-.modal-header .edit-toggle-btn:hover {
+.modal-header .icon-btn:hover {
     background: var(--accent);
     border-color: var(--accent);
     color: var(--bg);
 }
-/* END MODAL HEADER FIX */
 
-/* Styled Inputs (Remaining styles from old block) */
+/* Styled Inputs */
 input[type="text"], input[type="url"], select { 
     width: 100%; padding: 14px; margin-bottom: 15px; 
     background: var(--card-hover); border: 1px solid var(--border); 
@@ -410,6 +162,9 @@ input:focus, select:focus { border-color: var(--accent); }
 .radio-option input { margin: 0; width: auto; } 
 
 .save-btn { width: 100%; background: var(--accent); color: var(--bg); padding: 14px; border-radius: var(--radius); font-weight: bold; border: none; font-size: 1rem; margin-top: 10px; font-family: var(--font-main); }
+.add-link-btn { width: 100%; background: var(--card-hover); color: var(--accent); padding: 12px; border-radius: var(--radius); font-weight: bold; border: 1px solid var(--accent); font-size: 0.95rem; font-family: var(--font-main); cursor: pointer; transition: background 0.2s; }
+.add-link-btn:hover { background: var(--accent); color: var(--bg); }
+
 .secondary { background: var(--card-hover); color: var(--text); }
 
 /* GitHub Button */
@@ -427,15 +182,12 @@ button.github-btn {
     border: none;
     font-weight: 600;
 }
-/* In Light Mode, make github button black still */
 body.light button.github-btn { background: #000; }
 body.cyberpunk button.github-btn { background: #111; border: 1px solid var(--accent); color: var(--accent); }
 
-/* --- Auto-Suggestion Styles (No change) --- */
-
+/* --- Auto-Suggestion Styles (Keep existing) --- */
 .suggestions-container {
     position: absolute;
-    /* Adjusted top for visual separation */
     top: 58px; 
     left: 0;
     right: 0;
@@ -443,148 +195,68 @@ body.cyberpunk button.github-btn { background: #111; border: 1px solid var(--acc
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
-    z-index: 999; /* Higher than link grid */
+    z-index: 999; 
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    max-height: 250px; /* Limit height for scroll */
+    max-height: 250px; 
     overflow-y: auto;
-    padding: 0; /* Items handle padding */
+    padding: 0; 
 }
+.suggestion-item { padding: 12px 15px; cursor: pointer; font-size: 0.95rem; color: var(--text); transition: background 0.1s; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-hover); }
+.suggestion-item:last-child { border-bottom: none; }
+.suggestion-item:hover { background: var(--card-hover); }
+.suggestion-type { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; background: var(--card-hover); padding: 3px 8px; border-radius: 6px; }
 
-.suggestion-item {
-    padding: 12px 15px; /* Increase vertical padding */
-    cursor: pointer;
-    font-size: 0.95rem;
-    color: var(--text);
-    transition: background 0.1s;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    /* Add a subtle separator between items */
-    border-bottom: 1px solid var(--card-hover);
-}
+/* --- Link Manager List Styles --- */
+.link-manager-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.link-manager-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: var(--card-hover); border-radius: var(--radius); border: 1px solid var(--border); }
+.link-manager-item .link-name { flex-grow: 1; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 1; text-align: left; }
 
-.suggestion-item:last-child {
-    border-bottom: none;
-}
+.link-actions { display: flex; gap: 8px; margin-left: 10px; }
 
-.suggestion-item:hover {
-    background: var(--card-hover);
-}
-
-.suggestion-type {
-    font-size: 0.75rem;
-    color: var(--dim);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    background: var(--card-hover); /* Give the tag a subtle background */
-    padding: 3px 8px;
-    border-radius: 6px;
-}
-
-/* --- NEW: Link Manager List Styles --- */
-
-.link-manager-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 10px;
-}
-
-.link-manager-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 15px;
-    background: var(--card-hover);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-}
-
-.link-manager-item .link-name {
-    flex-grow: 1;
-    font-size: 1rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    opacity: 1;
-}
-
-.link-actions {
-    display: flex;
-    gap: 5px;
-    margin-left: 10px;
-}
-
+/* Clean SVG Icon Buttons */
 .link-actions .icon-btn {
-    padding: 8px 12px;
-    font-size: 0.8rem;
-    border-radius: var(--radius);
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
     background: var(--card);
-}
-
-.link-actions .icon-btn.delete-btn {
-    background: var(--delete);
+    border: 1px solid var(--border);
     color: var(--text);
-    border-color: var(--delete);
+    transition: all 0.2s;
 }
 
+.link-actions .icon-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2;
+}
 
-/* --- DESKTOP OPTIMIZATION (min-width: 768px) --- */
+.link-actions .icon-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.link-actions .icon-btn.delete-btn:hover {
+    border-color: var(--delete);
+    color: var(--delete);
+    background: rgba(255, 77, 77, 0.1);
+}
+
+/* --- DESKTOP OPTIMIZATION --- */
 @media (min-width: 768px) {
-    
-    .container { 
-        max-width: 900px; /* Expand main container width */
-        padding-top: 50px;
-    }
-
-    h1 {
-        font-size: 2.5rem;
-    }
-    
-    .clock { 
-        font-size: 2.5rem; 
-    }
-
-    .greeting {
-        font-size: 1.2rem;
-    }
-
-    .search-bar { 
-        height: 60px; /* Make the search bar taller */
-    }
-
-    .engine-btn {
-        padding: 0 20px;
-    }
-    
-    #searchInput {
-        font-size: 1.1rem;
-    }
-    
-    .suggestions-container {
-        top: 68px; /* Adjust top positioning to clear the taller search bar */
-    }
-
-    .add-link-btn {
-        padding: 18px;
-    }
-    
-    /* Edit toggle button is now only in settings modal and is small */
-    .link-icon-circle {
-        width: 64px; /* Larger icons */
-        height: 64px;
-        border-radius: calc(var(--radius) + 2px); /* Maintain aesthetic scaling */
-    }
-    
-    .link-grid {
-        grid-template-columns: repeat(6, 1fr); /* 6 columns on desktop */
-        gap: 20px;
-    }
-    
-    /* Cyberpunk specific override for circles */
+    .container { max-width: 900px; padding-top: 50px; }
+    h1 { font-size: 2.5rem; }
+    .clock { font-size: 2.5rem; }
+    .greeting { font-size: 1.2rem; }
+    .search-bar { height: 60px; }
+    .engine-btn { padding: 0 20px; }
+    #searchInput { font-size: 1.1rem; }
+    .suggestions-container { top: 68px; }
+    .link-icon-circle { width: 64px; height: 64px; border-radius: calc(var(--radius) + 2px); }
+    .link-grid { grid-template-columns: repeat(6, 1fr); gap: 20px; }
     body.cyberpunk .link-icon-circle { border-radius: 0; }
-    
-    .link-name {
-        font-size: 0.8rem;
-    }
+    .link-name { font-size: 0.8rem; }
 }
