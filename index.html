@@ -117,9 +117,20 @@
         <div id="advancedSettings" class="advanced-content">
             <div class="setting-group">
                 <h3>News Feed <span class="beta-tag">BETA</span></h3>
-                <label class="radio-option" style="justify-content: flex-start;">
-                    <input type="checkbox" id="newsToggle" onchange="autoSaveSettings()"> Show Global Headlines
+                <label class="radio-option" style="justify-content: flex-start; margin-bottom: 10px;">
+                    <input type="checkbox" id="newsToggle" onchange="autoSaveSettings()"> Enable News Feed
                 </label>
+                
+                <p style="font-size:0.8rem; color:var(--dim); margin-bottom: 5px;">Filter Topic:</p>
+                <select id="newsTopicSelect" onchange="autoSaveSettings()">
+                    <option value="TOP">Top Stories</option>
+                    <option value="TECH">Technology</option>
+                    <option value="BUSINESS">Business</option>
+                    <option value="SCIENCE">Science</option>
+                    <option value="HEALTH">Health</option>
+                    <option value="SPORTS">Sports</option>
+                    <option value="ENTERTAINMENT">Entertainment</option>
+                </select>
             </div>
 
             <div class="setting-group">
