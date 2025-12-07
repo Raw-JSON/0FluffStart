@@ -308,8 +308,21 @@ body.sunset .link-icon-circle { border-radius: 50%; }
     to { transform: rotate(3deg); }
 }
 
-/* Modal & Form Elements */
-.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(5px); }
+/* --- MODAL FIX: Reworked Modal Styles --- */
+
+.modal { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0,0,0,0.85); 
+    display: none; 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 100; 
+    backdrop-filter: blur(5px); 
+}
 .modal.active { display: flex; }
 
 .modal-content { 
@@ -317,15 +330,52 @@ body.sunset .link-icon-circle { border-radius: 50%; }
     padding: 25px; 
     border-radius: var(--radius); 
     width: 90%; 
-    max-width: 350px; 
+    max-width: 450px; 
+    max-height: 90vh;
+    overflow-y: auto;
     border: 1px solid var(--border); 
     box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+    transform: translateY(0); 
+    transition: all 0.2s ease-out;
 }
 
-.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.modal-header h2 { margin: 0; font-size: 1.5rem; }
+.modal-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 20px; 
+}
 
-/* Styled Inputs */
+/* Mobile Adjustment: Full screen modal for small screens */
+@media (max-height: 700px) and (max-width: 600px) {
+    .modal-content {
+        width: 100%;
+        max-width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+    }
+}
+
+/* Ensuring the close button is effective */
+.modal-header .icon-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--card-hover);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.modal-header .icon-btn:hover {
+    background: var(--delete);
+    border-color: var(--delete);
+}
+/* END MODAL FIX */
+
+/* Styled Inputs (Remaining styles from old block) */
 input[type="text"], input[type="url"], select { 
     width: 100%; padding: 14px; margin-bottom: 15px; 
     background: var(--card-hover); border: 1px solid var(--border); 
@@ -482,4 +532,4 @@ body.cyberpunk button.github-btn { background: #111; border: 1px solid var(--acc
     .link-name {
         font-size: 0.8rem;
     }
-}
+    }
