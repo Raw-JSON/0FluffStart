@@ -331,19 +331,23 @@ function handleSearch(e) {
     }
 }
 
-
 function selectSuggestion(suggestion) {
     const inputEl = document.getElementById('searchInput');
     inputEl.value = suggestion.name;
     
+    // Check if it's a search term (History or External Search)
     if (suggestion.type === 'Link') {
-        // If it's a link, navigate immediately
+        // Handle Links: Navigate immediately
         const finalUrl = suggestion.url.startsWith('http') ? suggestion.url : `https://${suggestion.url}`;
         window.location.href = finalUrl;
     } else {
-        // If it's history, close suggestions and prepare for search
+        // Handle Search Terms (History/Search): Execute the search
+        
+        // Hide suggestions dropdown
         document.getElementById('suggestionsContainer').classList.add('hidden');
-        inputEl.focus();
+        
+        // Execute the search function by mimicking an 'Enter' keypress/click
+        handleSearch({ key: 'Enter', type: 'synthetic', preventDefault: () => {} });
     }
 }
 
