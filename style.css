@@ -419,3 +419,67 @@ body.cyberpunk button.github-btn { background: #111; border: 1px solid var(--acc
     padding: 3px 8px;
     border-radius: 6px;
 }
+
+/* --- DESKTOP OPTIMIZATION (min-width: 768px) --- */
+@media (min-width: 768px) {
+    
+    .container { 
+        max-width: 900px; /* Expand main container width */
+        padding-top: 50px;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    .clock { 
+        font-size: 2.5rem; 
+    }
+
+    .greeting {
+        font-size: 1.2rem;
+    }
+
+    .search-bar { 
+        height: 60px; /* Make the search bar taller */
+    }
+
+    .engine-btn {
+        padding: 0 20px;
+    }
+    
+    #searchInput {
+        font-size: 1.1rem;
+    }
+    
+    .suggestions-container {
+        top: 68px; /* Adjust top positioning to clear the taller search bar */
+    }
+
+    .add-link-btn {
+        padding: 18px;
+    }
+    
+    .edit-toggle-btn {
+        width: 60px;
+        height: 60px;
+    }
+
+    .link-icon-circle {
+        width: 64px; /* Larger icons */
+        height: 64px;
+        border-radius: calc(var(--radius) + 2px); /* Maintain aesthetic scaling */
+    }
+    
+    .link-grid {
+        grid-template-columns: repeat(6, 1fr); /* 6 columns on desktop */
+        gap: 20px;
+    }
+    
+    /* Cyberpunk specific override for circles */
+    body.cyberpunk .link-icon-circle { border-radius: 0; }
+    
+    .link-name {
+        font-size: 0.8rem;
+    }
+}
