@@ -1,8 +1,7 @@
-
 // ui-logic.js
 
-/* global links, settings, isEditMode, isEditingId, searchEngines, NEWS_TOPICS */
-/* global renderEngineDropdown, loadSettings, updateClock, autoSaveSettings, logSearch, handleSuggestions, fetchNews */
+/* global links, settings, isEditMode, isEditingId, searchEngines */
+/* global renderEngineDropdown, loadSettings, updateClock, autoSaveSettings, logSearch, handleSuggestions */
 
 // --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,8 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderEngineDropdown(); 
     updateClock(); 
     setInterval(updateClock, 1000);
-
-    if(settings.newsEnabled) renderNews();
 
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.engine-switcher')) {
@@ -68,61 +65,6 @@ function clearBackground() {
     localStorage.setItem('0fluff_settings', JSON.stringify(settings));
     document.getElementById('bgImageInput').value = '';
     loadSettings();
-}
-
-// --- NEWS LOGIC (Updated for Visuals) ---
-async function renderNews() {
-    const container = document.getElementById('newsContainer');
-    const list = document.getElementById('newsList');
-    
-    if (!settings.newsEnabled) {
-        container.classList.add('hidden');
-        return;
-    }
-    
-    container.classList.remove('hidden');
-    
-    // Update Header Text based on selected topic
-    const topicKey = settings.newsTopic || "TOP";
-    const topicName = NEWS_TOPICS[topicKey] ? NEWS_TOPICS[topicKey].name : "Top Stories";
-    const headerEl = container.querySelector('.news-header');
-    if(headerEl) headerEl.innerText = `${topicName} Headlines`;
-
-    list.innerHTML = '<div class="news-loading">Loading visuals...</div>';
-    
-    const headlines = await fetchNews();
-    list.innerHTML = '';
-    
-    if (headlines.length === 0 || (headlines.length === 1 && headlines[0].source === "System")) {
-        // Handle error state visually
-        const msg = headlines.length > 0 ? headlines[0].title : "No news available.";
-        list.innerHTML = `<div class="news-loading" style="color:var(--delete);">${msg}</div>`;
-        return;
-    }
-
-    headlines.forEach(item => {
-        const card = document.createElement('a');
-        card.className = 'news-card';
-        card.href = item.link;
-        card.target = "_blank";
-        
-        // Conditional Thumbnail (if RSS2JSON returns it)
-        let thumbHtml = '';
-        /* if(item.thumbnail) { 
-            thumbHtml = `<div style="background-image:url('${item.thumbnail}'); height:120px; background-size:cover; border-radius:8px; margin-bottom:8px;"></div>`;
-        } 
-        */
-       
-        card.innerHTML = `
-            ${thumbHtml}
-            <div class="news-title">${item.title}</div>
-            <div class="news-meta">
-                <span class="news-source">${item.source}</span>
-                <span class="news-time">${item.time}</span>
-            </div>
-        `;
-        list.appendChild(card);
-    });
 }
 
 // --- LINKS ---
@@ -263,10 +205,6 @@ function loadSettings() {
     for(let r of radios) { if(r.value === settings.clockFormat) r.checked = true; }
     
     document.getElementById('externalSuggestToggle').checked = settings.externalSuggest;
-    document.getElementById('newsToggle').checked = settings.newsEnabled;
-    
-    const topicSelect = document.getElementById('newsTopicSelect');
-    if(topicSelect) topicSelect.value = settings.newsTopic || "TOP";
     
     updateClock(); 
     renderEngineDropdown();
@@ -279,19 +217,8 @@ function autoSaveSettings() {
     for(let r of radios) if(r.checked) settings.clockFormat = r.value;
     settings.externalSuggest = document.getElementById('externalSuggestToggle').checked;
     
-    const newsState = document.getElementById('newsToggle').checked;
-    const topicSelect = document.getElementById('newsTopicSelect').value;
-    
-    const needsRefresh = (settings.newsEnabled !== newsState) || (settings.newsTopic !== topicSelect);
-    
-    settings.newsEnabled = newsState;
-    settings.newsTopic = topicSelect;
-    
     localStorage.setItem('0fluff_settings', JSON.stringify(settings));
-    if (needsRefresh) {
-        loadSettings();
-        renderNews(); 
-    }
+    loadSettings();
 }
 
 function toggleSettings() { 
