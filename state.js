@@ -17,8 +17,10 @@ let searchHistory = JSON.parse(localStorage.getItem('0fluff_history') || '[]');
 let isEditMode = false;
 let isEditingId = null;
 
-// Default RSS Feed (BBC World News - reliable, CORS-friendly usually)
-const DEFAULT_RSS = 'http://feeds.bbci.co.uk/news/world/rss.xml';
+// Default RSS Feed (Google News - Top Headlines)
+// Params: hl=en-US (Language), gl=US (Region), ceid=US:en (Country:Lang)
+// This ensures consistent results regardless of the proxy's server location.
+const DEFAULT_RSS = 'https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en';
 
 // Engine Configuration
 const searchEngines = [
