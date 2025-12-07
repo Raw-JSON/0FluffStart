@@ -1,11 +1,14 @@
 // --- STATE ---
 let links = JSON.parse(localStorage.getItem('0fluff_links') || '[]');
-let settings = JSON.parse(localStorage.getItem('0fluff_settings') || '{"theme":"dark","clockFormat":"24h","searchEngine":"Google", "userName": ""}');
+// UPDATED DEFAULT: Add externalSuggest: false
+let settings = JSON.parse(localStorage.getItem('0fluff_settings') || '{"theme":"dark","clockFormat":"24h","searchEngine":"Google", "userName": "", "externalSuggest": false}'); 
+let searchHistory = JSON.parse(localStorage.getItem('0fluff_history') || '[]'); 
 let isEditMode = false;
 let isEditingId = null;
 
 // Engine Configuration (Initial + Icon Initials)
 const searchEngines = [
+// ... (Remains the same) ...
     { name: 'Google', initial: 'G', url: 'https://www.google.com/search?q=' },
     { name: 'DuckDuckGo', initial: 'D', url: 'https://duckduckgo.com/?q=' },
     { name: 'Brave', initial: 'B', url: 'https://search.brave.com/search?q=' },
@@ -15,19 +18,117 @@ const searchEngines = [
 
 // --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
+// ... (Remains the same) ...
     renderLinks();
-    loadSettings(); // This now sets the Vibe/Theme
+    loadSettings(); 
     setInterval(updateClock, 1000);
-    renderEngineDropdown(); // Prepare the UI
+    renderEngineDropdown(); 
     updateClock(); 
     
-    // Global click listener to close dropdowns when clicking outside
+    // Global click listener to close dropdowns and suggestions when clicking outside
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.engine-switcher')) {
             document.getElementById('engineDropdown').classList.add('hidden');
         }
+        if (!e.target.closest('#searchInput') && !e.target.closest('#suggestionsContainer')) {
+            document.getElementById('suggestionsContainer').classList.add('hidden');
+        }
     });
 });
+
+// --- NEW EXTERNAL FETCH UTILITY (Switched to DuckDuckGo) ---
+
+async function fetchExternalSuggestions(query) {
+    // 0Fluff architecture requires using a proxy for external fetches.
+    // Switching to DuckDuckGo AutoSuggest API (JSON format, cleaner)
+    const duckduckgoSuggestUrl = `https://duckduckgo.com/ac/?q=${encodeURIComponent(query)}&type=json`;
+    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(duckduckgoSuggestUrl)}`;
+
+    try {
+        const res = await fetch(proxyUrl);
+        
+        if (!res.ok) {
+            throw new Error(`Proxy/API returned status ${res.status}`);
+        }
+
+        const data = await res.json(); 
+        
+        // DuckDuckGo returns an array of objects: [{phrase: "suggestion1"}, {phrase: "suggestion2"}, ...]
+        if (Array.isArray(data)) {
+            return data.map(item => item.phrase).filter(p => p); // Extract the phrase
+        }
+    } catch (e) {
+        console.error("External suggestion fetch failed:", e);
+    }
+    return [];
+}
+
+
+// --- NEW: SUGGESTION LOGIC (Updated) ---
+
+async function handleSuggestions() {
+    const inputEl = document.getElementById('searchInput');
+    const input = inputEl.value.toLowerCase().trim();
+    const container = document.getElementById('suggestionsContainer');
+    
+    container.innerHTML = '';
+    
+    if (input.length < 2) {
+        container.classList.add('hidden');
+        return;
+    }
+    
+    let suggestions = [];
+    
+    // 1. Internal Private Suggestions (Always used as fallback/link priority)
+    // Link Name Suggestions
+    const linkMatches = links
+        .filter(l => l.name.toLowerCase().includes(input))
+        .map(l => ({ name: l.name, url: l.url, type: 'Link' }));
+        
+    suggestions.push(...linkMatches);
+    
+    // Search History Suggestions (excluding any text already matched as a link)
+    const historyMatches = searchHistory
+        .filter(h => h.toLowerCase().includes(input) && !linkMatches.some(l => l.name.toLowerCase() === h.toLowerCase()))
+        .map(h => ({ name: h, type: 'History' }));
+        
+    suggestions.push(...historyMatches);
+    
+    // 2. External Suggestions (If enabled by user)
+    if (settings.externalSuggest) {
+        // Now using the privacy-respecting DuckDuckGo API
+        const external = await fetchExternalSuggestions(input);
+        
+        // Merge external results, avoiding duplicates from internal list
+        external.forEach(term => {
+            if (!suggestions.some(s => s.name.toLowerCase() === term.toLowerCase())) {
+                 // Mark external results with the Search type
+                suggestions.push({ name: term, type: 'Search' }); 
+            }
+        });
+    }
+
+    if (suggestions.length === 0) {
+        container.classList.add('hidden');
+        return;
+    }
+    
+    // Render Suggestions (Limit to top 8 now that we have external sources)
+    suggestions.slice(0, 8).forEach(s => { 
+        const item = document.createElement('div');
+        item.className = 'suggestion-item';
+        item.innerHTML = `
+            <span>${s.name}</span>
+            <span class="suggestion-type">${s.type}</span>
+        `;
+        
+        item.onclick = () => selectSuggestion(s);
+        container.appendChild(item);
+    });
+    
+    container.classList.remove('hidden');
+}
 
 // --- CORE FUNCTIONS ---
 
@@ -179,17 +280,52 @@ function toggleSettings() {
 }
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
+function logSearch(query) {
+    query = query.trim();
+    if (query === '' || query.includes('.') && !query.includes(' ')) return; // Don't log URLs
+    
+    // Remove if already exists and push to the front
+    searchHistory = searchHistory.filter(item => item !== query);
+    searchHistory.unshift(query);
+    
+    // Limit history size to keep storage clean
+    if (searchHistory.length > 10) {
+        searchHistory = searchHistory.slice(0, 10);
+    }
+    
+    localStorage.setItem('0fluff_history', JSON.stringify(searchHistory));
+}
+
 function handleSearch(e) {
     if (e.key === 'Enter' || e.type === 'click') {
         const val = document.getElementById('searchInput').value.trim();
         if (!val) return;
         
+        // Log the search before executing it
+        logSearch(val); 
+
         const engine = searchEngines.find(s => s.name === settings.searchEngine) || searchEngines[0];
         if (val.includes('.') && !val.includes(' ')) {
             window.location.href = val.startsWith('http') ? val : `https://${val}`;
         } else {
             window.location.href = `${engine.url}${encodeURIComponent(val)}`;
         }
+    }
+}
+
+
+function selectSuggestion(suggestion) {
+    const inputEl = document.getElementById('searchInput');
+    inputEl.value = suggestion.name;
+    
+    if (suggestion.type === 'Link') {
+        // If it's a link, navigate immediately
+        const finalUrl = suggestion.url.startsWith('http') ? suggestion.url : `https://${suggestion.url}`;
+        window.location.href = finalUrl;
+    } else {
+        // If it's history, close suggestions and prepare for search
+        document.getElementById('suggestionsContainer').classList.add('hidden');
+        inputEl.focus();
     }
 }
 
@@ -226,7 +362,7 @@ function updateClock() {
 }
 
 function loadSettings() {
-    document.body.className = settings.theme; // Applies the Vibe
+    document.body.className = settings.theme; 
     document.getElementById('themeSelect').value = settings.theme;
     
     const radios = document.getElementsByName('clockFormat');
@@ -234,11 +370,13 @@ function loadSettings() {
         if(r.value === settings.clockFormat) r.checked = true;
     }
     
+    // Load external suggest toggle state
+    document.getElementById('externalSuggestToggle').checked = settings.externalSuggest;
+    
     updateClock(); 
     renderEngineDropdown();
 }
 
-// NEW: Auto-Save Functionality replaces manual save
 function autoSaveSettings() {
     settings.theme = document.getElementById('themeSelect').value;
     settings.userName = document.getElementById('userNameInput').value.trim();
@@ -248,11 +386,30 @@ function autoSaveSettings() {
         if(r.checked) settings.clockFormat = r.value;
     }
     
-    // settings.searchEngine is updated in selectEngine()
+    // Save external suggest toggle state
+    settings.externalSuggest = document.getElementById('externalSuggestToggle').checked;
     
     localStorage.setItem('0fluff_settings', JSON.stringify(settings));
     
-    // Apply changes immediately (Live preview)
     document.body.className = settings.theme;
     updateClock();
 }
+
+// Expose handleSuggestions globally for HTML binding
+window.handleSuggestions = handleSuggestions;
+window.toggleEditMode = toggleEditMode;
+window.renderLinks = renderLinks;
+window.renderEngineDropdown = renderEngineDropdown;
+window.toggleEngineDropdown = toggleEngineDropdown;
+window.selectEngine = selectEngine;
+window.openEditor = openEditor;
+window.saveLink = saveLink;
+window.editLink = editLink;
+window.deleteLink = deleteLink;
+window.toggleSettings = toggleSettings;
+window.closeModal = closeModal;
+window.handleSearch = handleSearch;
+window.updateClock = updateClock;
+window.loadSettings = loadSettings;
+window.autoSaveSettings = autoSaveSettings;
+
