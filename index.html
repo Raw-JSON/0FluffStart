@@ -34,11 +34,14 @@
                 </div>
         </div>
 
-        <input type="text" id="searchInput" placeholder="Search or Type URL..." onkeypress="handleSearch(event)">
+        <input type="text" id="searchInput" placeholder="Search or Type URL..." onkeypress="handleSearch(event)" oninput="handleSuggestions()">
         
         <button class="search-icon" onclick="handleSearch({ key: 'Enter', type: 'click', preventDefault: () => {} })">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </button>
+        
+        <div id="suggestionsContainer" class="suggestions-container hidden">
+            </div>
     </div>
 
     <div class="action-bar">
@@ -103,6 +106,16 @@
                     <input type="radio" name="clockFormat" value="24h" onchange="autoSaveSettings()"> 24-Hour
                 </label>
             </div>
+        </div>
+        
+        <div class="setting-group" style="margin-top: 25px;">
+            <h3>External Search Suggestions</h3>
+            <p style="font-size:0.8rem; color:var(--dim); margin-bottom: 10px;">
+                ⚠️ This sends keystrokes to **DuckDuckGo** for live predictions. Disabling this keeps all search activity 100% private and client-side.
+            </p>
+            <label class="radio-option" style="justify-content: flex-start;">
+                <input type="checkbox" id="externalSuggestToggle" onchange="autoSaveSettings()"> Enable Live Suggestions
+            </label>
         </div>
 
         <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
