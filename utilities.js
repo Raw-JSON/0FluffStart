@@ -1,59 +1,74 @@
 // utilities.js
 
-// Import required state from state.js (Assumes state.js is loaded first in HTML)
-/* global links, settings, searchHistory, searchEngines */ 
+// Import required state from state.js
+/* global links, settings, searchHistory, searchEngines, DEFAULT_RSS */ 
 
-// --- UPDATED EXTERNAL FETCH UTILITY (Dual-Proxy FIX) ---
-
-async function fetchExternalSuggestions(query) {
-    const duckduckgoSuggestUrl = `https://duckduckgo.com/ac/?q=${encodeURIComponent(query)}&type=json`;
+// --- GENERIC PROXY FETCH (Reusable) ---
+async function fetchViaProxy(targetUrl) {
     const proxies = [
-        { url: `https://corsproxy.io/?${encodeURIComponent(duckduckgoSuggestUrl)}`, type: 'raw' }, // Primary
-        { url: `https://api.allorigins.win/get?url=${encodeURIComponent(duckduckgoSuggestUrl)}`, type: 'wrapped' } // Secondary
+        { url: `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`, type: 'raw' },
+        { url: `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`, type: 'wrapped' }
     ];
 
     for (const proxy of proxies) {
         try {
-            console.log(`Attempting fetch via: ${proxy.url}`);
             const res = await fetch(proxy.url);
+            if (!res.ok) throw new Error(`Status ${res.status}`);
             
-            if (!res.ok) {
-                throw new Error(`Proxy status: ${res.status}`);
-            }
-
-            let data;
-            if (proxy.type === 'raw') {
-                // Type 'raw' (corsproxy.io): Expects direct JSON response
-                data = await res.json(); 
-            } else {
-                // Type 'wrapped' (allorigins.win): Response is wrapped in { contents: "..." }
-                const wrappedData = await res.json();
-                if (wrappedData.contents) {
-                     // Crucial step: Parse the contents string to get the final JSON array
-                    data = JSON.parse(wrappedData.contents); 
-                } else {
-                    throw new Error("AllOrigins contents missing.");
-                }
-            }
-
-            // DuckDuckGo returns an array of objects: [{phrase: "suggestion1"}, ...]
-            if (Array.isArray(data) && data.length > 0) {
-                console.log("Successfully fetched and parsed data.");
-                return data.map(item => item.phrase).filter(p => p); 
-            }
+            if (proxy.type === 'raw') return await res.text(); // Return text (JSON or XML)
+            
+            // Wrapped (AllOrigins)
+            const json = await res.json();
+            return json.contents; 
         } catch (e) {
-            console.warn(`Proxy failed (${proxy.type}): ${e.message}`);
+            console.warn(`Proxy ${proxy.type} failed:`, e);
         }
     }
+    return null;
+}
+
+// --- SUGGESTIONS ---
+async function fetchExternalSuggestions(query) {
+    const url = `https://duckduckgo.com/ac/?q=${encodeURIComponent(query)}&type=json`;
+    try {
+        const rawData = await fetchViaProxy(url);
+        if(!rawData) return [];
+        
+        const data = JSON.parse(rawData); // DuckDuckGo returns JSON
+        if (Array.isArray(data)) return data.map(item => item.phrase).filter(p => p);
+    } catch(e) { console.error("Suggestion Parse Error", e); }
     return [];
 }
 
+// --- NEW: NEWS FEED LOGIC ---
+async function fetchNews() {
+    if (!settings.newsEnabled) return [];
+    
+    try {
+        const rawXML = await fetchViaProxy(DEFAULT_RSS);
+        if (!rawXML) throw new Error("No data from proxies");
 
-// --- NEW: SUGGESTION LOGIC (Updated) ---
-// Requires selectSuggestion, which is in ui-logic.js (must be exposed globally/imported)
-/* global selectSuggestion */
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(rawXML, "text/xml");
+        const items = xmlDoc.querySelectorAll("item");
+        
+        const headlines = [];
+        // Limit to top 5
+        for(let i=0; i < Math.min(5, items.length); i++) {
+            const title = items[i].querySelector("title")?.textContent;
+            const link = items[i].querySelector("link")?.textContent;
+            if(title && link) headlines.push({ title, link });
+        }
+        return headlines;
+    } catch (e) {
+        console.error("News Fetch Error:", e);
+        return [{ title: "Unable to load news feed.", link: "#" }];
+    }
+}
 
-async function handleSuggestions() {
+// --- UTILS --- (Keep existing logSearch, getGreeting, updateClock)
+
+function handleSuggestions() {
     const inputEl = document.getElementById('searchInput');
     const input = inputEl.value.toLowerCase().trim();
     const container = document.getElementById('suggestionsContainer');
@@ -67,73 +82,55 @@ async function handleSuggestions() {
     
     let suggestions = [];
     
-    // 1. Internal Private Suggestions (Always used as fallback/link priority)
-    // Link Name Suggestions
+    // Internal
     const linkMatches = links
         .filter(l => l.name.toLowerCase().includes(input))
         .map(l => ({ name: l.name, url: l.url, type: 'Link' }));
-        
     suggestions.push(...linkMatches);
     
-    // Search History Suggestions (excluding any text already matched as a link)
     const historyMatches = searchHistory
         .filter(h => h.toLowerCase().includes(input) && !linkMatches.some(l => l.name.toLowerCase() === h.toLowerCase()))
         .map(h => ({ name: h, type: 'History' }));
-        
     suggestions.push(...historyMatches);
     
-    // 2. External Suggestions (If enabled by user)
+    // External (Async)
     if (settings.externalSuggest) {
-        // Now using the privacy-respecting DuckDuckGo API
-        const external = await fetchExternalSuggestions(input);
-        
-        // Merge external results, avoiding duplicates from internal list
-        external.forEach(term => {
-            if (!suggestions.some(s => s.name.toLowerCase() === term.toLowerCase())) {
-                 // Mark external results with the Search type
-                suggestions.push({ name: term, type: 'Search' }); 
-            }
+        fetchExternalSuggestions(input).then(external => {
+             // We render immediately with internal, then append external if valid
+             // This simple version waits for user typing; a robust one would debounce.
+             // For 0Fluff, we just update if the container is still open
+             if(container.classList.contains('hidden')) return;
+             
+             external.forEach(term => {
+                if (!suggestions.some(s => s.name.toLowerCase() === term.toLowerCase())) {
+                    const item = document.createElement('div');
+                    item.className = 'suggestion-item';
+                    item.innerHTML = `<span>${term}</span><span class="suggestion-type">Search</span>`;
+                    item.onclick = () => selectSuggestion({name:term, type:'Search'});
+                    container.appendChild(item);
+                }
+             });
         });
     }
 
-    if (suggestions.length === 0) {
-        container.classList.add('hidden');
-        return;
-    }
-    
-    // Render Suggestions (Limit to top 8 now that we have external sources)
+    // Render Sync Results First
     suggestions.slice(0, 8).forEach(s => { 
         const item = document.createElement('div');
         item.className = 'suggestion-item';
-        item.innerHTML = `
-            <span>${s.name}</span>
-            <span class="suggestion-type">${s.type}</span>
-        `;
-        
-        // selectSuggestion is in ui-logic.js
+        item.innerHTML = `<span>${s.name}</span><span class="suggestion-type">${s.type}</span>`;
         item.onclick = () => selectSuggestion(s);
         container.appendChild(item);
     });
     
-    container.classList.remove('hidden');
+    if(suggestions.length > 0 || settings.externalSuggest) container.classList.remove('hidden');
 }
-
-
-// --- UTILS ---
 
 function logSearch(query) {
     query = query.trim();
-    if (query === '' || query.includes('.') && !query.includes(' ')) return; // Don't log URLs
-    
-    // Remove if already exists and push to the front
+    if (query === '' || query.includes('.') && !query.includes(' ')) return;
     searchHistory = searchHistory.filter(item => item !== query);
     searchHistory.unshift(query);
-    
-    // Limit history size to keep storage clean
-    if (searchHistory.length > 10) {
-        searchHistory = searchHistory.slice(0, 10);
-    }
-    
+    if (searchHistory.length > 10) searchHistory = searchHistory.slice(0, 10);
     localStorage.setItem('0fluff_history', JSON.stringify(searchHistory));
 }
 
@@ -145,7 +142,6 @@ function getGreeting(userName) {
     else if (hour < 17) greeting = "Good Afternoon";
     else if (hour < 22) greeting = "Good Evening";
     else greeting = "Good Night";
-    
     const name = userName ? `, ${userName}` : '';
     return `${greeting}${name}.`;
 }
@@ -169,46 +165,8 @@ function updateClock() {
     document.getElementById('greetingDisplay').innerText = getGreeting(settings.userName);
 }
 
-// Requires renderEngineDropdown from ui-logic.js
-/* global renderEngineDropdown */
-function loadSettings() {
-    document.body.className = settings.theme; 
-    document.getElementById('themeSelect').value = settings.theme;
-    
-    const radios = document.getElementsByName('clockFormat');
-    for(let r of radios) {
-        if(r.value === settings.clockFormat) r.checked = true;
-    }
-    
-    // Load external suggest toggle state
-    document.getElementById('externalSuggestToggle').checked = settings.externalSuggest;
-    
-    updateClock(); 
-    renderEngineDropdown(); // Renders UI element
-}
-
-// Requires updateClock from this file, but only affects settings object and localStorage
-function autoSaveSettings() {
-    settings.theme = document.getElementById('themeSelect').value;
-    settings.userName = document.getElementById('userNameInput').value.trim();
-    
-    const radios = document.getElementsByName('clockFormat');
-    for(let r of radios) {
-        if(r.checked) settings.clockFormat = r.value;
-    }
-    
-    // Save external suggest toggle state
-    settings.externalSuggest = document.getElementById('externalSuggestToggle').checked;
-    
-    localStorage.setItem('0fluff_settings', JSON.stringify(settings));
-    
-    document.body.className = settings.theme;
-    updateClock();
-}
-
-// Expose these for external use (e.g., HTML events or ui-logic.js)
+// Expose
+window.fetchNews = fetchNews;
 window.handleSuggestions = handleSuggestions;
 window.logSearch = logSearch;
 window.updateClock = updateClock;
-window.loadSettings = loadSettings;
-window.autoSaveSettings = autoSaveSettings;
