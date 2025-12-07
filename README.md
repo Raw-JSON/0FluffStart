@@ -21,30 +21,29 @@ This project eliminates external dependencies to offer maximum speed and privacy
 
 ### 1. Locate the Live Link
 
-Paste URL"https://raw-json.github.io/0FluffStart/" into the appropriate setting below.
+The URL is: `https://raw-json.github.io/0FluffStart/`
 
 ### 2. Set as Default Homepage
 
-The setup steps vary depending on your browser:
+The setup steps vary depending on your device and browser:
 
 | Browser | Step-by-Step Instructions |
 | :--- | :--- |
-| **Google Chrome (Android/Desktop)** | 1. Open **Settings** > **Homepage** (or **Search Engine** > **Manage search engines and site search**). <br> 2. Select **Homepage** and choose **'Enter custom web address'**. <br> 3. Paste the 0FluffStart URL. |
-| **Safari (iOS/iPadOS)** | **Note:** Safari does not allow setting a custom homepage. Use **"Add to Home Screen"** instead. <br> 1. Open the 0FluffStart URL. <br> 2. Tap the **Share** button (Square with up arrow). <br> 3. Select **"Add to Home Screen"**. |
-| **Mozilla Firefox (Mobile/Desktop)** | 1. Open **Settings** > **Home**. <br> 2. Tap **Homepage** > **'Custom URLs'**. <br> 3. Paste the 0FluffStart URL. |
-| **Microsoft Edge (Mobile/Desktop)** | 1. Open **Settings** > **Start, Home, and New tabs**. <br> 2. Under 'When Edge starts', select **'Open these pages'**. <br> 3. Click **'Add new page'** and paste the 0FluffStart URL. |
+| **Google Chrome (Desktop)** | 1. Open **Settings** (⋮) > **You and Google** > **On startup**. <br> 2. Select **'Open a specific page or set of pages'**. <br> 3. Click **'Add a new page'** and paste the 0FluffStart URL. |
+| **Mozilla Firefox (Desktop)** | 1. Open **Settings** (☰) > **Home** > **New windows and tabs**. <br> 2. Select **'Custom URLs'** in the dropdown. <br> 3. Paste the 0FluffStart URL. |
+| **Microsoft Edge (Desktop)** | 1. Open **Settings** (•••) > **Start, home, and new tabs**. <br> 2. Under 'When Edge starts', select **'Open these pages'**. <br> 3. Click **'Add a new page'** and paste the 0FluffStart URL. |
+| **Mobile (iOS/Android)** | Use **"Add to Home Screen"** feature for a dedicated, app-like experience. |
 
 ---
 
 ## 💡 Core Features
 
-* **Custom Links (CRUD):** Add, Edit, and Delete links directly from the dashboard interface.
-* **Deep Theming ("Vibes"):** Switch between high-contrast themes like **OLED Dark**, **Cyberpunk**, **Paper**, and **Sunset Drive** that alter colors, fonts, and geometry.
+* **Cross-Device Optimization:** Ensures the dashboard displays perfectly and efficiently on large desktop monitors (6-column grid) as well as mobile devices.
 * **Instant Auto-Save:** All settings (Name, Vibe, Clock Format) save immediately upon change. No "Save" button required.
+* **Deep Theming ("Vibes"):** Switch between high-contrast themes like **OLED Dark**, **Cyberpunk**, **Paper**, and **Sunset Drive** that alter colors, fonts, and geometry.
+* **External Auto-Suggest (Opt-in):** Offers high-utility, real-time search predictions (powered by the privacy-respecting DuckDuckGo API) without compromising the internal system.
 * **Quick Search Switcher:** Instantly toggle your default search engine (Google, DuckDuckGo, Brave, etc.) directly from the main search bar for a zero-friction workflow.
-* **Edit Mode Toggle:** Enter a dedicated Edit Mode (✎) to manage links without accidentally navigating.
-* **Real Favicons:** Automatically fetches and displays real website icons for an app-like feel.
-* **Personalized Experience:** Displays a dynamic greeting ("Good Morning, [Name]") that changes based on the time of day and your custom settings.
+* **Custom Links (CRUD):** Add, Edit, and Delete links directly from the dashboard interface.
 
 ---
 
