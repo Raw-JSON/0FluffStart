@@ -18,7 +18,7 @@ No ads. No trackers. No backend nonsense. Just vibes.
 ![Custom Links](https://github.com/user-attachments/assets/4af13a49-2685-4028-b0f3-c02b8b7a0102)
 
 ### Search + Suggestions
-![Search and Suggestions (https://github.com/user-attachments/assets/9969f591-649a-4ce7-9466-86f049613e81)
+[Search/Suggestions](https://github.com/user-attachments/assets/9969f591-649a-4ce7-9466-86f049613e81)
 ---
 
 ## 🔥 Why This Exists
