@@ -67,15 +67,14 @@
     <div class="modal-content">
         <div class="modal-header">
             <h2>Settings</h2>
-            <button onclick="toggleEditMode()" id="editToggleBtn" class="edit-toggle-btn icon-btn">
-                <svg class="edit-icon-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-                <svg class="check-icon-svg hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <button onclick="closeModal('settingsModal')" class="icon-btn">
+               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
         </div>
         
         <div class="setting-group">
             <h3>Quick Link Management</h3>
-            <button onclick="openEditor()" class="add-link-btn" style="margin-bottom: 10px;">+ Add New Link</button>
+            <button onclick="openEditor()" class="add-link-btn" style="margin-bottom: 15px;">+ Add New Link</button>
             <div id="linkManagerContent" class="link-manager-list">
                 </div>
         </div>
@@ -111,7 +110,7 @@
         <div class="setting-group" style="margin-top: 25px;">
             <h3>External Search Suggestions</h3>
             <p style="font-size:0.8rem; color:var(--dim); margin-bottom: 10px;">
-                ⚠️ This sends keystrokes to **DuckDuckGo** for live predictions. Disabling this keeps all search activity 100% private and client-side.
+                ⚠️ Sends keystrokes to **DuckDuckGo**. Disabling keeps search 100% local.
             </p>
             <label class="radio-option" style="justify-content: flex-start;">
                 <input type="checkbox" id="externalSuggestToggle" onchange="autoSaveSettings()"> Enable Live Suggestions
@@ -124,8 +123,6 @@
                 Report Issue / GitHub
             </button>
         </div>
-        
-        <p style="text-align: center; color: var(--dim); font-size: 0.8rem; margin-top: 15px;">Changes save automatically.</p>
     </div>
 </div>
 
