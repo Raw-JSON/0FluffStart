@@ -1,6 +1,6 @@
 // ui-logic.js
 
-/* global links, settings, isEditMode, isEditingId, searchEngines */
+/* global links, settings, isEditMode, isEditingId, searchEngines, NEWS_TOPICS */
 /* global renderEngineDropdown, loadSettings, updateClock, autoSaveSettings, logSearch, handleSuggestions, fetchNews */
 
 // --- INIT ---
@@ -96,23 +96,39 @@ async function renderNews() {
     }
     
     container.classList.remove('hidden');
-    list.innerHTML = '<div class="news-loading">Updating...</div>';
+    list.innerHTML = '<div class="news-loading">Loading visuals...</div>';
+    
+    // Get Topic Name for Header
+    const topicKey = settings.newsTopic || "TOP";
+    const topicName = NEWS_TOPICS[topicKey] ? NEWS_TOPICS[topicKey].name : "Top Stories";
+    
+    // Update header if exists (create if logic needed, but simpler to just update text if element exists)
+    const headerEl = container.querySelector('.news-header');
+    if(headerEl) headerEl.innerText = `${topicName} Headlines`;
     
     const headlines = await fetchNews();
     list.innerHTML = '';
     
     if (headlines.length === 0) {
-        list.innerHTML = '<div class="news-item">No news available.</div>';
+        list.innerHTML = '<div class="news-loading">No news available.</div>';
         return;
     }
 
     headlines.forEach(item => {
-        const div = document.createElement('a');
-        div.className = 'news-item';
-        div.href = item.link;
-        div.target = "_blank";
-        div.textContent = item.title;
-        list.appendChild(div);
+        const card = document.createElement('a');
+        card.className = 'news-card';
+        card.href = item.link;
+        card.target = "_blank";
+        
+        // Visual Card Layout
+        card.innerHTML = `
+            <div class="news-title">${item.title}</div>
+            <div class="news-meta">
+                <span class="news-source">${item.source}</span>
+                <span class="news-time">${item.time}</span>
+            </div>
+        `;
+        list.appendChild(card);
     });
 }
 
@@ -302,6 +318,10 @@ function loadSettings() {
     document.getElementById('externalSuggestToggle').checked = settings.externalSuggest;
     document.getElementById('newsToggle').checked = settings.newsEnabled;
     
+    // New: Topic Selector
+    const topicSelect = document.getElementById('newsTopicSelect');
+    if(topicSelect) topicSelect.value = settings.newsTopic || "TOP";
+    
     updateClock(); 
     renderEngineDropdown();
 }
@@ -315,14 +335,21 @@ function autoSaveSettings() {
     
     settings.externalSuggest = document.getElementById('externalSuggestToggle').checked;
     
+    // News Logic
     const newsState = document.getElementById('newsToggle').checked;
-    if (settings.newsEnabled !== newsState) {
-        settings.newsEnabled = newsState;
-        renderNews(); 
-    }
+    const topicSelect = document.getElementById('newsTopicSelect').value;
+    
+    const needsRefresh = (settings.newsEnabled !== newsState) || (settings.newsTopic !== topicSelect);
+    
+    settings.newsEnabled = newsState;
+    settings.newsTopic = topicSelect;
     
     localStorage.setItem('0fluff_settings', JSON.stringify(settings));
-    loadSettings(); 
+    
+    if (needsRefresh) {
+        loadSettings();
+        renderNews(); 
+    }
 }
 
 
