@@ -318,11 +318,12 @@ body.sunset .link-icon-circle { border-radius: 50%; }
     height: 100%; 
     background: rgba(0,0,0,0.85); 
     display: none; 
-    /* Force centering regardless of screen size */
     justify-content: center; 
     align-items: center; 
     z-index: 100; 
     backdrop-filter: blur(5px); 
+    /* FIX: Ensures the modal wrapper scrolls if contents exceed window height */
+    overflow-y: auto; 
 }
 .modal.active { display: flex; }
 
@@ -332,7 +333,8 @@ body.sunset .link-icon-circle { border-radius: 50%; }
     border-radius: var(--radius); 
     width: 90%; 
     max-width: 450px; 
-    max-height: 90vh; /* Critical: Stops modal from taking full height on desktop/tablet */
+    /* Critical: Max-height ensures content inside the modal scrolls, not the wrapper, unless necessary */
+    max-height: 90vh; 
     overflow-y: auto;
     border: 1px solid var(--border); 
     box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
