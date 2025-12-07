@@ -4,22 +4,29 @@ let settings = JSON.parse(localStorage.getItem('0fluff_settings') || '{"theme":"
 let isEditMode = false;
 let isEditingId = null;
 
+// Engine Configuration (Initial + Icon Initials)
 const searchEngines = [
-    { name: 'Google', url: 'https://www.google.com/search?q=' },
-    { name: 'DuckDuckGo', url: 'https://duckduckgo.com/?q=' },
-    { name: 'Brave', url: 'https://search.brave.com/search?q=' },
-    { name: 'Bing', url: 'https://www.bing.com/search?q=' },
-    { name: 'Qwant', url: 'https://www.qwant.com/?q=' },
-    { name: 'Startpage', url: 'https://www.startpage.com/sp/search?query=' }
+    { name: 'Google', initial: 'G', url: 'https://www.google.com/search?q=' },
+    { name: 'DuckDuckGo', initial: 'D', url: 'https://duckduckgo.com/?q=' },
+    { name: 'Brave', initial: 'B', url: 'https://search.brave.com/search?q=' },
+    { name: 'Bing', initial: 'b', url: 'https://www.bing.com/search?q=' },
+    { name: 'Startpage', initial: 'S', url: 'https://www.startpage.com/sp/search?query=' }
 ];
 
 // --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
     renderLinks();
-    loadSettings();
+    loadSettings(); // This now sets the Vibe/Theme
     setInterval(updateClock, 1000);
-    populateSearchEngines();
+    renderEngineDropdown(); // Prepare the UI
     updateClock(); 
+    
+    // Global click listener to close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.engine-switcher')) {
+            document.getElementById('engineDropdown').classList.add('hidden');
+        }
+    });
 });
 
 // --- CORE FUNCTIONS ---
@@ -30,10 +37,12 @@ function toggleEditMode() {
     
     if(isEditMode) {
         btn.classList.add('active');
-        btn.innerText = '✓'; // Change icon to Checkmark when done
+        btn.querySelector('.edit-icon-svg').classList.add('hidden');
+        btn.querySelector('.check-icon-svg').classList.remove('hidden');
     } else {
         btn.classList.remove('active');
-        btn.innerText = '✎';
+        btn.querySelector('.edit-icon-svg').classList.remove('hidden');
+        btn.querySelector('.check-icon-svg').classList.add('hidden');
     }
     
     renderLinks();
@@ -67,11 +76,9 @@ function renderLinks() {
         if (isEditMode) {
             // Delete badge (X)
             html += `<div class="delete-badge" onclick="deleteLink('${link.id}', event)">✕</div>`;
-            
-            // In this specific design, clicking the main icon in edit mode opens the editor
             item.onclick = (e) => editLink(link.id, e);
         } else {
-            // Normal Mode: Navigate
+            // Normal Mode
             item.onclick = () => {
                 const finalUrl = link.url.startsWith('http') ? link.url : `https://${link.url}`;
                 window.location.href = finalUrl;
@@ -81,6 +88,37 @@ function renderLinks() {
         item.innerHTML = html;
         grid.appendChild(item);
     });
+}
+
+// --- SEARCH ENGINE UI LOGIC ---
+
+function renderEngineDropdown() {
+    const dropdown = document.getElementById('engineDropdown');
+    dropdown.innerHTML = '';
+    
+    // Find current to verify validity
+    const current = searchEngines.find(s => s.name === settings.searchEngine) || searchEngines[0];
+    document.getElementById('currentEngineIcon').innerText = current.initial;
+
+    searchEngines.forEach(e => {
+        const div = document.createElement('div');
+        div.className = `engine-option ${e.name === settings.searchEngine ? 'selected' : ''}`;
+        div.innerHTML = `<span>${e.name}</span> <span>${e.initial}</span>`;
+        div.onclick = () => selectEngine(e.name);
+        dropdown.appendChild(div);
+    });
+}
+
+function toggleEngineDropdown() {
+    const el = document.getElementById('engineDropdown');
+    el.classList.toggle('hidden');
+}
+
+function selectEngine(name) {
+    settings.searchEngine = name;
+    autoSaveSettings(); // Auto-save trigger
+    renderEngineDropdown(); // Re-render to update checkmarks/selected state
+    toggleEngineDropdown(); // Close
 }
 
 // --- CRUD ---
@@ -136,7 +174,6 @@ function deleteLink(id, e) {
 
 // --- UTILS ---
 function toggleSettings() { 
-    // Load current user name into the input before opening
     document.getElementById('userNameInput').value = settings.userName;
     document.getElementById('settingsModal').classList.add('active'); 
 }
@@ -156,7 +193,6 @@ function handleSearch(e) {
     }
 }
 
-// NEW: Dynamic Greeting Function
 function getGreeting(userName) {
     const hour = new Date().getHours();
     let greeting = "Hello";
@@ -180,58 +216,43 @@ function updateClock() {
     if (settings.clockFormat === '12h') {
         suffix = h >= 12 ? ' PM' : ' AM';
         h = h % 12 || 12;
-        
-        // FIX: Remove leading zero padding for 12h format
         if (h < 10) h = String(h).replace(/^0+/, ''); 
     } else {
-         h = String(h).padStart(2, '0'); // Keep padding for 24h
+         h = String(h).padStart(2, '0'); 
     }
     
-    // Update Clock
     document.getElementById('clockDisplay').innerText = `${h}:${m}:${s}${suffix}`;
-
-    // Update Greeting (Less frequent, perhaps every 60s, but we'll do it here for simplicity)
     document.getElementById('greetingDisplay').innerText = getGreeting(settings.userName);
 }
 
-function populateSearchEngines() {
-    const sel = document.getElementById('searchEngineSelect');
-    sel.innerHTML = ''; 
-    searchEngines.forEach(e => {
-        const opt = document.createElement('option');
-        opt.value = e.name;
-        opt.innerText = e.name;
-        sel.appendChild(opt);
-    });
-}
-
 function loadSettings() {
-    document.body.className = settings.theme;
+    document.body.className = settings.theme; // Applies the Vibe
     document.getElementById('themeSelect').value = settings.theme;
-    document.getElementById('searchEngineSelect').value = settings.searchEngine;
     
-    // Handle Radio Selection manually
     const radios = document.getElementsByName('clockFormat');
     for(let r of radios) {
         if(r.value === settings.clockFormat) r.checked = true;
     }
     
-    // Update the greeting text in the header
     updateClock(); 
+    renderEngineDropdown();
 }
 
-function saveSettings() {
+// NEW: Auto-Save Functionality replaces manual save
+function autoSaveSettings() {
     settings.theme = document.getElementById('themeSelect').value;
-    settings.searchEngine = document.getElementById('searchEngineSelect').value;
-    settings.userName = document.getElementById('userNameInput').value.trim(); // NEW: Save user name
+    settings.userName = document.getElementById('userNameInput').value.trim();
     
     const radios = document.getElementsByName('clockFormat');
     for(let r of radios) {
         if(r.checked) settings.clockFormat = r.value;
     }
     
+    // settings.searchEngine is updated in selectEngine()
+    
     localStorage.setItem('0fluff_settings', JSON.stringify(settings));
-    loadSettings(); 
+    
+    // Apply changes immediately (Live preview)
+    document.body.className = settings.theme;
     updateClock();
-    closeModal('settingsModal');
 }
