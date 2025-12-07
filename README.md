@@ -8,17 +8,17 @@ No ads. No trackers. No backend nonsense. Just vibes.
 ---
 ## 📸 Preview
 
+### Home Screen
+![Home Screen](https://github.com/user-attachments/assets/796922c5-8f1f-4e40-b0f6-eae549d22d2e)
 
-!(https://github.com/user-attachments/assets/796922c5-8f1f-4e40-b0f6-eae549d22d2e)
+### Themes / Vibes
+![Themes](https://github.com/user-attachments/assets/8ba5c621-3440-4e3a-a3fd-ba68c5bc0ff4)
 
+### Custom Links
+![Custom Links](https://github.com/user-attachments/assets/4af13a49-2685-4028-b0f3-c02b8b7a0102)
 
-!(https://github.com/user-attachments/assets/8ba5c621-3440-4e3a-a3fd-ba68c5bc0ff4)
-
-
-!(https://github.com/user-attachments/assets/4af13a49-2685-4028-b0f3-c02b8b7a0102)
-
-
-!(https://github.com/user-attachments/assets/9969f591-649a-4ce7-9466-86f049613e81)
+### Search + Suggestions
+![Search and Suggestions (https://github.com/user-attachments/assets/9969f591-649a-4ce7-9466-86f049613e81)
 ---
 
 ## 🔥 Why This Exists
