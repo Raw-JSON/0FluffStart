@@ -2,8 +2,6 @@
 
 /* global links, settings, searchHistory, searchEngines */ 
 
-let debounceTimer = null; // Architectural state for debouncing
-
 // --- SUGGESTIONS ---
 // Keeps external suggestion functionality if user enables it, but simplifies everything else.
 async function fetchExternalSuggestions(query) {
@@ -27,13 +25,8 @@ function handleSuggestions() {
     const input = inputEl.value.toLowerCase().trim();
     const container = document.getElementById('suggestionsContainer');
     
-    // 1. CLEAR & RESET UI (Synchronous)
-    // We clear the container immediately so the UI feels responsive to the backspace/typing
     container.innerHTML = '';
     
-    // Clear any pending external request from the previous keystroke
-    if (debounceTimer) clearTimeout(debounceTimer);
-
     if (input.length < 2) {
         container.classList.add('hidden');
         return;
@@ -41,19 +34,35 @@ function handleSuggestions() {
     
     let suggestions = [];
     
-    // 2. LOCAL MATCHES (Instant)
-    // These process in 0ms, so we render them right away.
-    const linkMatches = links
-        .filter(l => l.name.toLowerCase().includes(input))
-        .map(l => ({ name: l.name, url: l.url, type: 'Link' }));
-    suggestions.push(...linkMatches);
+    // Internal Matches (Only check history if enabled)
+    if (settings.historyEnabled) { // <--- ADDED CHECK
+        const linkMatches = links
+            .filter(l => l.name.toLowerCase().includes(input))
+            .map(l => ({ name: l.name, url: l.url, type: 'Link' }));
+        suggestions.push(...linkMatches);
+        
+        const historyMatches = searchHistory
+            .filter(h => h.toLowerCase().includes(input) && !linkMatches.some(l => l.name.toLowerCase() === h.toLowerCase()))
+            .map(h => ({ name: h, type: 'History' }));
+        suggestions.push(...historyMatches);
+    }
     
-    const historyMatches = searchHistory
-        .filter(h => h.toLowerCase().includes(input) && !linkMatches.some(l => l.name.toLowerCase() === h.toLowerCase()))
-        .map(h => ({ name: h, type: 'History' }));
-    suggestions.push(...historyMatches);
-    
-    // Render Local Results
+    // External Matches
+    if (settings.externalSuggest) {
+        fetchExternalSuggestions(input).then(external => {
+             if(container.classList.contains('hidden')) return;
+             external.forEach(term => {
+                if (!suggestions.some(s => s.name.toLowerCase() === term.toLowerCase())) {
+                    const item = document.createElement('div');
+                    item.className = 'suggestion-item';
+                    item.innerHTML = `<span>${term}</span><span class="suggestion-type">Search</span>`;
+                    item.onclick = () => selectSuggestion({name:term, type:'Search'});
+                    container.appendChild(item);
+                }
+             });
+        });
+    }
+
     suggestions.slice(0, 8).forEach(s => { 
         const item = document.createElement('div');
         item.className = 'suggestion-item';
@@ -62,45 +71,25 @@ function handleSuggestions() {
         container.appendChild(item);
     });
     
-    // Show container if we have local results
-    if(suggestions.length > 0) container.classList.remove('hidden');
-
-    // 3. EXTERNAL MATCHES (Debounced)
-    // Only fire this if the user pauses typing for 300ms
-    if (settings.externalSuggest) {
-        debounceTimer = setTimeout(() => {
-            fetchExternalSuggestions(input).then(external => {
-                 // STALE DATA CHECK:
-                 // Before rendering, check if the input box has changed since we asked.
-                 // If the user typed "The fish" while we were fetching "The", drop "The".
-                 const currentVal = document.getElementById('searchInput').value.toLowerCase().trim();
-                 if (currentVal !== input) return;
-
-                 // If container is hidden but we found results, show it
-                 if(container.classList.contains('hidden') && external.length > 0) container.classList.remove('hidden');
-                 
-                 external.forEach(term => {
-                    // Filter out duplicates (don't show if it's already in history/links)
-                    if (!suggestions.some(s => s.name.toLowerCase() === term.toLowerCase())) {
-                        const item = document.createElement('div');
-                        item.className = 'suggestion-item';
-                        item.innerHTML = `<span>${term}</span><span class="suggestion-type">Search</span>`;
-                        item.onclick = () => selectSuggestion({name:term, type:'Search'});
-                        container.appendChild(item);
-                    }
-                 });
-            });
-        }, 300); // 300ms Delay
-    }
+    if(suggestions.length > 0 || settings.externalSuggest) container.classList.remove('hidden');
 }
 
 function logSearch(query) {
+    if (!settings.historyEnabled) return; // <--- ADDED CHECK
     query = query.trim();
     if (query === '' || query.includes('.') && !query.includes(' ')) return;
     searchHistory = searchHistory.filter(item => item !== query);
     searchHistory.unshift(query);
     if (searchHistory.length > 10) searchHistory = searchHistory.slice(0, 10);
     localStorage.setItem('0fluff_history', JSON.stringify(searchHistory));
+}
+
+function clearHistory() { // <--- NEW FUNCTION
+    searchHistory = [];
+    localStorage.removeItem('0fluff_history');
+    document.getElementById('searchInput').focus();
+    handleSuggestions(); // Clear any visible suggestions
+    alert("Search history has been cleared.");
 }
 
 function getGreeting(userName) {
@@ -138,3 +127,4 @@ function updateClock() {
 window.handleSuggestions = handleSuggestions;
 window.logSearch = logSearch;
 window.updateClock = updateClock;
+window.clearHistory = clearHistory; // <--- EXPOSED
