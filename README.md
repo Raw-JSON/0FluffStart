@@ -1,6 +1,6 @@
 # 0FluffStart 🚀
 
-**A brutally minimal, privacy-first, lightning-fast home dashboard.** No ads. No trackers. No backend nonsense. Just vibes.
+**A brutally minimal, privacy-first, lightning-fast homepage.** No ads. No trackers. No backend nonsense. Just vibes.
 
 **[🔗 Launch 0FluffStart](https://raw-json.github.io/0FluffStart/)**
 
