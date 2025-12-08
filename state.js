@@ -10,7 +10,8 @@ let settings = JSON.parse(localStorage.getItem('0fluff_settings') || JSON.string
     searchEngine: "Google", 
     userName: "", 
     externalSuggest: false,
-    backgroundImage: null 
+    backgroundImage: null,
+    historyEnabled: true // <--- NEW: Enabled by default
 })); 
 
 let searchHistory = JSON.parse(localStorage.getItem('0fluff_history') || '[]'); 
