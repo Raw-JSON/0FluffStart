@@ -132,7 +132,15 @@
                     <input type="checkbox" id="externalSuggestToggle" onchange="autoSaveSettings()"> Enable Live Suggestions
                 </label>
             </div>
-        </div>
+            
+            <div class="setting-group">
+                <h3>Search History Control</h3>
+                <button onclick="clearHistory()" class="secondary" style="width:100%; margin-bottom: 10px; font-weight:bold; border:1px solid var(--delete); color: var(--delete);">Clear All Search History</button>
+                <label class="radio-option" style="justify-content: flex-start;">
+                    <input type="checkbox" id="historyEnabledToggle" onchange="autoSaveSettings()"> Enable Local Search History
+                </label>
+            </div>
+            </div>
 
         <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
             <button class="secondary github-btn" onclick="window.open('https://github.com/Raw-JSON/0FluffStart/issues', '_blank')">
