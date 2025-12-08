@@ -2,6 +2,8 @@
 
 /* global links, settings, searchHistory, searchEngines */ 
 
+let debounceTimer; // Architectural state for debouncing
+
 // --- SUGGESTIONS ---
 // Keeps external suggestion functionality if user enables it, but simplifies everything else.
 async function fetchExternalSuggestions(query) {
@@ -25,6 +27,7 @@ function handleSuggestions() {
     const input = inputEl.value.toLowerCase().trim();
     const container = document.getElementById('suggestionsContainer');
     
+    // 1. Reset UI immediately for the new keystroke
     container.innerHTML = '';
     
     if (input.length < 2) {
@@ -34,7 +37,8 @@ function handleSuggestions() {
     
     let suggestions = [];
     
-    // Internal Matches
+    // 2. Local Matches (Instant / Synchronous)
+    // We process these immediately so the user sees feedback instantly
     const linkMatches = links
         .filter(l => l.name.toLowerCase().includes(input))
         .map(l => ({ name: l.name, url: l.url, type: 'Link' }));
@@ -45,22 +49,7 @@ function handleSuggestions() {
         .map(h => ({ name: h, type: 'History' }));
     suggestions.push(...historyMatches);
     
-    // External Matches
-    if (settings.externalSuggest) {
-        fetchExternalSuggestions(input).then(external => {
-             if(container.classList.contains('hidden')) return;
-             external.forEach(term => {
-                if (!suggestions.some(s => s.name.toLowerCase() === term.toLowerCase())) {
-                    const item = document.createElement('div');
-                    item.className = 'suggestion-item';
-                    item.innerHTML = `<span>${term}</span><span class="suggestion-type">Search</span>`;
-                    item.onclick = () => selectSuggestion({name:term, type:'Search'});
-                    container.appendChild(item);
-                }
-             });
-        });
-    }
-
+    // Render Local Results immediately
     suggestions.slice(0, 8).forEach(s => { 
         const item = document.createElement('div');
         item.className = 'suggestion-item';
@@ -68,8 +57,36 @@ function handleSuggestions() {
         item.onclick = () => selectSuggestion(s);
         container.appendChild(item);
     });
+
+    if(suggestions.length > 0) container.classList.remove('hidden');
+
+    // 3. External Matches (Debounced / Asynchronous)
+    // Only fire this if the user pauses typing for 300ms
+    clearTimeout(debounceTimer); // Cancel previous pending request
     
-    if(suggestions.length > 0 || settings.externalSuggest) container.classList.remove('hidden');
+    if (settings.externalSuggest) {
+        debounceTimer = setTimeout(() => {
+            fetchExternalSuggestions(input).then(external => {
+                 // STATE CHECK: Verify the input is still what we searched for.
+                 // If user typed more while we were fetching, discard these results.
+                 const currentVal = document.getElementById('searchInput').value.toLowerCase().trim();
+                 if (currentVal !== input) return;
+
+                 if(container.classList.contains('hidden') && external.length > 0) container.classList.remove('hidden');
+                 
+                 external.forEach(term => {
+                    // Avoid duplicates with local data
+                    if (!suggestions.some(s => s.name.toLowerCase() === term.toLowerCase())) {
+                        const item = document.createElement('div');
+                        item.className = 'suggestion-item';
+                        item.innerHTML = `<span>${term}</span><span class="suggestion-type">Search</span>`;
+                        item.onclick = () => selectSuggestion({name:term, type:'Search'});
+                        container.appendChild(item);
+                    }
+                 });
+            });
+        }, 300); // 300ms Delay
+    }
 }
 
 function logSearch(query) {
