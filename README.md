@@ -38,8 +38,6 @@ Everything on the internet is bloated trash.
 
 ## 🏗 Architectural Stability & Forking
 
-The removal of the news feed feature was a deliberate choice to ensure **0FluffStart** remains the **most stable, minimalist core dashboard available.**
-
 **This project is ready to be forked.** We actively invite serious developers to use this minimal foundation for their own complex features.
 
 * **MIT License:** Go wild. There are no restrictions on how you use this code.
