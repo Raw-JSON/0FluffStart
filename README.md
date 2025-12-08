@@ -17,7 +17,7 @@ Everything on the internet is bloated trash.
 
 ---
 
-## 🛠 Features (v1.3.0)
+## 🛠 Features (v2.0.0)
 
 ### 🎨 Personalization
 - **Custom Backgrounds:** Upload any image from your device. It stays local (Base64) and never touches a server.
@@ -29,13 +29,22 @@ Everything on the internet is bloated trash.
 - **Smart Search:** Switch engines (Google, DDG, Brave, Startpage) instantly.
 - **Live Suggestions:** Optional privacy-respecting autocomplete via DuckDuckGo.
 
-### 📰 Information
-- **Minimalist News Feed (Beta):** Optional ticker for global headlines (via client-side RSS fetching).
-- **Clock:** 12h / 24h formats.
-
 ### ⚙️ Advanced Control
 - **Collapsible Settings:** Secondary options are tucked away in an "Advanced" drawer to keep the UI clean.
 - **Instant Save:** All changes persist immediately to LocalStorage.
+- **Clock:** 12h / 24h formats.
+
+---
+
+## 🏗 Architectural Stability & Forking
+
+The removal of the news feed feature was a deliberate choice to ensure **0FluffStart** remains the **most stable, minimalist core dashboard available.**
+
+**This project is ready to be forked.** We actively invite serious developers to use this minimal foundation for their own complex features.
+
+* **MIT License:** Go wild. There are no restrictions on how you use this code.
+* **Pure Vanilla Core:** No heavy dependencies, no transpilers, no build tools. The code you see is the code that runs.
+* **Modular Integrity:** The codebase is designed for surgical modification: update a theme in `themes.css`, or change search logic in `utilities.js`, without touching the core UI flow.
 
 ---
 
@@ -48,7 +57,7 @@ Everything on the internet is bloated trash.
 **Styling (Modular CSS):**
 - `themes.css` — Variables & Color Palettes
 - `core.css` — Layout, Typography, Base
-- `modules.css` — Components (Search, Grid, News)
+- `modules.css` — Components (Search, Grid)
 - `settings.css` — Modals, Forms, Controls
 
 **Storage:**
