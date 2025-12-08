@@ -1,7 +1,7 @@
 // ui-logic.js
 
 /* global links, settings, isEditMode, isEditingId, searchEngines */
-/* global renderEngineDropdown, loadSettings, updateClock, autoSaveSettings, logSearch, handleSuggestions */
+/* global renderEngineDropdown, loadSettings, updateClock, autoSaveSettings, logSearch, handleSuggestions, clearHistory */ // <--- ADDED clearHistory
 
 // --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -205,6 +205,7 @@ function loadSettings() {
     for(let r of radios) { if(r.value === settings.clockFormat) r.checked = true; }
     
     document.getElementById('externalSuggestToggle').checked = settings.externalSuggest;
+    document.getElementById('historyEnabledToggle').checked = settings.historyEnabled; // <--- ADDED TOGGLE LOAD
     
     updateClock(); 
     renderEngineDropdown();
@@ -216,6 +217,7 @@ function autoSaveSettings() {
     const radios = document.getElementsByName('clockFormat');
     for(let r of radios) if(r.checked) settings.clockFormat = r.value;
     settings.externalSuggest = document.getElementById('externalSuggestToggle').checked;
+    settings.historyEnabled = document.getElementById('historyEnabledToggle').checked; // <--- ADDED TOGGLE SAVE
     
     localStorage.setItem('0fluff_settings', JSON.stringify(settings));
     loadSettings();
@@ -294,3 +296,4 @@ window.selectSuggestion = selectSuggestion;
 window.cancelEdit = cancelEdit;
 window.autoSaveSettings = autoSaveSettings;
 window.toggleAdvanced = toggleAdvanced;
+window.clearHistory = clearHistory; // <--- EXPOSED
