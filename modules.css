@@ -26,6 +26,7 @@
 }
 #searchInput:focus { outline: none; }
 
+/* DELETED:
 .search-icon { 
     width: 50px; 
     height: 100%; 
@@ -38,6 +39,7 @@
     border: none;
     cursor: pointer;
 }
+*/
 
 /* --- ENGINE SWITCHER --- */
 .engine-switcher {
