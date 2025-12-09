@@ -55,9 +55,14 @@
     <div class="modal-content">
         <div class="modal-header">
             <h2>Settings</h2>
-            <button onclick="closeModal('settingsModal')" class="icon-btn">
-               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
+            <div class="header-actions" style="display:flex; gap:10px;">
+                <button onclick="window.open('https://github.com/Raw-JSON/0FluffStart/issues', '_blank')" class="icon-btn" title="GitHub / Report Issue">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 3c0 0-1.03-.39-3.41 1.05A16.3 16.3 0 0 0 12 2.88 16.3 16.3 0 0 0 7.4 4.04c-2.38-1.44-3.41-1.05-3.41-1.05A5.07 5.07 0 0 0 3.91 4.77 5.44 5.44 0 0 0 4 9.47c0 5.42 3.3 6.61 6.44 7.37-.4.34-.78 1-1.15 2.06v4.31"></path></svg>
+                </button>
+                <button onclick="closeModal('settingsModal')" class="icon-btn">
+                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
         </div>
         
         <div class="setting-group">
@@ -140,15 +145,9 @@
                     <input type="checkbox" id="historyEnabledToggle" onchange="autoSaveSettings()"> Enable Local Search History
                 </label>
             </div>
-            </div>
-
-        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
-            <button class="secondary github-btn" onclick="window.open('https://github.com/Raw-JSON/0FluffStart/issues', '_blank')">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 3c0 0-1.03-.39-3.41 1.05A16.3 16.3 0 0 0 12 2.88 16.3 16.3 0 0 0 7.4 4.04c-2.38-1.44-3.41-1.05-3.41-1.05A5.07 5.07 0 0 0 3.91 4.77 5.44 5.44 0 0 0 4 9.47c0 5.42 3.3 6.61 6.44 7.37-.4.34-.78 1-1.15 2.06v4.31"></path></svg>
-                Report Issue / GitHub
-            </button>
         </div>
-    </div>
+        
+        </div>
 </div>
 
 <script src="state.js"></script>
