@@ -1,7 +1,7 @@
 // ui-logic.js
 
-/* global links, settings, isEditMode, isEditingId, searchEngines */
-/* global renderEngineDropdown, loadSettings, updateClock, autoSaveSettings, logSearch, handleSuggestions, clearHistory */ // <--- ADDED clearHistory
+/* global links, settings, isEditMode, isEditingId, searchEngines, quotesDB */ // Added quotesDB
+/* global renderEngineDropdown, loadSettings, updateClock, autoSaveSettings, logSearch, handleSuggestions, clearHistory */ 
 
 // --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSettings(); 
     renderEngineDropdown(); 
     updateClock(); 
+    renderQuote(); // <--- NEW: Initialize Quote
     setInterval(updateClock, 1000);
 
     document.addEventListener('click', (e) => {
@@ -205,9 +206,11 @@ function loadSettings() {
     for(let r of radios) { if(r.value === settings.clockFormat) r.checked = true; }
     
     document.getElementById('externalSuggestToggle').checked = settings.externalSuggest;
-    document.getElementById('historyEnabledToggle').checked = settings.historyEnabled; // <--- ADDED TOGGLE LOAD
+    document.getElementById('historyEnabledToggle').checked = settings.historyEnabled;
+    document.getElementById('quotesEnabledToggle').checked = settings.quotesEnabled; // <--- NEW: Toggle Load
     
     updateClock(); 
+    renderQuote(); // <--- NEW: Re-render quote if settings change
     renderEngineDropdown();
 }
 
@@ -217,7 +220,8 @@ function autoSaveSettings() {
     const radios = document.getElementsByName('clockFormat');
     for(let r of radios) if(r.checked) settings.clockFormat = r.value;
     settings.externalSuggest = document.getElementById('externalSuggestToggle').checked;
-    settings.historyEnabled = document.getElementById('historyEnabledToggle').checked; // <--- ADDED TOGGLE SAVE
+    settings.historyEnabled = document.getElementById('historyEnabledToggle').checked;
+    settings.quotesEnabled = document.getElementById('quotesEnabledToggle').checked; // <--- NEW: Toggle Save
     
     localStorage.setItem('0fluff_settings', JSON.stringify(settings));
     loadSettings();
@@ -279,6 +283,29 @@ function selectSuggestion(suggestion) {
     }
 }
 
+// --- QUOTE LOGIC (NEW) ---
+function renderQuote() {
+    const container = document.getElementById('quoteContainer');
+    const textEl = document.getElementById('quoteText');
+    const authorEl = document.getElementById('quoteAuthor');
+    
+    // Safety check if quotesDB is missing or feature disabled
+    if (!settings.quotesEnabled || typeof quotesDB === 'undefined') {
+        container.classList.add('hidden');
+        return;
+    }
+
+    // Deterministic Quote of the Day
+    const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+    const quoteIndex = dayOfYear % quotesDB.length;
+    const todayQuote = quotesDB[quoteIndex];
+
+    textEl.innerText = `"${todayQuote.text}"`;
+    authorEl.innerText = `- ${todayQuote.author}`;
+    container.classList.remove('hidden');
+}
+
+
 window.handleImageUpload = handleImageUpload;
 window.clearBackground = clearBackground;
 window.renderLinks = renderLinks;
@@ -296,4 +323,5 @@ window.selectSuggestion = selectSuggestion;
 window.cancelEdit = cancelEdit;
 window.autoSaveSettings = autoSaveSettings;
 window.toggleAdvanced = toggleAdvanced;
-window.clearHistory = clearHistory; // <--- EXPOSED
+window.clearHistory = clearHistory;
+window.renderQuote = renderQuote; // <--- Export
