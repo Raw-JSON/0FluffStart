@@ -39,37 +39,6 @@
     cursor: pointer;
 }
 
-/* --- DAILY QUOTE --- */
-.quote-container {
-    text-align: center;
-    margin-bottom: 25px;
-    max-width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    opacity: 0.8;
-    transition: opacity 0.3s;
-}
-
-.quote-container:hover {
-    opacity: 1;
-}
-
-.quote-text {
-    font-size: 0.95rem;
-    font-style: italic;
-    color: var(--text);
-    margin-bottom: 4px;
-    font-weight: 300;
-}
-
-.quote-author {
-    font-size: 0.75rem;
-    color: var(--accent);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
 /* --- ENGINE SWITCHER --- */
 .engine-switcher {
     position: relative;
