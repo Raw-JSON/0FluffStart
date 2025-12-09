@@ -1,7 +1,7 @@
 // ui-logic.js
 
 /* global links, settings, isEditMode, isEditingId, searchEngines */
-/* global renderEngineDropdown, loadSettings, updateClock, autoSaveSettings, logSearch, handleSuggestions, clearHistory */ // <--- ADDED clearHistory
+/* global renderEngineDropdown, loadSettings, updateClock, autoSaveSettings, logSearch, handleSuggestions, clearHistory */
 
 // --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -72,24 +72,53 @@ function renderLinks() {
     const grid = document.getElementById('linkGrid');
     if(!grid) return;
     grid.innerHTML = '';
+    
     links.forEach(link => {
-        // let domain = 'example.com';
-        // try {
-        //     let urlForParse = link.url.startsWith('http') ? link.url : `https://${link.url}`;
-        //     domain = new URL(urlForParse).hostname;
-        // } catch(e) { console.error(e); }
-        // const iconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`; // REMOVED EXTERNAL FETCH
+        // 1. Dynamic Acronym Extraction
+        // Split by space, take first letter of each word
+        const words = link.name.split(' ').filter(w => w.length > 0);
+        let acronym = words.map(word => word.charAt(0).toUpperCase()).join('');
+        
+        // Fallback: If name has no spaces but is long (e.g. "Instagram"), just take first 2 letters
+        if (words.length === 1 && acronym.length === 1 && link.name.length > 1) {
+             acronym = link.name.substring(0, 2).toUpperCase();
+        }
 
-        const initial = link.name.charAt(0).toUpperCase();
+        // 2. Clamp length to max 3 chars for aesthetics
+        const display = acronym.substring(0, 3);
+        
+        // 3. Smart Typography (The "Nice" Factor)
+        let fontSize = '1.5rem';
+        let letterSpacing = '-1px'; // Tighten up for logo feel
+        
+        if (display.length === 1) {
+            fontSize = '2rem'; // Massive single letter
+        } else if (display.length === 2) {
+            fontSize = '1.6rem';
+        } else {
+            fontSize = '1.2rem'; // Smaller for 3 letters
+            letterSpacing = '-0.5px';
+        }
 
         const item = document.createElement('div');
         item.className = 'link-item';
+        
+        // Injected inline styles for that premium "Monogram" look
+        // Text-shadow adds subtle depth without bloat
         item.innerHTML = `
             <div class="link-icon-circle">
-                <span style="font-size:1.5rem; color:var(--accent); font-weight:bold;">${initial}</span>
+                <span style="
+                    font-size: ${fontSize}; 
+                    color: var(--accent); 
+                    font-weight: 800; 
+                    letter-spacing: ${letterSpacing};
+                    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                    font-family: var(--font-main);
+                ">${display}</span>
             </div>
             <div class="link-name">${link.name}</div>
         `;
+        
         item.onclick = () => {
             const finalUrl = link.url.startsWith('http') ? link.url : `https://${link.url}`;
             window.location.href = finalUrl;
@@ -296,4 +325,4 @@ window.selectSuggestion = selectSuggestion;
 window.cancelEdit = cancelEdit;
 window.autoSaveSettings = autoSaveSettings;
 window.toggleAdvanced = toggleAdvanced;
-window.clearHistory = clearHistory; // <--- EXPOSED
+window.clearHistory = clearHistory;
