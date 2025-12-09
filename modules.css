@@ -1,158 +1,203 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>0FluffStart</title>
+/* modules.css */
+
+/* --- SEARCH BAR --- */
+.search-bar { 
+    display: flex; 
+    gap: 0; 
+    margin-bottom: 20px; 
+    height: 50px; 
+    position: relative;
+    background: var(--card-hover);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+#searchInput { 
+    flex-grow: 1; 
+    height: 100%; 
+    padding: 0 16px; 
+    border: none; 
+    background: transparent; 
+    color: var(--text); 
+    font-size: 1rem;
+    box-sizing: border-box; 
+    font-family: var(--font-main);
+}
+#searchInput:focus { outline: none; }
+
+.search-icon { 
+    width: 50px; 
+    height: 100%; 
+    border-radius: 0 var(--radius) var(--radius) 0; 
+    background: transparent; 
+    color: var(--accent); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    border: none;
+    cursor: pointer;
+}
+
+/* --- ENGINE SWITCHER --- */
+.engine-switcher {
+    position: relative;
+    height: 100%;
+    border-right: 1px solid var(--border);
+}
+
+.engine-btn {
+    height: 100%;
+    padding: 0 15px;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-weight: bold;
+    font-family: var(--font-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1rem;
+}
+
+/* Engine Dropdown */
+.engine-dropdown {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 180px;
+    z-index: 9999; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    overflow: hidden;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.engine-dropdown.hidden { display: none; }
+
+.engine-option {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: calc(var(--radius) - 4px);
+    transition: background 0.2s;
+    font-size: 0.9rem;
+    color: var(--text);
+    display: flex;
+    justify-content: space-between;
+}
+
+.engine-option:hover {
+    background: var(--card-hover);
+    color: var(--accent);
+}
+
+.engine-option.selected {
+    color: var(--accent);
+    font-weight: bold;
+}
+
+/* --- SUGGESTIONS DROPDOWN --- */
+.suggestions-container {
+    position: absolute;
+    top: 58px; 
+    left: 0;
+    right: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    z-index: 999; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    max-height: 250px; 
+    overflow-y: auto;
+    padding: 0; 
+}
+
+.suggestion-item { 
+    padding: 12px 15px; 
+    cursor: pointer; 
+    font-size: 0.95rem; 
+    color: var(--text); 
+    transition: background 0.1s; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    border-bottom: 1px solid var(--card-hover); 
+}
+
+.suggestion-item:last-child { border-bottom: none; }
+.suggestion-item:hover { background: var(--card-hover); }
+
+.suggestion-type { 
+    font-size: 0.75rem; 
+    color: var(--dim); 
+    text-transform: uppercase; 
+    letter-spacing: 0.5px; 
+    background: var(--card-hover); 
+    padding: 3px 8px; 
+    border-radius: 6px; 
+}
+
+/* --- LINK GRID --- */
+.link-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 15px;
+    justify-content: center;
+}
+
+.link-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+.link-item:active { transform: scale(0.96); }
+
+.link-icon-circle {
+    width: 56px;
+    height: 56px;
+    background: var(--card);
+    border-radius: 40%; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    overflow: hidden;
+    transition: transform 0.2s;
+    border: 1px solid var(--border); 
+    box-shadow: var(--shadow);
+}
+
+/* Cyberpunk specific override */
+body.cyberpunk .link-icon-circle { border-radius: 0; }
+body.sunset .link-icon-circle { border-radius: 50%; }
+
+.link-icon-circle img { width: 100%; height: 100%; object-fit: cover; }
+.link-name { color: var(--text); font-size: 0.75rem; text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9; }
+
+/* --- DESKTOP OPTIMIZATIONS (Modules) --- */
+@media (min-width: 768px) {
+    .search-bar { height: 60px; }
+    .engine-btn { padding: 0 20px; }
+    #searchInput { font-size: 1.1rem; }
     
-    <link rel="stylesheet" href="themes.css">
-    <link rel="stylesheet" href="core.css">
-    <link rel="stylesheet" href="modules.css">
-    <link rel="stylesheet" href="settings.css">
+    .suggestions-container { top: 68px; }
     
-    <meta name="theme-color" content="#000000">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-</head>
-<body class="dark">
+    .link-grid { grid-template-columns: repeat(6, 1fr); gap: 20px; }
+    .link-icon-circle { width: 64px; height: 64px; border-radius: calc(var(--radius) + 2px); }
+    .link-name { font-size: 0.8rem; }
+}
 
-<div id="bgOverlay" class="bg-overlay"></div>
-
-<div class="container">
-    <header>
-        <div class="header-row">
-            <button onclick="toggleSettings()" class="icon-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            </button>
-        </div>
-        <div id="clockDisplay" class="clock">00:00:00</div>
-        <div id="greetingDisplay" class="greeting">Hello, User.</div>
-    </header>
-
-    <div class="search-bar">
-        <div class="engine-switcher" id="engineSwitcher">
-            <button class="engine-btn" onclick="toggleEngineDropdown()">
-                <span id="currentEngineIcon">G</span>
-                <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
-            <div id="engineDropdown" class="engine-dropdown hidden"></div>
-        </div>
-
-        <input type="text" id="searchInput" placeholder="Search or Type URL..." onkeypress="handleSearch(event)" oninput="handleSuggestions()">
-        
-        <button class="search-icon" onclick="handleSearch({ key: 'Enter', type: 'click', preventDefault: () => {} })">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        </button>
-        
-        <div id="suggestionsContainer" class="suggestions-container hidden"></div>
-    </div>
-
-    <div id="linkGrid" class="link-grid"></div>
-
-    </div>
-
-<div class="modal" id="settingsModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Settings</h2>
-            <button onclick="closeModal('settingsModal')" class="icon-btn">
-               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-        </div>
-        
-        <div class="setting-group">
-            <h3>Quick Link Management</h3>
-            <div id="linkListContainer">
-                <button onclick="openEditor()" class="add-link-btn" style="margin-bottom: 15px;">+ Add New Link</button>
-                <div id="linkManagerContent" class="link-manager-list"></div>
-            </div>
-            <div id="linkEditorContainer" class="hidden" style="background: var(--card-hover); padding: 15px; border-radius: var(--radius); border: 1px solid var(--border);">
-                <h4 id="editorTitle" style="margin: 0 0 15px 0; color: var(--accent);">Add New Link</h4>
-                <input type="text" id="editName" placeholder="Name (e.g. YouTube)">
-                <input type="url" id="editUrl" placeholder="URL (e.g. youtube.com)">
-                <div style="display:flex; gap:10px;">
-                    <button onclick="saveLink()" class="save-btn" style="margin-top:0;">Save</button>
-                    <button onclick="cancelEdit()" class="secondary" style="margin-top:0; width:100%; border-radius: var(--radius); font-weight:bold; border:1px solid var(--border);">Cancel</button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="setting-group">
-            <h3>Your Name</h3>
-            <input type="text" id="userNameInput" placeholder="Name for greeting..." oninput="autoSaveSettings()">
-        </div>
-        
-        <div class="setting-group">
-            <h3>Vibe (Theme)</h3>
-            <select id="themeSelect" onchange="autoSaveSettings()">
-                <option value="dark">OLED Dark (Default)</option>
-                <option value="light">Clean Light</option>
-                <option value="cyberpunk">Cyberpunk</option>
-                <option value="sunset">Sunset Drive</option>
-                <option value="paper">Paper & Ink</option>
-            </select>
-        </div>
-
-        <div class="setting-group">
-            <h3>Custom Background</h3>
-            <div class="bg-control-row">
-                <input type="file" id="bgImageInput" accept="image/*" onchange="handleImageUpload(this)" class="hidden-input">
-                <label for="bgImageInput" class="custom-file-btn">Choose Image</label>
-                <button onclick="clearBackground()" id="resetBgBtn" class="secondary small-btn" style="display:none;">Reset</button>
-            </div>
-            <p id="bgFileName" style="font-size: 0.8rem; color: var(--dim); margin-top: 8px;">No image selected.</p>
-        </div>
-
-        <hr style="border: 0; border-top: 1px solid var(--border); margin: 25px 0;">
-
-        <button onclick="toggleAdvanced()" id="advancedToggleBtn" class="advanced-toggle">
-            <span>Advanced Settings</span>
-            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-        </button>
-
-        <div id="advancedSettings" class="advanced-content">
-            <div class="setting-group">
-                <h3>Clock Format</h3>
-                <div class="radio-row">
-                    <label class="radio-option">
-                        <input type="radio" name="clockFormat" value="12h" onchange="autoSaveSettings()"> 12-Hour
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="clockFormat" value="24h" onchange="autoSaveSettings()"> 24-Hour
-                    </label>
-                </div>
-            </div>
-            
-            <div class="setting-group">
-                <h3>External Search Suggestions</h3>
-                <p style="font-size:0.8rem; color:var(--dim); margin-bottom: 10px;">
-                    ⚠️ Sends keystrokes to **DuckDuckGo**. Disabling keeps search 100% local.
-                </p>
-                <label class="radio-option" style="justify-content: flex-start;">
-                    <input type="checkbox" id="externalSuggestToggle" onchange="autoSaveSettings()"> Enable Live Suggestions
-                </label>
-            </div>
-            
-            <div class="setting-group">
-                <h3>Search History Control</h3>
-                <button onclick="clearHistory()" class="secondary" style="width:100%; margin-bottom: 10px; font-weight:bold; border:1px solid var(--delete); color: var(--delete);">Clear All Search History</button>
-                <label class="radio-option" style="justify-content: flex-start;">
-                    <input type="checkbox" id="historyEnabledToggle" onchange="autoSaveSettings()"> Enable Local Search History
-                </label>
-            </div>
-            </div>
-
-        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
-            <button class="secondary github-btn" onclick="window.open('https://github.com/Raw-JSON/0FluffStart/issues', '_blank')">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 3c0 0-1.03-.39-3.41 1.05A16.3 16.3 0 0 0 12 2.88 16.3 16.3 0 0 0 7.4 4.04c-2.38-1.44-3.41-1.05-3.41-1.05A5.07 5.07 0 0 0 3.91 4.77 5.44 5.44 0 0 0 4 9.47c0 5.42 3.3 6.61 6.44 7.37-.4.34-.78 1-1.15 2.06v4.31"></path></svg>
-                Report Issue / GitHub
-            </button>
-        </div>
-    </div>
-</div>
-
-<script src="state.js"></script>
-<script src="utilities.js"></script>
-<script src="ui-logic.js"></script>
-</body>
-</html>
+@media (max-width: 400px) {
+    .link-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+}
