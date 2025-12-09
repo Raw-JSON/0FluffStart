@@ -27,11 +27,6 @@
         </div>
         <div id="clockDisplay" class="clock">00:00:00</div>
         <div id="greetingDisplay" class="greeting">Hello, User.</div>
-
-        <div id="quoteContainer" class="quote-container hidden">
-            <div id="quoteText" class="quote-text"></div>
-            <div id="quoteAuthor" class="quote-author"></div>
-        </div>
     </header>
 
     <div class="search-bar">
@@ -116,14 +111,6 @@
         </button>
 
         <div id="advancedSettings" class="advanced-content">
-            
-            <div class="setting-group">
-                <h3>Daily Inspiration</h3>
-                <label class="radio-option" style="justify-content: flex-start;">
-                    <input type="checkbox" id="quotesEnabledToggle" onchange="autoSaveSettings()"> Enable Daily Quotes
-                </label>
-            </div>
-
             <div class="setting-group">
                 <h3>Clock Format</h3>
                 <div class="radio-row">
@@ -165,7 +152,7 @@
 </div>
 
 <script src="state.js"></script>
-<script src="quotes.js"></script> <script src="utilities.js"></script>
+<script src="utilities.js"></script>
 <script src="ui-logic.js"></script>
 </body>
 </html>
