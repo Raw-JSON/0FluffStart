@@ -25,6 +25,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
+    // NEW: Close Settings Modal when clicking the overlay (Backdrop)
+    const settingsModal = document.getElementById('settingsModal');
+    if (settingsModal) {
+        settingsModal.addEventListener('click', (e) => {
+            // Check if the click target IS the modal container (the overlay), not the inner content
+            if (e.target === settingsModal) {
+                closeModal('settingsModal');
+            }
+        });
+    }
+    
     // TWEAK 2: The "Escape Hatch" - Global Esc Handler
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
@@ -138,12 +149,10 @@ function renderLinks() {
             window.location.href = finalUrl;
         };
 
-        // TWEAK 3: Right Click: Quick Edit
+        // Right Click: Quick Edit
         item.oncontextmenu = (e) => {
-            e.preventDefault(); // Stop default browser menu
-            // Open settings first (to ensure modal structure is visible)
+            e.preventDefault(); 
             toggleSettings();
-            // Then immediately switch to editor mode for this ID
             openEditor(link.id);
         };
 
