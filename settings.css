@@ -7,13 +7,13 @@
     left: 0; 
     width: 100%; 
     height: 100%; 
-    background: rgba(0,0,0,0.6); /* Slightly more transparent for drawer feel */
+    background: rgba(0,0,0,0.6); 
     display: none; 
     justify-content: center; 
     align-items: center; 
     z-index: 100; 
     backdrop-filter: blur(3px); 
-    overflow-y: hidden; /* Handle overflow inside content */
+    overflow-y: hidden; 
 }
 
 .modal.active { 
@@ -23,7 +23,8 @@
 /* Base Modal (Mobile / Default) */
 .modal-content { 
     background: var(--bg); 
-    padding: 25px; 
+    padding: 25px;
+    padding-bottom: 80px; /* FIXED: Extra space at bottom to ensure scrolling clears footer */
     border-radius: var(--radius); 
     width: 90%; 
     max-width: 450px; 
@@ -31,6 +32,7 @@
     overflow-y: auto;
     border: 1px solid var(--border); 
     box-shadow: 0 10px 40px rgba(0,0,0,0.6); 
+    box-sizing: border-box; /* FIXED: Ensures padding doesn't expand width/height beyond 100% */
     
     /* Mobile Animation: Scale Up */
     transform: scale(0.95);
@@ -71,8 +73,8 @@
         
         /* Desktop Animation: Slide from Right */
         transform: translateX(100%); 
-        opacity: 1; /* Opacity handled by slide */
-        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); /* Apple-style ease */
+        opacity: 1; 
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
     }
 
     .modal.active .modal-content {
@@ -250,7 +252,7 @@ button.github-btn {
     transition: max-height 0.3s ease, opacity 0.3s ease;
 }
 .advanced-content.open {
-    max-height: 800px; /* arbitrary large height */
+    max-height: 800px; 
     opacity: 1;
     padding-top: 10px;
 }
