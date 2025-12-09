@@ -7,31 +7,40 @@
     left: 0; 
     width: 100%; 
     height: 100%; 
-    background: rgba(0,0,0,0.85); 
+    background: rgba(0,0,0,0.6); /* Slightly more transparent for drawer feel */
     display: none; 
     justify-content: center; 
     align-items: center; 
     z-index: 100; 
-    backdrop-filter: blur(5px); 
-    overflow-y: auto; 
+    backdrop-filter: blur(3px); 
+    overflow-y: hidden; /* Handle overflow inside content */
 }
 
 .modal.active { 
     display: flex; 
 }
 
+/* Base Modal (Mobile / Default) */
 .modal-content { 
     background: var(--bg); 
     padding: 25px; 
     border-radius: var(--radius); 
     width: 90%; 
     max-width: 450px; 
-    max-height: 90vh; 
+    max-height: 85vh; 
     overflow-y: auto;
     border: 1px solid var(--border); 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-    transform: translateY(0); 
-    transition: all 0.2s ease-out;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6); 
+    
+    /* Mobile Animation: Scale Up */
+    transform: scale(0.95);
+    opacity: 0;
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+}
+
+.modal.active .modal-content {
+    transform: scale(1);
+    opacity: 1;
 }
 
 .modal-header { 
@@ -41,45 +50,56 @@
     margin-bottom: 20px; 
 }
 
-/* Modal Header Close Button */
-.modal-header .icon-btn {
-    width: 36px;
-    height: 36px;
-    border: 1px solid var(--border);
-    border-radius: 50%;
-    background: var(--card-hover);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 0;
-    color: var(--text);
+/* --- DESKTOP DRAWER MODE (> 768px) --- */
+@media (min-width: 768px) {
+    .modal {
+        justify-content: flex-end; /* Push to right */
+        align-items: stretch;
+    }
+
+    .modal-content {
+        width: 400px;
+        max-width: none;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0; /* Flat edge */
+        border-right: none;
+        border-top: none;
+        border-bottom: none;
+        border-left: 1px solid var(--border);
+        margin: 0;
+        
+        /* Desktop Animation: Slide from Right */
+        transform: translateX(100%); 
+        opacity: 1; /* Opacity handled by slide */
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); /* Apple-style ease */
+    }
+
+    .modal.active .modal-content {
+        transform: translateX(0);
+    }
 }
 
-.modal-header .icon-btn:hover {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--bg);
-}
 
 /* --- FORM ELEMENTS --- */
 .setting-group { margin-bottom: 20px; }
-.setting-group h3 { margin: 0 0 10px 0; font-size: 0.9rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
+.setting-group h3 { margin: 0 0 10px 0; font-size: 0.8rem; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
 
 input[type="text"], input[type="url"], select { 
     width: 100%; 
-    padding: 14px; 
+    padding: 12px; 
     margin-bottom: 15px; 
     background: var(--card-hover); 
     border: 1px solid var(--border); 
     color: var(--text); 
     border-radius: var(--radius); 
     box-sizing: border-box; 
-    font-size: 1rem; 
+    font-size: 0.95rem; 
     outline: none; 
     -webkit-appearance: none; 
     appearance: none;
     font-family: var(--font-main);
+    transition: border-color 0.2s;
 }
 
 input:focus, select:focus { 
@@ -87,7 +107,7 @@ input:focus, select:focus {
 }
 
 /* Radio Button Layout */
-.radio-row { display: flex; gap: 15px; }
+.radio-row { display: flex; gap: 10px; }
 
 .radio-option {
     display: flex; 
@@ -99,16 +119,28 @@ input:focus, select:focus {
     cursor: pointer; 
     flex: 1;
     border: 1px solid var(--border);
+    transition: background 0.2s;
 }
-
-.radio-option input { margin: 0; width: auto; } 
+.radio-option:hover { background: var(--card); }
+.radio-option input { margin: 0; } 
 
 /* --- BUTTONS --- */
+.icon-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--card-hover);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text);
+    transition: all 0.2s;
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+
 .save-btn { 
     width: 100%; 
     background: var(--accent); 
     color: var(--bg); 
-    padding: 14px; 
+    padding: 12px; 
     border-radius: var(--radius); 
     font-weight: bold; 
     border: none; 
@@ -122,45 +154,35 @@ input:focus, select:focus {
     background: var(--card-hover); 
     color: var(--text); 
     width: 100%;
-    padding: 14px;
+    padding: 12px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 600;
     font-family: var(--font-main);
 }
+.secondary:hover { border-color: var(--dim); }
 
 .add-link-btn { 
     width: 100%; 
-    background: var(--card-hover); 
+    background: transparent;
     color: var(--accent); 
-    padding: 12px; 
+    padding: 10px; 
     border-radius: var(--radius); 
     font-weight: bold; 
-    border: 1px solid var(--accent); 
-    font-size: 0.95rem; 
+    border: 1px dashed var(--accent); 
+    font-size: 0.9rem; 
     font-family: var(--font-main); 
     cursor: pointer; 
-    transition: background 0.2s; 
+    transition: all 0.2s; 
 }
-
-.add-link-btn:hover { 
-    background: var(--accent); 
-    color: var(--bg); 
-}
-
-.small-btn {
-    width: auto;
-    padding: 12px 15px;
-    margin: 0;
-}
+.add-link-btn:hover { background: rgba(0, 170, 255, 0.1); }
 
 /* GitHub Button */
 button.github-btn {
     background: #24292e; 
     color: white;
     width: 100%;
-    margin-top: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -171,99 +193,37 @@ button.github-btn {
     font-weight: 600;
     cursor: pointer;
 }
-body.light button.github-btn { background: #000; }
-body.cyberpunk button.github-btn { background: #111; border: 1px solid var(--accent); color: var(--accent); }
 
 /* --- CUSTOM FILE INPUT --- */
 .hidden-input { display: none; }
-
-.bg-control-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
+.bg-control-row { display: flex; align-items: center; gap: 10px; }
 .custom-file-btn {
     flex-grow: 1;
     background: var(--card-hover);
-    color: var(--accent);
-    padding: 12px;
+    color: var(--text);
+    padding: 10px;
     border-radius: var(--radius);
-    font-weight: bold;
-    border: 1px solid var(--accent);
+    font-weight: 500;
+    border: 1px solid var(--border);
     text-align: center;
     cursor: pointer;
-    font-size: 0.95rem;
-    transition: all 0.2s;
-    display: block;
+    font-size: 0.9rem;
 }
+.custom-file-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-.custom-file-btn:hover {
-    background: var(--accent);
-    color: var(--bg);
-}
-
-/* --- INLINE LINK MANAGER --- */
-.link-manager-list { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 8px; 
-    margin-top: 10px; 
-}
-
+/* --- LINK MANAGER LIST --- */
+.link-manager-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
 .link-manager-item { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    padding: 10px 15px; 
+    display: flex; justify-content: space-between; align-items: center; 
+    padding: 8px 12px; 
     background: var(--card-hover); 
     border-radius: var(--radius); 
     border: 1px solid var(--border); 
 }
+.link-manager-item .link-name { font-size: 0.9rem; font-weight: 500; }
+.link-actions { display: flex; gap: 8px; }
 
-.link-manager-item .link-name { 
-    flex-grow: 1; 
-    font-size: 1rem; 
-    white-space: nowrap; 
-    overflow: hidden; 
-    text-overflow: ellipsis; 
-    opacity: 1; 
-    text-align: left; 
-}
-
-.link-actions { display: flex; gap: 8px; margin-left: 10px; }
-
-.link-actions .icon-btn {
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: var(--card);
-    border: 1px solid var(--border);
-    color: var(--text);
-    transition: all 0.2s;
-}
-
-.link-actions .icon-btn svg { width: 18px; height: 18px; stroke-width: 2; }
-
-.link-actions .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
-.link-actions .icon-btn.delete-btn:hover { border-color: var(--delete); color: var(--delete); background: rgba(255, 77, 77, 0.1); }
-
-/* --- ADVANCED DRAWER & BETA TAG --- */
-.beta-tag {
-    font-size: 0.6em;
-    background: var(--accent);
-    color: var(--bg);
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-left: 8px;
-    font-weight: 800;
-    vertical-align: middle;
-}
-
+/* --- ADVANCED DRAWER --- */
 .advanced-toggle {
     width: 100%;
     background: transparent;
@@ -272,15 +232,14 @@ body.cyberpunk button.github-btn { background: #111; border: 1px solid var(--acc
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding: 12px 0;
     cursor: pointer;
     font-family: var(--font-main);
     font-size: 0.9rem;
     font-weight: 600;
+    border-top: 1px solid var(--border);
+    margin-top: 10px;
 }
-
-.advanced-toggle:hover { color: var(--text); }
-
 .advanced-toggle .chevron { transition: transform 0.3s; }
 .advanced-toggle.active .chevron { transform: rotate(180deg); }
 
@@ -290,20 +249,8 @@ body.cyberpunk button.github-btn { background: #111; border: 1px solid var(--acc
     opacity: 0;
     transition: max-height 0.3s ease, opacity 0.3s ease;
 }
-
 .advanced-content.open {
-    max-height: 600px;
+    max-height: 800px; /* arbitrary large height */
     opacity: 1;
-    padding-top: 15px;
-}
-
-/* --- MOBILE MODAL FIX --- */
-@media (max-height: 700px) and (max-width: 600px) {
-    .modal-content {
-        width: 100%;
-        max-width: 100%;
-        height: 100%;
-        max-height: 100%;
-        border-radius: 0;
-    }
+    padding-top: 10px;
 }
