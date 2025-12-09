@@ -1,7 +1,7 @@
 // ui-logic.js
 
 /* global links, settings, isEditMode, isEditingId, searchEngines */
-/* global renderEngineDropdown, loadSettings, updateClock, autoSaveSettings, logSearch, handleSuggestions, clearHistory */ 
+/* global renderEngineDropdown, loadSettings, updateClock, autoSaveSettings, logSearch, handleSuggestions, clearHistory */ // <--- ADDED clearHistory
 
 // --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -73,20 +73,20 @@ function renderLinks() {
     if(!grid) return;
     grid.innerHTML = '';
     links.forEach(link => {
-        let domain = 'example.com';
-        try {
-            let urlForParse = link.url.startsWith('http') ? link.url : `https://${link.url}`;
-            domain = new URL(urlForParse).hostname;
-        } catch(e) { console.error(e); }
-        const iconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+        // let domain = 'example.com';
+        // try {
+        //     let urlForParse = link.url.startsWith('http') ? link.url : `https://${link.url}`;
+        //     domain = new URL(urlForParse).hostname;
+        // } catch(e) { console.error(e); }
+        // const iconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`; // REMOVED EXTERNAL FETCH
+
         const initial = link.name.charAt(0).toUpperCase();
 
         const item = document.createElement('div');
         item.className = 'link-item';
         item.innerHTML = `
             <div class="link-icon-circle">
-                <img src="${iconUrl}" onerror="this.style.display='none';this.nextElementSibling.style.display='block';" alt="icon">
-                <span style="display:none; font-size:1.5rem; color:var(--accent); font-weight:bold;">${initial}</span>
+                <span style="font-size:1.5rem; color:var(--accent); font-weight:bold;">${initial}</span>
             </div>
             <div class="link-name">${link.name}</div>
         `;
@@ -205,7 +205,7 @@ function loadSettings() {
     for(let r of radios) { if(r.value === settings.clockFormat) r.checked = true; }
     
     document.getElementById('externalSuggestToggle').checked = settings.externalSuggest;
-    document.getElementById('historyEnabledToggle').checked = settings.historyEnabled;
+    document.getElementById('historyEnabledToggle').checked = settings.historyEnabled; // <--- ADDED TOGGLE LOAD
     
     updateClock(); 
     renderEngineDropdown();
@@ -217,7 +217,7 @@ function autoSaveSettings() {
     const radios = document.getElementsByName('clockFormat');
     for(let r of radios) if(r.checked) settings.clockFormat = r.value;
     settings.externalSuggest = document.getElementById('externalSuggestToggle').checked;
-    settings.historyEnabled = document.getElementById('historyEnabledToggle').checked;
+    settings.historyEnabled = document.getElementById('historyEnabledToggle').checked; // <--- ADDED TOGGLE SAVE
     
     localStorage.setItem('0fluff_settings', JSON.stringify(settings));
     loadSettings();
@@ -296,4 +296,4 @@ window.selectSuggestion = selectSuggestion;
 window.cancelEdit = cancelEdit;
 window.autoSaveSettings = autoSaveSettings;
 window.toggleAdvanced = toggleAdvanced;
-window.clearHistory = clearHistory;
+window.clearHistory = clearHistory; // <--- EXPOSED
