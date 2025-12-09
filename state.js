@@ -11,8 +11,7 @@ let settings = JSON.parse(localStorage.getItem('0fluff_settings') || JSON.string
     userName: "", 
     externalSuggest: false,
     backgroundImage: null,
-    historyEnabled: true,
-    quotesEnabled: true // <--- NEW: Enabled by default
+    historyEnabled: true
 })); 
 
 let searchHistory = JSON.parse(localStorage.getItem('0fluff_history') || '[]'); 
