@@ -1,37 +1,21 @@
 // state.js
 
-// --- HELPER: SAFE PARSING ---
-// Prevents app crash if LocalStorage is corrupted (malformed JSON)
-function safeParse(key, fallback) {
-    try {
-        const item = localStorage.getItem(key);
-        return item ? JSON.parse(item) : fallback;
-    } catch (e) {
-        console.warn(`[0FluffStart] Corrupt data detected for '${key}'. Resetting to default.`);
-        return fallback;
-    }
-}
-
 // --- STATE ---
-let links = safeParse('0fluff_links', []);
+let links = JSON.parse(localStorage.getItem('0fluff_links') || '[]');
 
-// Default Settings Object
-const defaultSettings = {
+// Removed newsEnabled, newsTopic
+let settings = JSON.parse(localStorage.getItem('0fluff_settings') || JSON.stringify({
     theme: "dark",
     clockFormat: "24h",
     searchEngine: "Google", 
     userName: "", 
     externalSuggest: false,
     backgroundImage: null,
-    historyEnabled: true
-};
+    historyEnabled: true,
+    quotesEnabled: true // <--- NEW: Enabled by default
+})); 
 
-// Merge saved settings with defaults to ensure new keys (like historyEnabled) exist even if old config is loaded
-let savedSettings = safeParse('0fluff_settings', {});
-let settings = { ...defaultSettings, ...savedSettings };
-
-let searchHistory = safeParse('0fluff_history', []); 
-
+let searchHistory = JSON.parse(localStorage.getItem('0fluff_history') || '[]'); 
 let isEditMode = false;
 let isEditingId = null;
 
