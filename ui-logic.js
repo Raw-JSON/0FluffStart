@@ -11,12 +11,39 @@ document.addEventListener('DOMContentLoaded', () => {
     updateClock(); 
     setInterval(updateClock, 1000);
 
+    // TWEAK 1: Instant Focus on Load
+    const searchInput = document.getElementById('searchInput');
+    if(searchInput) searchInput.focus();
+
+    // Event Delegation for clicking outside
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.engine-switcher')) {
             document.getElementById('engineDropdown')?.classList.add('hidden');
         }
         if (!e.target.closest('#searchInput') && !e.target.closest('#suggestionsContainer')) {
             document.getElementById('suggestionsContainer')?.classList.add('hidden');
+        }
+    });
+    
+    // TWEAK 2: The "Escape Hatch" - Global Esc Handler
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            // Close Modals
+            document.getElementById('settingsModal')?.classList.remove('active');
+            // Close Dropdowns & Suggestions
+            document.getElementById('engineDropdown')?.classList.add('hidden');
+            document.getElementById('suggestionsContainer')?.classList.add('hidden');
+            // Close Advanced Settings Drawer
+            const advContent = document.getElementById('advancedSettings');
+            const advBtn = document.getElementById('advancedToggleBtn');
+            if(advContent?.classList.contains('open')) {
+                advContent.classList.remove('open');
+                advBtn.classList.remove('active');
+            }
+            // If editing a link, cancel it
+            if(!document.getElementById('linkEditorContainer')?.classList.contains('hidden')) {
+                cancelEdit();
+            }
         }
     });
     
@@ -74,37 +101,23 @@ function renderLinks() {
     grid.innerHTML = '';
     
     links.forEach(link => {
-        // 1. Dynamic Acronym Extraction
-        // Split by space, take first letter of each word
+        // Monogram Logic
         const words = link.name.split(' ').filter(w => w.length > 0);
         let acronym = words.map(word => word.charAt(0).toUpperCase()).join('');
-        
-        // Fallback: If name has no spaces but is long (e.g. "Instagram"), just take first 2 letters
         if (words.length === 1 && acronym.length === 1 && link.name.length > 1) {
              acronym = link.name.substring(0, 2).toUpperCase();
         }
-
-        // 2. Clamp length to max 3 chars for aesthetics
         const display = acronym.substring(0, 3);
         
-        // 3. Smart Typography (The "Nice" Factor)
         let fontSize = '1.5rem';
-        let letterSpacing = '-1px'; // Tighten up for logo feel
-        
-        if (display.length === 1) {
-            fontSize = '2rem'; // Massive single letter
-        } else if (display.length === 2) {
-            fontSize = '1.6rem';
-        } else {
-            fontSize = '1.2rem'; // Smaller for 3 letters
-            letterSpacing = '-0.5px';
-        }
+        let letterSpacing = '-1px';
+        if (display.length === 1) fontSize = '2rem';
+        else if (display.length === 2) fontSize = '1.6rem';
+        else { fontSize = '1.2rem'; letterSpacing = '-0.5px'; }
 
         const item = document.createElement('div');
         item.className = 'link-item';
         
-        // Injected inline styles for that premium "Monogram" look
-        // Text-shadow adds subtle depth without bloat
         item.innerHTML = `
             <div class="link-icon-circle">
                 <span style="
@@ -119,10 +132,21 @@ function renderLinks() {
             <div class="link-name">${link.name}</div>
         `;
         
+        // Left Click: Go to URL
         item.onclick = () => {
             const finalUrl = link.url.startsWith('http') ? link.url : `https://${link.url}`;
             window.location.href = finalUrl;
         };
+
+        // TWEAK 3: Right Click: Quick Edit
+        item.oncontextmenu = (e) => {
+            e.preventDefault(); // Stop default browser menu
+            // Open settings first (to ensure modal structure is visible)
+            toggleSettings();
+            // Then immediately switch to editor mode for this ID
+            openEditor(link.id);
+        };
+
         grid.appendChild(item);
     });
 }
