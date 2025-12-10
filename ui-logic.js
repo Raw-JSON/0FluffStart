@@ -90,8 +90,8 @@ function renderLinks() {
         item.appendChild(iconContainer);
         item.appendChild(nameEl);
         
-        // **REMOVED:** The code block that created and appended the '.link-edit-overlay' (the pencil icon).
-        // This permanently reverts the Quick Link display to its previous, clean state.
+        // *** THE PENCIL ICON GENERATION CODE WAS HERE, AND IS NOW PERMANENTLY REMOVED. ***
+        // This ensures the element does not exist in the DOM.
 
         grid.appendChild(item);
     });
