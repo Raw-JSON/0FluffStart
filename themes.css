@@ -75,19 +75,25 @@ body.paper {
     --shadow: 4px 4px 0px rgba(0,0,0,0.1); /* Hard shadow */
 }
 
-/* Material 3 Expressive (Dark) */
+/* Material 3 Expressive (v2 - Punchy) */
 body.material {
-    --bg: #141218;        /* M3 Surface */
-    --card: #2b2930;      /* M3 Surface Container */
-    --card-hover: #36343b;/* M3 Surface Container High */
-    --text: #e6e1e5;      /* M3 On Surface */
-    --accent: #d0bcff;    /* M3 Primary (Lavender) */
-    --dim: #938f99;       /* M3 Variant */
-    --border: #49454f;    /* M3 Outline Variant */
-    --delete: #f2b8b5;    /* M3 Error Container Text */
-    --radius: 16px;       /* Standard M3 corner */
-    --font-main: "Roboto", -apple-system, BlinkMacSystemFont, sans-serif;
-    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 4px 8px 3px rgba(0, 0, 0, 0.15); /* Elevation 2 */
+    /* Deep Indigo-Grey Base */
+    --bg: #0f0d13;
+    /* Surface Container High */
+    --card: #2b2930; 
+    /* Surface Container Highest */
+    --card-hover: #36343b; 
+    --text: #e6e0e9;
+    /* Primary Fixed (Vibrant Lavender) */
+    --accent: #d0bcff;
+    --dim: #cac4d0;
+    --border: #49454f;
+    --delete: #f2b8b5;
+    /* Extra Large Radius (Expressive) */
+    --radius: 28px; 
+    --font-main: "Google Sans", "Product Sans", "Roboto", sans-serif;
+    /* Soft Elevation Glow */
+    --shadow: 0 4px 20px rgba(0,0,0,0.4); 
 }
 
 /* --- BACKGROUND IMAGE SUPPORT --- */
