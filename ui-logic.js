@@ -364,14 +364,17 @@ function autoSaveSettings() {
 function toggleAdvanced() {
     const advancedSettings = document.getElementById('advancedSettings');
     const toggleBtn = document.getElementById('advancedToggleBtn');
-    const chevron = toggleBtn.querySelector('.chevron');
     
     if (advancedSettings) {
-        const isHidden = advancedSettings.classList.toggle('active');
-        if (isHidden) {
-            chevron.style.transform = 'rotate(180deg)';
-        } else {
-            chevron.style.transform = 'rotate(0deg)';
+        // Toggle the 'active' class (Fixed logic)
+        const isActive = advancedSettings.classList.toggle('active'); 
+        
+        // Find the chevron within the toggle button
+        const chevron = toggleBtn.querySelector('.chevron');
+        
+        // Rotate chevron based on new state
+        if (chevron) {
+            chevron.style.transform = isActive ? 'rotate(180deg)' : 'rotate(0deg)';
         }
     }
 }
