@@ -228,6 +228,49 @@ body.material .link-item:hover .link-icon-circle span {
 .link-icon-circle img { width: 100%; height: 100%; object-fit: cover; }
 .link-name { color: var(--text); font-size: 0.75rem; text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9; }
 
+/* The link edit overlay (pencil icon) */
+.link-edit-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 24px;
+    height: 24px;
+    padding: 2px;
+    display: none; /* <--- CRITICAL FIX: HIDDEN BY DEFAULT */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: var(--card-hover);
+    border-radius: 50%;
+    opacity: 0; /* Also hide opacity by default */
+    transition: opacity 0.2s;
+    pointer-events: none; /* Disable click when hidden */
+}
+
+/* Show on Hover (Desktop) */
+.link-item:hover .link-edit-overlay {
+    display: flex;
+    opacity: 1;
+    pointer-events: all; /* Enable click on hover */
+}
+
+.link-edit-overlay .edit-icon {
+    width: 14px;
+    height: 14px;
+    color: var(--text);
+    /* Make the icon stand out against the overlay background */
+}
+
+/* Force show on smaller screens for better touch target */
+@media (max-width: 480px) {
+    .link-edit-overlay {
+        display: flex;
+        opacity: 0.8;
+        pointer-events: all;
+    }
+}
+
+
 /* --- DESKTOP OPTIMIZATIONS (Modules) --- */
 @media (min-width: 768px) {
     .search-bar { height: 60px; }
