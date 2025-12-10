@@ -22,7 +22,7 @@ We built this because the internet is bloated trash.
 
 * **100% Client-Side:** Everything runs locally.
 * **Zero Latency:** No servers, no waiting.
-* **Full Privacy:** Data never leaves your device.
+* **Full Privacy:** Data never leaves your device.(unless auto suggestion is enabled).
 * **Pure Vanilla Core:** **NO dependencies, NO transpilers.** Clean code that just runs.
 
 ***
