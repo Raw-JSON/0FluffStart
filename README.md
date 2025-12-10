@@ -4,7 +4,7 @@
 
 A relentlessly minimal, privacy-first start page. No ads. No trackers. **Zero backend.** Just lightning-fast vibes that live entirely in your browser.
 
-**[🔗 Open StylishWords](https://raw-json.github.io/0FluffStart/)**
+**[🔗 Open 0FluffStart](https://raw-json.github.io/0FluffStart/)**
 
 ***
 
