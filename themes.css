@@ -60,6 +60,25 @@ body.sunset {
     --shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
+/* Forest Hike (Bold Italic Zine Style) */
+body.forest {
+    --bg: #1B1B1B;        /* Night Trunk */
+    --card: #1F6F50;      /* Pine Core */
+    --card-hover: #2E8B57;/* Forest Mint */
+    --text: #F4EAD5;      /* Linen Pulp */
+    --accent: #F4C430;    /* Saffron Dust */
+    --dim: #8b9c92;       /* Muted Green-Grey */
+    --border: #2E8B57;    /* Forest Mint Border */
+    --delete: #FFB703;    /* Citrus Peel (Using distinct yellow/orange for alert) */
+    --radius: 16px;       /* Soft boxy feel */
+    --shadow: 4px 4px 0px #151515; /* Hard dark shadow for pop */
+    
+    /* Typography Override */
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: -0.5px; /* Tight tracking for that 'logo' feel */
+}
+
 /* Paper & Ink */
 body.paper {
     --bg: #fdfbf7; /* Warm white */
