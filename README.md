@@ -6,6 +6,16 @@
 
 ---
 
+## 🛑 Finality Statement
+
+**This project is a finished product.**
+
+The architecture is complete, stable, and fulfills its core minimal mission. It will not receive any further feature updates or active development from RawJSON.
+
+If you wish to add new features, change core logic, or continue development, **please fork the repository.** This ensures the core `0FluffStart` remains a zero-fluff foundation.
+
+---
+
 ## 🔥 Why This Exists
 Everything on the internet is bloated trash.  
 0FluffStart is built to be the opposite:
