@@ -21,8 +21,7 @@ Everything on the internet is bloated trash.
 
 ### 🎨 Personalization
 - **Custom Backgrounds:** Upload any image from your device. It stays local (Base64) and never touches a server.
-- **Deep Themes:** OLED Dark, Clean Light, Cyberpunk, Sunset Drive, Paper & Ink,
-- M3 Theme, Forest Hike.
+- **Deep Themes:** OLED Dark, Clean Light, Cyberpunk, Sunset Drive, Paper & Ink,M3 Theme, Forest Hike.
 - **Glassmorphism UI:** Text remains readable over any background via dynamic overlays.
 
 ### ⚡ Productivity
