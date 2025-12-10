@@ -178,9 +178,10 @@
     box-shadow: var(--shadow);
 }
 
-/* Cyberpunk specific override */
+/* Theme specific overrides */
 body.cyberpunk .link-icon-circle { border-radius: 0; }
 body.sunset .link-icon-circle { border-radius: 50%; }
+body.material .link-icon-circle { border-radius: 16px; } /* M3 Squircle */
 
 .link-icon-circle img { width: 100%; height: 100%; object-fit: cover; }
 .link-name { color: var(--text); font-size: 0.75rem; text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9; }
@@ -195,6 +196,9 @@ body.sunset .link-icon-circle { border-radius: 50%; }
     
     .link-grid { grid-template-columns: repeat(6, 1fr); gap: 20px; }
     .link-icon-circle { width: 64px; height: 64px; border-radius: calc(var(--radius) + 2px); }
+    /* Ensure material shape persists on desktop if calc doesn't match desire */
+    body.material .link-icon-circle { border-radius: 20px; } 
+
     .link-name { font-size: 0.8rem; }
 }
 
