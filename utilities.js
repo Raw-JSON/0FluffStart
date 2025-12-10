@@ -2,16 +2,30 @@
 
 /* global links, settings, searchHistory, searchEngines */ 
 
+// --- SEARCH ENGINE UTILITY ---
+
+/**
+ * Retrieves the currently selected search engine object from the global list.
+ * Defaults to the first engine in the list if the current setting is invalid or missing.
+ * @returns {object} The current search engine configuration object.
+ */
+function getCurrentSearchEngine() {
+    return searchEngines.find(e => e.name === settings.searchEngine) || searchEngines[0];
+}
+
 // --- SUGGESTIONS ---
 // Keeps external suggestion functionality if user enables it, but simplifies everything else.
 async function fetchExternalSuggestions(query) {
+    // CORS is a problem, so we use a proxy (allorigins) for the DuckDuckGo API call.
     const targetUrl = `https://duckduckgo.com/ac/?q=${encodeURIComponent(query)}&type=json`;
+    // CORS Awareness: This is the proxy handling, mandatory for client-side fetching.
     const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
     
     try {
         const res = await fetch(proxyUrl);
         if (!res.ok) return [];
         const data = await res.json();
+        // The data.contents is a stringified JSON from the proxied endpoint.
         const innerData = JSON.parse(data.contents);
         if (Array.isArray(innerData)) return innerData.map(item => item.phrase).filter(p => p);
     } catch(e) { console.error("Suggestion Error", e); }
@@ -35,56 +49,76 @@ function handleSuggestions() {
     let suggestions = [];
     
     // Internal Matches (Only check history if enabled)
-    if (settings.historyEnabled) { // <--- ADDED CHECK
+    if (settings.historyEnabled) { 
         const linkMatches = links
             .filter(l => l.name.toLowerCase().includes(input))
             .map(l => ({ name: l.name, url: l.url, type: 'Link' }));
-        suggestions.push(...linkMatches);
-        
+            
         const historyMatches = searchHistory
-            .filter(h => h.toLowerCase().includes(input) && !linkMatches.some(l => l.name.toLowerCase() === h.toLowerCase()))
+            .filter(h => h.toLowerCase().includes(input))
             .map(h => ({ name: h, type: 'History' }));
-        suggestions.push(...historyMatches);
+
+        suggestions = [...linkMatches, ...historyMatches];
     }
     
-    // External Matches
-    if (settings.externalSuggest) {
+    // External Suggestions (Async)
+    if (settings.externalSuggest && getCurrentSearchEngine().name === 'Google') {
+        // Only run DDG suggestions if the user is using Google or DDG, otherwise, it's irrelevant.
+        // We use DDG's API for external lookups as it is simpler and privacy-focused.
         fetchExternalSuggestions(input).then(external => {
-             if(container.classList.contains('hidden')) return;
-             external.forEach(term => {
-                if (!suggestions.some(s => s.name.toLowerCase() === term.toLowerCase())) {
-                    const item = document.createElement('div');
-                    item.className = 'suggestion-item';
-                    item.innerHTML = `<span>${term}</span><span class="suggestion-type">Search</span>`;
-                    item.onclick = () => selectSuggestion({name:term, type:'Search'});
-                    container.appendChild(item);
-                }
-             });
+            // Filter out exact duplicates from internal lists
+            const uniqueExternal = external.map(name => ({ name: name, type: 'Search' }))
+                .filter(ext => !suggestions.some(s => s.name.toLowerCase() === ext.name.toLowerCase()));
+                
+            // Combine and render all suggestions
+            const finalSuggestions = [...suggestions, ...uniqueExternal];
+            renderSuggestions(finalSuggestions, container);
         });
+        return; // Return early, as rendering happens async
     }
+    
+    renderSuggestions(suggestions, container);
+}
 
-    suggestions.slice(0, 8).forEach(s => { 
+function renderSuggestions(suggestions, container) {
+    container.innerHTML = '';
+
+    if (suggestions.length === 0) {
+        container.classList.add('hidden');
+        return;
+    }
+    
+    // Only show the top 10 results to prevent massive screen takeover
+    suggestions.slice(0, 10).forEach(s => {
         const item = document.createElement('div');
         item.className = 'suggestion-item';
-        item.innerHTML = `<span>${s.name}</span><span class="suggestion-type">${s.type}</span>`;
-        item.onclick = () => selectSuggestion(s);
+        item.setAttribute('onclick', `selectSuggestion({ name: '${s.name.replace(/'/g, "\\'")}', url: '${s.url || ''}', type: '${s.type}' })`);
+        
+        const nameEl = document.createElement('span');
+        nameEl.innerText = s.name;
+        
+        const typeEl = document.createElement('span');
+        typeEl.className = 'suggestion-type';
+        typeEl.innerText = s.type === 'Search' ? 'Web' : s.type;
+        
+        item.appendChild(nameEl);
+        item.appendChild(typeEl);
         container.appendChild(item);
     });
     
-    if(suggestions.length > 0 || settings.externalSuggest) container.classList.remove('hidden');
+    container.classList.remove('hidden');
 }
 
 function logSearch(query) {
-    if (!settings.historyEnabled) return; // <--- ADDED CHECK
-    query = query.trim();
-    if (query === '' || query.includes('.') && !query.includes(' ')) return;
-    searchHistory = searchHistory.filter(item => item !== query);
-    searchHistory.unshift(query);
-    if (searchHistory.length > 10) searchHistory = searchHistory.slice(0, 10);
-    localStorage.setItem('0fluff_history', JSON.stringify(searchHistory));
+    if (settings.historyEnabled && query.trim() && !searchHistory.includes(query)) {
+        // Prepend new query and limit history to 20 items for efficiency
+        searchHistory.unshift(query);
+        searchHistory = searchHistory.slice(0, 20); 
+        localStorage.setItem('0fluff_history', JSON.stringify(searchHistory));
+    }
 }
 
-function clearHistory() { // <--- NEW FUNCTION
+function clearHistory() { 
     searchHistory = [];
     localStorage.removeItem('0fluff_history');
     document.getElementById('searchInput').focus();
@@ -123,8 +157,43 @@ function updateClock() {
     document.getElementById('greetingDisplay').innerText = getGreeting(settings.userName);
 }
 
-// Expose
+function handleImageUpload(input) {
+    const file = input.files[0];
+    const fileNameEl = document.getElementById('bgFileName');
+    const resetBtn = document.getElementById('resetBgBtn');
+    
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            settings.backgroundImage = e.target.result; // Base64 storage
+            autoSaveSettings();
+            fileNameEl.innerText = file.name;
+            resetBtn.style.display = 'inline-block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        settings.backgroundImage = null;
+        autoSaveSettings();
+        fileNameEl.innerText = 'No image selected.';
+        resetBtn.style.display = 'none';
+    }
+}
+
+function clearBackground() {
+    settings.backgroundImage = null;
+    autoSaveSettings();
+    document.getElementById('bgImageInput').value = ''; // Reset file input
+    document.getElementById('bgFileName').innerText = 'No image selected.';
+    document.getElementById('resetBgBtn').style.display = 'none';
+}
+
+// Exports
+window.fetchExternalSuggestions = fetchExternalSuggestions;
 window.handleSuggestions = handleSuggestions;
 window.logSearch = logSearch;
+window.clearHistory = clearHistory;
+window.getGreeting = getGreeting;
 window.updateClock = updateClock;
-window.clearHistory = clearHistory; // <--- EXPOSED
+window.handleImageUpload = handleImageUpload;
+window.clearBackground = clearBackground;
+window.getCurrentSearchEngine = getCurrentSearchEngine; // NEW EXPORT
