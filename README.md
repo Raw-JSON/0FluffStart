@@ -33,7 +33,8 @@ Everything on the internet is bloated trash.
 - **Collapsible Settings:** Secondary options are tucked away in an "Advanced" drawer to keep the UI clean.
 - **Instant Save:** All changes persist immediately to LocalStorage.
 - **Clock:** 12h / 24h formats.
-- **Local History Control:** Users can now toggle **off** the local search history feature
+- **Local History Control:** Users can now toggle **off** the local search history
+- **Clear History Utility:** A prominent button has been added to clear history 
 
 ---
 
