@@ -62,7 +62,6 @@ Everything on the internet is bloated trash.
 
 **Storage:**
 - **Local Storage** (Persists links, settings, history, and images)
-- **Service Worker** (Offline PWA support)
 
 ---
 
