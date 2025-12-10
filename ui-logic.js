@@ -90,13 +90,8 @@ function renderLinks() {
         item.appendChild(iconContainer);
         item.appendChild(nameEl);
         
-        // Context menu / Edit overlay
-        const editBtn = document.createElement('div');
-        editBtn.className = 'link-edit-overlay';
-        editBtn.innerHTML = `
-            <svg class="edit-icon" onclick="event.preventDefault(); event.stopPropagation(); editLink('${link.id}')" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-        `;
-        item.appendChild(editBtn);
+        // **REMOVED:** The code block that created and appended the '.link-edit-overlay' (the pencil icon).
+        // This permanently reverts the Quick Link display to its previous, clean state.
 
         grid.appendChild(item);
     });
@@ -366,10 +361,10 @@ function toggleAdvanced() {
     const toggleBtn = document.getElementById('advancedToggleBtn');
     
     if (advancedSettings) {
-        // Toggle the 'active' class (Fixed logic)
+        // Toggle the 'active' class (The state the CSS relies on)
         const isActive = advancedSettings.classList.toggle('active'); 
         
-        // Find the chevron within the toggle button
+        // Find the chevron
         const chevron = toggleBtn.querySelector('.chevron');
         
         // Rotate chevron based on new state
