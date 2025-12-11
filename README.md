@@ -19,11 +19,15 @@
 ### 🔥 CORE VIBE: Why 0Fluff?
 
 We built this as a direct rejection of bloated modern web pages.
+### 🔥 CORE VIBE: Why 0Fluff?
 
-* **100% Client-Side:** All logic and configuration run and are stored locally in the browser (using localStorage).
-* **Zero Latency:** No servers and no external dependencies result in instant, sub-millisecond loading.
-* **Full Privacy:** All configuration and search history data never leave your device (unless auto suggestion is enabled).
-* **Pure Vanilla Core:** **NO external dependencies, NO transpilers, NO frameworks.** Clean, native JavaScript, HTML, and CSS.
+We built this as a direct rejection of bloated modern web pages.
+
+* **Default: 100% Client-Side:** All logic and config run locally. **Only external API calls are made if you enable search auto-suggestions.**
+* **Zero Backend:** The core app hosts **zero** backend services.
+* **Zero Latency:** Near-instant loading, as there is no server-side processing for the app itself.
+* **Full Privacy:** Data never leaves your device unless you **explicitly enable** the DuckDuckGo search auto-suggestion API.
+* **Pure Vanilla Core:** **NO dependencies, NO frameworks.** Clean, native JavaScript, HTML, and CSS.
 
 ***
 
