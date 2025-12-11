@@ -4,35 +4,45 @@
 
 // --- SEARCH ENGINE UTILITY ---
 
-/**
- * Retrieves the currently selected search engine object from the global list.
- * Defaults to the first engine in the list if the current setting is invalid or missing.
- * @returns {object} The current search engine configuration object.
- */
 function getCurrentSearchEngine() {
     return searchEngines.find(e => e.name === settings.searchEngine) || searchEngines[0];
 }
 
 // --- SUGGESTIONS ---
 
-// Debounce timer to prevent API spamming
 let debounceTimer;
 
-// Keeps external suggestion functionality if user enables it, but simplifies everything else.
 async function fetchExternalSuggestions(query) {
-    // CORS is a problem, so we use a proxy (allorigins) for the DuckDuckGo API call.
     const targetUrl = `https://duckduckgo.com/ac/?q=${encodeURIComponent(query)}&type=json`;
-    // CORS Awareness: This is the proxy handling, mandatory for client-side fetching.
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
     
+    // STRATEGY 1: Corsproxy.io (Faster, cleaner)
     try {
+        // Note: corsproxy.io simply returns the raw body of the target
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
         const res = await fetch(proxyUrl);
-        if (!res.ok) return [];
-        const data = await res.json();
-        // The data.contents is a stringified JSON from the proxied endpoint.
-        const innerData = JSON.parse(data.contents);
-        if (Array.isArray(innerData)) return innerData.map(item => item.phrase).filter(p => p);
-    } catch(e) { console.error("Suggestion Error", e); }
+        if (res.ok) {
+            const data = await res.json();
+            // DDG returns [{phrase: "..."}]
+            if (Array.isArray(data)) return data.map(item => item.phrase).filter(p => p);
+        }
+    } catch(e) {
+        console.warn("Primary proxy failed, switching to fallback...", e);
+    }
+
+    // STRATEGY 2: AllOrigins (Fallback)
+    try {
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+        const res = await fetch(proxyUrl);
+        if (res.ok) {
+            const wrapper = await res.json();
+            // AllOrigins wraps response in 'contents' string
+            const innerData = JSON.parse(wrapper.contents);
+            if (Array.isArray(innerData)) return innerData.map(item => item.phrase).filter(p => p);
+        }
+    } catch(e) {
+        console.error("All proxies failed for suggestions.", e);
+    }
+
     return [];
 }
 
@@ -43,7 +53,6 @@ function handleSuggestions() {
     const input = inputEl.value.toLowerCase().trim();
     const container = document.getElementById('suggestionsContainer');
     
-    // Clear pending external fetch if user keeps typing
     clearTimeout(debounceTimer);
 
     if (input.length < 2) {
@@ -52,7 +61,7 @@ function handleSuggestions() {
         return;
     }
     
-    // 1. Gather Local Matches (Instant)
+    // 1. Local Matches (Instant)
     let suggestions = [];
     
     if (settings.historyEnabled) { 
@@ -67,19 +76,16 @@ function handleSuggestions() {
         suggestions = [...linkMatches, ...historyMatches];
     }
     
-    // 2. Render Local Immediately (Zero Latency UX)
+    // Render Local immediately
     renderSuggestions(suggestions, container);
 
-    // 3. Fetch External (Debounced & Engine Agnostic)
+    // 2. External Matches (Debounced)
     if (settings.externalSuggest) {
-        // We wait 300ms. If user types again, this timer is cleared above.
         debounceTimer = setTimeout(() => {
             fetchExternalSuggestions(input).then(external => {
-                // Filter out exact duplicates from internal lists
                 const uniqueExternal = external.map(name => ({ name: name, type: 'Search' }))
                     .filter(ext => !suggestions.some(s => s.name.toLowerCase() === ext.name.toLowerCase()));
                 
-                // Combine and re-render
                 const finalSuggestions = [...suggestions, ...uniqueExternal];
                 renderSuggestions(finalSuggestions, container);
             });
@@ -95,7 +101,6 @@ function renderSuggestions(suggestions, container) {
         return;
     }
     
-    // Only show the top 10 results to prevent massive screen takeover
     suggestions.slice(0, 10).forEach(s => {
         const item = document.createElement('div');
         item.className = 'suggestion-item';
@@ -118,7 +123,6 @@ function renderSuggestions(suggestions, container) {
 
 function logSearch(query) {
     if (settings.historyEnabled && query.trim() && !searchHistory.includes(query)) {
-        // Prepend new query and limit history to 20 items for efficiency
         searchHistory.unshift(query);
         searchHistory = searchHistory.slice(0, 20); 
         localStorage.setItem('0fluff_history', JSON.stringify(searchHistory));
@@ -129,7 +133,7 @@ function clearHistory() {
     searchHistory = [];
     localStorage.removeItem('0fluff_history');
     document.getElementById('searchInput').focus();
-    handleSuggestions(); // Clear any visible suggestions
+    handleSuggestions(); 
     alert("Search history has been cleared.");
 }
 
@@ -172,7 +176,7 @@ function handleImageUpload(input) {
     if (file && file.type.startsWith('image/')) {
         const reader = new FileReader();
         reader.onload = (e) => {
-            settings.backgroundImage = e.target.result; // Base64 storage
+            settings.backgroundImage = e.target.result; 
             autoSaveSettings();
             fileNameEl.innerText = file.name;
             resetBtn.style.display = 'inline-block';
@@ -189,7 +193,7 @@ function handleImageUpload(input) {
 function clearBackground() {
     settings.backgroundImage = null;
     autoSaveSettings();
-    document.getElementById('bgImageInput').value = ''; // Reset file input
+    document.getElementById('bgImageInput').value = '';
     document.getElementById('bgFileName').innerText = 'No image selected.';
     document.getElementById('resetBgBtn').style.display = 'none';
 }
@@ -203,4 +207,4 @@ window.getGreeting = getGreeting;
 window.updateClock = updateClock;
 window.handleImageUpload = handleImageUpload;
 window.clearBackground = clearBackground;
-window.getCurrentSearchEngine = getCurrentSearchEngine; // NEW EXPORT
+window.getCurrentSearchEngine = getCurrentSearchEngine;
