@@ -1,89 +1,59 @@
-## 👑 0FluffStart: The Final Homepage
+# ⚡ 0FluffStart: The Minimal Start Page
 
-### 🚀 Zero-Fluff, All Speed.
+**Zero backend. Zero fluff. Pure speed.**
 
-> A relentlessly minimal, privacy-first start page. No ads. No trackers. **Zero backend.** Just lightning-fast vibes that live entirely in your browser.
+[🔗 **Open 0FluffStart Here**](https://raw-json.github.io/0FluffStart/)
 
-**[🔗 Open 0FluffStart](https://raw-json.github.io/0FluffStart/)**
+---
 
-***
+## 🛑 PROJECT STATUS: ARCHIVED
 
-### 🛑 FINALITY: This Project is **DONE.**
+This project is stable, complete, and will **not** receive further feature updates. It fulfills its mission as a foundational, minimal start page.
 
-* **Stable:** The architecture is complete, stable, and fulfills its core minimal mission.
-* **Archived:** This repo will **not** receive feature updates or active development.
-* **Fork It:** Need new features or core changes? **Fork this repo.** The core `0FluffStart` stays a zero-fluff foundation.
+**Need a feature? Fork it.** This is the core foundation.
 
-***
+---
 
-### 🔥 CORE VIBE
+## 🔥 CORE PRINCIPLES (Why It's Fast)
 
-We built this because the internet is bloated trash.
+* **100% Client-Side:** Everything runs locally in your browser.
+* **Zero Latency:** No server requests means instant loading.
+* **Full Privacy:** No trackers, no data leaves your device.
+* **Vanilla Only:** No dependencies, no frameworks. Clean code that just runs.
 
-* **100% Client-Side:** Everything runs locally.
-* **Zero Latency:** No servers, no waiting.
-* **Full Privacy:** Data never leaves your device.(unless auto suggestion is enabled).
-* **Pure Vanilla Core:** **NO dependencies, NO transpilers.** Clean code that just runs.
+---
 
-***
+## 🛠 FEATURES (Essentials Only)
 
-### 🛠 FEATURES (The Essentials)
+* **Customization:** Deep themes (OLED, Cyberpunk, etc.) and custom local background images (Base64 storage).
+* **Quick Links:** Inline editor for fast shortcut management.
+* **Smart Search:** Switch search engines instantly (Google, DDG, Brave, etc.).
+* **Privacy Control:** Toggle and clear local search history.
+* **Readability:** Glassmorphism UI ensures text is clear over any background.
 
-* **Custom Vibes:** Deep themes (OLED, Cyberpunk, Forest, etc.) and custom local backgrounds (Base64 saved—never uploaded).
-* **Quick Links:** Inline-editor to manage shortcuts.
-* **Smart Search:** Instantly switch engines (Google, DDG, Brave, Startpage).
-* **Privacy-Control:** Toggle local search history and clear it with one click.
-* **Glassmorphism UI:** Text always readable over crazy backgrounds.
+---
 
-***
 ## 🔗 HOW TO DEPLOY: SETTING YOUR START PAGE
 
-Drop this URL: `https://raw-json.github.io/0FluffStart/` into the custom field of your browser's settings.
+Use this URL: `https://raw-json.github.io/0FluffStart/`
 
-### 🖥️ DESKTOP BROWSERS
+### 🖥️ DESKTOP
 
-* **Chrome / Edge:**
-    1.  Go to `Settings` > `Appearance`.
-    2.  Enable **`Show home button`**.
-    3.  Select **`Enter custom web address`** and paste the URL.
-* **Firefox:**
-    1.  Go to `Settings` > `Home`.
-    2.  Under `New Windows and Tabs`, select **`Custom URLs`** and paste the URL.
-* **Safari (macOS):**
-    1.  Go to `Preferences` > `General`.
-    2.  In the **`Homepage`** field, paste the URL.
-    3.  Set `New windows open with:` and `New tabs open with:` to **`Homepage`**.
+* **Chrome / Edge:** `Settings` > `Appearance` > Enable **`Show home button`** > Paste URL as custom address.
+* **Firefox:** `Settings` > `Home` > Set **`New Windows and Tabs`** to `Custom URLs` > Paste URL.
+* **Safari (macOS):** `Preferences` > `General` > Paste URL into the **`Homepage`** field.
 
-### 📱 MOBILE BROWSERS
+### 📱 MOBILE
 
-* **Chrome (Android):**
-    1.  Go to `Settings` > `Homepage`.
-    2.  Choose **`Custom page`** and paste the URL.
-* **Firefox (Android & iOS):**
-    1.  Go to `Menu` (three dots/lines) > `Settings` > `Homepage`.
-    2.  Select **`Custom URL`** and paste the URL.
-* **Safari (iOS):**
-    > **⚠️ NOTE:** iOS Safari doesn't support setting a custom start page for new tabs. The workaround is a Home Screen shortcut.
-    1.  Open the `0FluffStart` URL in Safari.
-    2.  Tap the **Share** icon (square with an upward arrow).
-    3. 3.  Select **`Add to Home Screen`**.
-     
-***
-### 🏗 FORKERS WELCOME
-
-This is a foundation built to be extended.
-
-* **License:** **MIT.** Go wild.
-* **Modular Integrity:** Code is split cleanly (`themes.css`, `utilities.js`) for surgical modification. Change one thing without breaking the core.
+* **Chrome / Firefox (Android/iOS):** `Settings` > `Homepage` > Select **`Custom URL`** > Paste URL.
+* **Safari (iOS):** iOS does not allow setting a custom new-tab page. Open the URL and use the **Share** icon > **`Add to Home Screen`** for a shortcut.
 
 ---
 
-### 📄 License
+## 🤖 TRANSPARENCY NOTE
 
-**[MIT License](LICENSE)**. Free forever. Fork it. Break it. Remix it.
+The core code logic was generated by **Gemini AI** under my supervision.
 
 ---
 
-### 🤖 Transparency Note
-
-The core logic and application code were generated by **Gemini Al** under my supervision and instruction. I did not **hand-write** the code or design the app manually. Al handled the build; I directed
+**LICENSE:** MIT. Fork it. Go wild.
