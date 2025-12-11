@@ -36,7 +36,39 @@ We built this because the internet is bloated trash.
 * **Glassmorphism UI:** Text always readable over crazy backgrounds.
 
 ***
+## 🔗 HOW TO DEPLOY: SETTING YOUR START PAGE
 
+Drop this URL: `https://raw-json.github.io/0FluffStart/` into the custom field of your browser's settings.
+
+### 🖥️ DESKTOP BROWSERS
+
+* **Chrome / Edge:**
+    1.  Go to `Settings` > `Appearance`.
+    2.  Enable **`Show home button`**.
+    3.  Select **`Enter custom web address`** and paste the URL.
+* **Firefox:**
+    1.  Go to `Settings` > `Home`.
+    2.  Under `New Windows and Tabs`, select **`Custom URLs`** and paste the URL.
+* **Safari (macOS):**
+    1.  Go to `Preferences` > `General`.
+    2.  In the **`Homepage`** field, paste the URL.
+    3.  Set `New windows open with:` and `New tabs open with:` to **`Homepage`**.
+
+### 📱 MOBILE BROWSERS
+
+* **Chrome (Android):**
+    1.  Go to `Settings` > `Homepage`.
+    2.  Choose **`Custom page`** and paste the URL.
+* **Firefox (Android & iOS):**
+    1.  Go to `Menu` (three dots/lines) > `Settings` > `Homepage`.
+    2.  Select **`Custom URL`** and paste the URL.
+* **Safari (iOS):**
+    > **⚠️ NOTE:** iOS Safari doesn't support setting a custom start page for new tabs. The workaround is a Home Screen shortcut.
+    1.  Open the `0FluffStart` URL in Safari.
+    2.  Tap the **Share** icon (square with an upward arrow).
+    3. 3.  Select **`Add to Home Screen`**.
+     
+***
 ### 🏗 FORKERS WELCOME
 
 This is a foundation built to be extended.
