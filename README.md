@@ -48,7 +48,7 @@ This is a foundation built to be extended.
 
 ### 📄 License
 
-** MIT License**. Free forever. Fork it. Break it. Remix it.
+**MIT License**. Free forever. Fork it. Break it. Remix it.
 
 ---
 
