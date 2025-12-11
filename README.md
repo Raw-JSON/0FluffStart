@@ -19,9 +19,6 @@
 ### 🔥 CORE VIBE: Why 0Fluff?
 
 We built this as a direct rejection of bloated modern web pages.
-### 🔥 CORE VIBE: Why 0Fluff?
-
-We built this as a direct rejection of bloated modern web pages.
 
 * **Default: 100% Client-Side:** All logic and config run locally. **Only external API calls are made if you enable search auto-suggestions.**
 * **Zero Backend:** The core app hosts **zero** backend services.
@@ -34,7 +31,7 @@ We built this as a direct rejection of bloated modern web pages.
 ### 🛠 FEATURES (The Essentials)
 
 * **Custom Vibes:** Choose from deep, pre-set themes (OLED Black, Cyberpunk, Forest, etc.) and set custom local backgrounds. Custom backgrounds are stored securely as Base64 data within your local storage—they are **never uploaded.**
-* **Quick Links:** An inline-editor allows users to instantly manage, add, and reorder shortcuts without navigating to a settings page.
+* **Quick Links:** Shortcuts are managed via a dedicated **Settings Page**, prioritizing a clean main interface over inline editing features.
 * **Smart Search:** Instantly toggle the search engine used by the main bar (supporting major engines like Google, DDG, Brave, and Startpage).
 * **Privacy-Control:** Toggle the storage of local search history and clear it with a single action button.
 * **Glassmorphism UI:** Ensures text and UI elements remain perfectly readable over complex or high-contrast custom backgrounds.
