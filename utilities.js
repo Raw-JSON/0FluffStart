@@ -14,6 +14,10 @@ function getCurrentSearchEngine() {
 }
 
 // --- SUGGESTIONS ---
+
+// Debounce timer to prevent API spamming
+let debounceTimer;
+
 // Keeps external suggestion functionality if user enables it, but simplifies everything else.
 async function fetchExternalSuggestions(query) {
     // CORS is a problem, so we use a proxy (allorigins) for the DuckDuckGo API call.
@@ -39,16 +43,18 @@ function handleSuggestions() {
     const input = inputEl.value.toLowerCase().trim();
     const container = document.getElementById('suggestionsContainer');
     
-    container.innerHTML = '';
-    
+    // Clear pending external fetch if user keeps typing
+    clearTimeout(debounceTimer);
+
     if (input.length < 2) {
+        container.innerHTML = '';
         container.classList.add('hidden');
         return;
     }
     
+    // 1. Gather Local Matches (Instant)
     let suggestions = [];
     
-    // Internal Matches (Only check history if enabled)
     if (settings.historyEnabled) { 
         const linkMatches = links
             .filter(l => l.name.toLowerCase().includes(input))
@@ -61,23 +67,24 @@ function handleSuggestions() {
         suggestions = [...linkMatches, ...historyMatches];
     }
     
-    // External Suggestions (Async)
-    if (settings.externalSuggest && getCurrentSearchEngine().name === 'Google') {
-        // Only run DDG suggestions if the user is using Google or DDG, otherwise, it's irrelevant.
-        // We use DDG's API for external lookups as it is simpler and privacy-focused.
-        fetchExternalSuggestions(input).then(external => {
-            // Filter out exact duplicates from internal lists
-            const uniqueExternal = external.map(name => ({ name: name, type: 'Search' }))
-                .filter(ext => !suggestions.some(s => s.name.toLowerCase() === ext.name.toLowerCase()));
-                
-            // Combine and render all suggestions
-            const finalSuggestions = [...suggestions, ...uniqueExternal];
-            renderSuggestions(finalSuggestions, container);
-        });
-        return; // Return early, as rendering happens async
-    }
-    
+    // 2. Render Local Immediately (Zero Latency UX)
     renderSuggestions(suggestions, container);
+
+    // 3. Fetch External (Debounced & Engine Agnostic)
+    if (settings.externalSuggest) {
+        // We wait 300ms. If user types again, this timer is cleared above.
+        debounceTimer = setTimeout(() => {
+            fetchExternalSuggestions(input).then(external => {
+                // Filter out exact duplicates from internal lists
+                const uniqueExternal = external.map(name => ({ name: name, type: 'Search' }))
+                    .filter(ext => !suggestions.some(s => s.name.toLowerCase() === ext.name.toLowerCase()));
+                
+                // Combine and re-render
+                const finalSuggestions = [...suggestions, ...uniqueExternal];
+                renderSuggestions(finalSuggestions, container);
+            });
+        }, 300); 
+    }
 }
 
 function renderSuggestions(suggestions, container) {
