@@ -22,7 +22,7 @@ We built this as a direct rejection of bloated modern web pages.
 
 * **100% Client-Side:** All logic and configuration run and are stored locally in the browser (using localStorage).
 * **Zero Latency:** No servers and no external dependencies result in instant, sub-millisecond loading.
-* **Full Privacy:** All configuration and search history data never leave your device.
+* **Full Privacy:** All configuration and search history data never leave your device (unless auto suggestion is enabled).
 * **Pure Vanilla Core:** **NO external dependencies, NO transpilers, NO frameworks.** Clean, native JavaScript, HTML, and CSS.
 
 ***
