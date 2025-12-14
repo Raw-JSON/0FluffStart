@@ -1,67 +1,68 @@
 # 👑 0FluffStart: The Final Minimal Homepage
 
-### 🚀 Zero-Fluff, All Speed.
+### 🚀 Zero-Fluff. All Speed.
 
-> A relentlessly minimal, privacy-first start page. No ads. No trackers. **Zero backend.** Just lightning-fast vibes that live entirely within your browser environment.
+> Relentlessly minimal. Privacy-first. **No ads. No trackers. Zero backend.** Lightning-fast vibes that live entirely in your browser.
 
-[🔗 **Open 0FluffStart Here**](https://raw-json.github.io/0FluffStart/)
+[🔗 **Launch 0FluffStart**](https://raw-json.github.io/0FluffStart/)
 
-***
-
-### 🛑 FINALITY: This Project is **DONE.**
-
-* **Stable Architecture:** The architecture is complete, stable, and perfectly fulfills its core minimal mission.
-* **Archived Status:** This repository will **not** receive feature updates or active development.
-* **Fork It:** If you require new features, extensive changes, or wish to extend functionality, you must **Fork this repository.** The core `0FluffStart` will remain a zero-fluff, unchanging foundation.
-
-***
-
-### 🔥 CORE VIBE: Why 0Fluff?
-
-We built this as a direct rejection of bloated modern web pages.
-
-* **Default: 100% Client-Side:** All logic and config run locally. **Only external API calls are made if you enable search auto-suggestions.**
-* **Zero Backend:** The core app hosts **zero** backend services.
-* **Zero Latency:** Near-instant loading, as there is no server-side processing for the app itself.
-* **Full Privacy:** Data never leaves your device unless you **explicitly enable** the DuckDuckGo search auto-suggestion API.
-* **Pure Vanilla Core:** **NO dependencies, NO frameworks.** Clean, native JavaScript, HTML, and CSS.
-
-***
-
-### 🛠 FEATURES (The Essentials)
-
-* **Custom Vibes:** Choose from deep, pre-set themes (OLED Black, Cyberpunk, Forest, etc.) and set custom local backgrounds. Custom backgrounds are stored securely as Base64 data within your local storage—they are **never uploaded.**
-* **Quick Links:** Shortcuts are managed via a dedicated **Settings Page**, prioritizing a clean main interface over inline editing features.
-* **Smart Search:** Instantly toggle the search engine used by the main bar (supporting major engines like Google, DDG, Brave, and Startpage).
-* **Privacy-Control:** Toggle the storage of local search history and clear it with a single action button.
-* **Glassmorphism UI:** Ensures text and UI elements remain perfectly readable over complex or high-contrast custom backgrounds.
+> ⚡ **Why it’s unique:** Mobile-first, lightning-fast, fully customizable, and totally private. Your homepage actually works for you, not the trackers.
 
 ---
 
-## 🔗 HOW TO DEPLOY: SETTING YOUR START PAGE
+### 🛑 FINALITY: This Project is **DONE.**
 
-Use this URL to deploy the application: `https://raw-json.github.io/0FluffStart/`
+* **Stable & Complete:** The architecture is rock-solid and fulfills its core minimal mission.  
+* **Archived Status:** No feature updates or active development will occur.  
+* **Fork It:** Need new features? Massive changes? **Fork it.** 0FluffStart remains pure, zero-fluff, unchanging.
 
-### 🖥️ DESKTOP BROWSERS
+---
 
-* **Chrome / Edge:** Navigate to `Settings` > `Appearance`. Enable **`Show home button`**. Select the option to **`Enter custom web address`** and paste the provided URL.
-* **Firefox:** Navigate to `Settings` > `Home`. Under the section `New Windows and Tabs`, select **`Custom URLs`** and paste the provided URL.
-* **Safari (macOS):** Navigate to `Preferences` > `General`. In the **`Homepage`** field, paste the URL. Ensure `New windows open with:` and `New tabs open with:` are set to **`Homepage`**.
+### 🔥 CORE VIBE: Why 0Fluff?
 
-### 📱 MOBILE BROWSERS
+Reject bloated modern web pages. Keep it simple, fast, private.
 
-* **Chrome (Android):** Navigate to `Settings` > `Homepage`. Choose the **`Custom page`** option and paste the URL.
-* **Firefox (Android & iOS):** Tap the Menu (three dots/lines) > `Settings` > `Homepage`. Select **`Custom URL`** and paste the URL.
-* **Safari (iOS):** **Note:** iOS Safari does not natively allow setting a custom URL for new tabs. The recommended solution is to create a dedicated home screen shortcut. Open the `0FluffStart` URL, tap the **Share** icon (square with upward arrow), and select **`Add to Home Screen`**.
+* **100% Client-Side:** All logic runs locally. External API calls only if you enable search auto-suggestions.  
+* **Zero Backend:** No servers. No latency. Just instant access.  
+* **Full Privacy:** Data stays on your device unless you explicitly enable DuckDuckGo auto-suggestions.  
+* **Pure Vanilla:** No dependencies, no frameworks. Clean JavaScript, HTML, CSS.  
+
+---
+
+### 🛠 FEATURES
+
+* **Custom Vibes:** Themes (OLED Black, Cyberpunk, Forest…) + fully custom backgrounds stored **locally** in Base64. Never uploaded.  
+* **Quick Links:** Dedicated **Settings Page** for clean, organized shortcuts.  
+* **Smart Search:** Toggle between Google, DDG, Brave, Startpage instantly.  
+* **Privacy Control:** Toggle local search history, clear it in one click.  
+* **Glassmorphism UI:** Crystal-clear readability over complex backgrounds.
+
+---
+
+## 🔗 DEPLOY: Make It Your Start Page
+
+**URL:** `https://raw-json.github.io/0FluffStart/`
+
+### 🖥️ Desktop Browsers
+
+* **Chrome / Edge:** Settings → Appearance → Show Home Button → Enter custom URL → Paste.  
+* **Firefox:** Settings → Home → New Windows and Tabs → Custom URL → Paste.  
+* **Safari (macOS):** Preferences → General → Homepage → Paste URL. Set new windows/tabs to Homepage.
+
+### 📱 Mobile Browsers
+
+* **Chrome (Android):** Settings → Homepage → Custom page → Paste URL.  
+* **Firefox (Android/iOS):** Menu → Settings → Homepage → Custom URL → Paste.  
+* **Safari (iOS):** Add to Home Screen via Share → Add to Home Screen (no native new-tab URL support).
 
 ---
 
 ### 📄 License
 
-**[MIT License](LICENSE)**. Free forever.
+**[MIT License](LICENSE)** — Free forever.
 
 ---
 
 ### 🤖 Transparency Note
 
-> The core logic and application code for this project were generated by **Gemini AI** under my direct supervision and instruction. I provided the structure and direction, and the AI handled the fundamental build.
+> Core logic generated by **Gemini AI** under my guidance. I directed structure, features, and design; the AI handled the build.
