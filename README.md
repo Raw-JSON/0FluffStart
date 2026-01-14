@@ -45,8 +45,8 @@ Since mobile browsers typically do not support local extensions, use the hosted 
 
 ## 🔥 Key Features
 * **Privacy-First Architecture:** No external analytics or trackers.
-* **Dynamic Theming:** 7+ pre-configured themes (OLED, Cyberpunk, Material 3) plus custom CSS background support.
-* **Data Portability:** Manual "Sync" via JSON Backup & Restore.
+* **Dynamic Theming:** 7 themes (OLED, Cyberpunk, Material 3).
+* **Data Portability:** Backup & Restore.
 * **Smart Search:** Instant engine switching and optional, privacy-focused DuckDuckGo suggestions.
 * **Optimized Performance:** Built with pure Vanilla JS/CSS for sub-second load times.
 
