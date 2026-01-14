@@ -9,10 +9,6 @@
     <link rel="stylesheet" href="core.css">
     <link rel="stylesheet" href="modules.css">
     <link rel="stylesheet" href="settings.css">
-    
-    <meta name="theme-color" content="#000000">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body class="dark">
 
@@ -21,7 +17,7 @@
 <div class="container">
     <header>
         <div class="header-row">
-            <button onclick="toggleSettings()" class="icon-btn">
+            <button id="settingsToggleBtn" class="icon-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
             </button>
         </div>
@@ -31,16 +27,16 @@
 
     <div class="search-bar">
         <div class="engine-switcher" id="engineSwitcher">
-            <button class="engine-btn" onclick="toggleEngineDropdown()">
+            <button class="engine-btn" id="engineDropdownBtn">
                 <span id="currentEngineIcon">G</span>
                 <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
             </button>
             <div id="engineDropdown" class="engine-dropdown hidden"></div>
         </div>
 
-        <input type="text" id="searchInput" placeholder="Search or Type URL..." onkeypress="handleSearch(event)" oninput="handleSuggestions()">
+        <input type="text" id="searchInput" placeholder="Search or Type URL...">
         
-        <button class="search-icon" onclick="handleSearch({ key: 'Enter', type: 'click', preventDefault: () => {} })">
+        <button class="search-icon" id="searchSubmitBtn">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </button>
         
@@ -56,10 +52,10 @@
         <div class="modal-header">
             <h2>Settings</h2>
             <div class="header-actions" style="display:flex; gap:10px;">
-                <button onclick="window.open('https://github.com/Raw-JSON/0FluffStart/issues', '_blank')" class="icon-btn" title="GitHub / Report Issue">
+                <button id="githubBtn" class="icon-btn" title="GitHub / Report Issue">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 3c0 0-1.03-.39-3.41 1.05A16.3 16.3 0 0 0 12 2.88 16.3 16.3 0 0 0 7.4 4.04c-2.38-1.44-3.41-1.05-3.41-1.05A5.07 5.07 0 0 0 3.91 4.77 5.44 5.44 0 0 0 4 9.47c0 5.42 3.3 6.61 6.44 7.37-.4.34-.78 1-1.15 2.06v4.31"></path></svg>
                 </button>
-                <button onclick="closeModal('settingsModal')" class="icon-btn">
+                <button id="closeSettingsBtn" class="icon-btn">
                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
             </div>
@@ -68,7 +64,7 @@
         <div class="setting-group">
             <h3>Quick Link Management</h3>
             <div id="linkListContainer">
-                <button onclick="openEditor()" class="add-link-btn" style="margin-bottom: 15px;">+ Add New Link</button>
+                <button id="addLinkBtn" class="add-link-btn" style="margin-bottom: 15px;">+ Add New Link</button>
                 <div id="linkManagerContent" class="link-manager-list"></div>
             </div>
             <div id="linkEditorContainer" class="hidden" style="background: var(--card-hover); padding: 15px; border-radius: var(--radius); border: 1px solid var(--border);">
@@ -76,20 +72,20 @@
                 <input type="text" id="editName" placeholder="Name (e.g. YouTube)">
                 <input type="url" id="editUrl" placeholder="URL (e.g. youtube.com)">
                 <div style="display:flex; gap:10px;">
-                    <button onclick="saveLink()" class="save-btn" style="margin-top:0;">Save</button>
-                    <button onclick="cancelEdit()" class="secondary" style="margin-top:0; width:100%; border-radius: var(--radius); font-weight:bold; border:1px solid var(--border);">Cancel</button>
+                    <button id="saveLinkBtn" class="save-btn" style="margin-top:0;">Save</button>
+                    <button id="cancelEditBtn" class="secondary" style="margin-top:0; width:100%; border-radius: var(--radius); font-weight:bold; border:1px solid var(--border);">Cancel</button>
                 </div>
             </div>
         </div>
         
         <div class="setting-group">
             <h3>Your Name</h3>
-            <input type="text" id="userNameInput" placeholder="Name for greeting..." oninput="autoSaveSettings()">
+            <input type="text" id="userNameInput" placeholder="Name for greeting...">
         </div>
         
         <div class="setting-group">
             <h3>Vibe (Theme)</h3>
-            <select id="themeSelect" onchange="autoSaveSettings()">
+            <select id="themeSelect">
                 <option value="dark">OLED Dark (Default)</option>
                 <option value="light">Clean Light</option>
                 <option value="cyberpunk">Cyberpunk</option>
@@ -103,16 +99,16 @@
         <div class="setting-group">
             <h3>Custom Background</h3>
             <div class="bg-control-row">
-                <input type="file" id="bgImageInput" accept="image/*" onchange="handleImageUpload(this)" class="hidden-input">
+                <input type="file" id="bgImageInput" accept="image/*" class="hidden-input">
                 <label for="bgImageInput" class="custom-file-btn">Choose Image</label>
-                <button onclick="clearBackground()" id="resetBgBtn" class="secondary small-btn" style="display:none;">Reset</button>
+                <button id="resetBgBtn" class="secondary small-btn" style="display:none;">Reset</button>
             </div>
             <p id="bgFileName" style="font-size: 0.8rem; color: var(--dim); margin-top: 8px;">No image selected.</p>
         </div>
 
         <hr style="border: 0; border-top: 1px solid var(--border); margin: 25px 0;">
 
-        <button onclick="toggleAdvanced()" id="advancedToggleBtn" class="advanced-toggle">
+        <button id="advancedToggleBtn" class="advanced-toggle">
             <span>Advanced Settings</span>
             <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
         </button>
@@ -122,10 +118,10 @@
                 <h3>Clock Format</h3>
                 <div class="radio-row">
                     <label class="radio-option">
-                        <input type="radio" name="clockFormat" value="12h" onchange="autoSaveSettings()"> 12-Hour
+                        <input type="radio" name="clockFormat" value="12h" class="clock-radio"> 12-Hour
                     </label>
                     <label class="radio-option">
-                        <input type="radio" name="clockFormat" value="24h" onchange="autoSaveSettings()"> 24-Hour
+                        <input type="radio" name="clockFormat" value="24h" class="clock-radio"> 24-Hour
                     </label>
                 </div>
             </div>
@@ -136,18 +132,27 @@
                     ⚠️ Sends keystrokes to **DuckDuckGo**. Disabling keeps search 100% local.
                 </p>
                 <label class="radio-option" style="justify-content: flex-start;">
-                    <input type="checkbox" id="externalSuggestToggle" onchange="autoSaveSettings()"> Enable Live Suggestions
+                    <input type="checkbox" id="externalSuggestToggle"> Enable Live Suggestions
                 </label>
             </div>
             
             <div class="setting-group">
                 <h3>Search History Control</h3>
-                <button onclick="clearHistory()" class="secondary" style="width:100%; margin-bottom: 10px; font-weight:bold; border:1px solid var(--delete); color: var(--delete);">Clear All Search History</button>
+                <button id="clearHistoryBtn" class="secondary" style="width:100%; margin-bottom: 10px; font-weight:bold; border:1px solid var(--delete); color: var(--delete);">Clear All Search History</button>
                 <label class="radio-option" style="justify-content: flex-start;">
-                    <input type="checkbox" id="historyEnabledToggle" onchange="autoSaveSettings()"> Enable Local Search History
+                    <input type="checkbox" id="historyEnabledToggle"> Enable Local Search History
                 </label>
             </div>
-        </div>
+
+            <div class="setting-group">
+                <h3 style="margin-top:20px;">Data Backup & Restore</h3>
+                <div style="display:flex; gap:10px;">
+                    <button id="backupDataBtn" class="secondary" style="flex:1;">Backup (Save)</button>
+                    <button id="restoreDataBtn" class="secondary" style="flex:1;">Restore (Load)</button>
+                </div>
+                <input type="file" id="restoreInput" accept=".json" style="display:none;">
+            </div>
+            </div>
         
         </div>
 </div>
