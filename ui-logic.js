@@ -1,21 +1,26 @@
 // ui-logic.js
 
-/* global links, settings, isEditMode, isEditingId, searchEngines */
+/* global links:writable, settings, isEditMode, isEditingId:writable, searchEngines */
 /* global renderEngineDropdown, loadSettings, updateClock, autoSaveSettings, logSearch, handleSuggestions, clearHistory */
+/* global fetchExternalSuggestions, selectSuggestion */
 
 // --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Bind Static Events (CSP Requirement)
+    bindStaticEvents();
+
+    // 2. Initial Render
     renderLinks();
     loadSettings(); 
     renderEngineDropdown(); 
     updateClock(); 
     setInterval(updateClock, 1000);
 
-    // TWEAK 1: Instant Focus on Load
+    // 3. Focus
     const searchInput = document.getElementById('searchInput');
     if(searchInput) searchInput.focus();
 
-    // Event Delegation for clicking outside
+    // 4. Global Click Listeners (Delegation for closing dropdowns)
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.engine-switcher')) {
             document.getElementById('engineDropdown')?.classList.add('hidden');
@@ -25,41 +30,72 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // NEW: Close Settings Modal when clicking the overlay (Backdrop)
-    const settingsModal = document.getElementById('settingsModal');
-    if (settingsModal) {
-        settingsModal.addEventListener('click', (e) => {
-            // Check if the click target IS the modal container (the overlay), not the inner content
-            if (e.target === settingsModal) {
-                closeModal('settingsModal');
-            }
-        });
-    }
-    
-    // TWEAK 2: The "Escape Hatch" - Global Esc Handler
+    // 5. Global Key Listeners
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            // Close Modals
             document.getElementById('settingsModal')?.classList.remove('active');
-            // Close Dropdowns & Suggestions
             document.getElementById('engineDropdown')?.classList.add('hidden');
             document.getElementById('suggestionsContainer')?.classList.add('hidden');
-            // Close Advanced Settings Drawer
+            
             const advContent = document.getElementById('advancedSettings');
             const advBtn = document.getElementById('advancedToggleBtn');
             if(advContent?.classList.contains('open')) {
                 advContent.classList.remove('open');
                 advBtn.classList.remove('active');
             }
-            // If editing a link, cancel it
             if(!document.getElementById('linkEditorContainer')?.classList.contains('hidden')) {
                 cancelEdit();
             }
         }
     });
-    
-    window.handleSuggestions = handleSuggestions;
 });
+
+// --- CSP EVENT BINDING ---
+function bindStaticEvents() {
+    // Header & Settings
+    document.getElementById('settingsToggleBtn').addEventListener('click', toggleSettings);
+    document.getElementById('closeSettingsBtn').addEventListener('click', () => closeModal('settingsModal'));
+    document.getElementById('settingsModal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('settingsModal')) closeModal('settingsModal');
+    });
+
+    // Search Bar
+    document.getElementById('engineDropdownBtn').addEventListener('click', toggleEngineDropdown);
+    document.getElementById('searchSubmitBtn').addEventListener('click', () => handleSearch({ key: 'Enter', type: 'click', preventDefault: () => {} }));
+    
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', handleSuggestions);
+    searchInput.addEventListener('keypress', handleSearch);
+
+    // Settings Panel Inputs
+    document.getElementById('githubBtn').addEventListener('click', () => window.open('https://github.com/Raw-JSON/0FluffStart/issues', '_blank'));
+    document.getElementById('addLinkBtn').addEventListener('click', () => openEditor());
+    document.getElementById('saveLinkBtn').addEventListener('click', saveLink);
+    document.getElementById('cancelEditBtn').addEventListener('click', cancelEdit);
+    document.getElementById('userNameInput').addEventListener('input', autoSaveSettings);
+    document.getElementById('themeSelect').addEventListener('change', autoSaveSettings);
+    
+    // Background Inputs
+    const bgInput = document.getElementById('bgImageInput');
+    bgInput.addEventListener('change', () => handleImageUpload(bgInput));
+    document.getElementById('resetBgBtn').addEventListener('click', clearBackground);
+
+    // Advanced Settings
+    document.getElementById('advancedToggleBtn').addEventListener('click', toggleAdvanced);
+    document.getElementById('externalSuggestToggle').addEventListener('change', autoSaveSettings);
+    document.getElementById('historyEnabledToggle').addEventListener('change', autoSaveSettings);
+    document.getElementById('clearHistoryBtn').addEventListener('click', clearHistory);
+    
+    // Backup & Restore
+    document.getElementById('backupDataBtn').addEventListener('click', backupData);
+    document.getElementById('restoreDataBtn').addEventListener('click', () => document.getElementById('restoreInput').click());
+    document.getElementById('restoreInput').addEventListener('change', restoreData);
+
+    // Radio buttons for clock need iteration
+    document.querySelectorAll('.clock-radio').forEach(radio => {
+        radio.addEventListener('change', autoSaveSettings);
+    });
+}
 
 // --- INTERACTIONS ---
 function toggleAdvanced() {
@@ -74,35 +110,55 @@ function toggleAdvanced() {
     }
 }
 
-// --- BACKGROUND ---
-function handleImageUpload(input) {
-    const file = input.files[0];
-    if (!file) return;
-    document.getElementById('bgFileName').innerText = `Selected: ${file.name}`;
-    if (file.size > 3 * 1024 * 1024) {
-        alert("Image is too large. Please select an image under 3MB.");
-        input.value = ''; 
-        document.getElementById('bgFileName').innerText = "No image selected.";
-        return;
-    }
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            settings.backgroundImage = e.target.result;
-            localStorage.setItem('0fluff_settings', JSON.stringify(settings));
-            loadSettings(); 
-        } catch (err) {
-            alert("Storage limit reached. Try a smaller image.");
-        }
+// --- BACKUP & RESTORE ---
+function backupData() {
+    const data = {
+        links: JSON.parse(localStorage.getItem('0fluff_links') || '[]'),
+        settings: JSON.parse(localStorage.getItem('0fluff_settings') || '{}'),
+        history: JSON.parse(localStorage.getItem('0fluff_history') || '[]')
     };
-    reader.readAsDataURL(file);
+    
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `0FluffStart_Backup_${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
-function clearBackground() {
-    settings.backgroundImage = null;
-    localStorage.setItem('0fluff_settings', JSON.stringify(settings));
-    document.getElementById('bgImageInput').value = '';
-    loadSettings();
+function restoreData(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        try {
+            const data = JSON.parse(event.target.result);
+            
+            // Simple validation
+            if (!data.links && !data.settings) {
+                alert("Invalid backup file. Missing core data.");
+                return;
+            }
+
+            if (confirm("This will overwrite your current settings, links, and history. Are you sure?")) {
+                if(data.links) localStorage.setItem('0fluff_links', JSON.stringify(data.links));
+                if(data.settings) localStorage.setItem('0fluff_settings', JSON.stringify(data.settings));
+                if(data.history) localStorage.setItem('0fluff_history', JSON.stringify(data.history));
+                
+                alert("Restore successful! Reloading...");
+                window.location.reload();
+            }
+        } catch (err) {
+            alert("Error parsing backup file: " + err.message);
+        }
+    };
+    reader.readAsText(file);
+    // Reset input so same file can be selected again if needed
+    e.target.value = '';
 }
 
 // --- LINKS ---
@@ -143,18 +199,19 @@ function renderLinks() {
             <div class="link-name">${link.name}</div>
         `;
         
-        // Left Click: Go to URL
-        item.onclick = () => {
+        // Left Click: Go to URL (Attached via JS)
+        item.addEventListener('click', () => {
             const finalUrl = link.url.startsWith('http') ? link.url : `https://${link.url}`;
-            window.location.href = finalUrl;
-        };
+            // Extensions behave better with window.location update for same-tab
+            window.location.href = finalUrl; 
+        });
 
         // Right Click: Quick Edit
-        item.oncontextmenu = (e) => {
+        item.addEventListener('contextmenu', (e) => {
             e.preventDefault(); 
             toggleSettings();
             openEditor(link.id);
-        };
+        });
 
         grid.appendChild(item);
     });
@@ -169,18 +226,41 @@ function renderLinkManager() {
         linkManagerContent.innerHTML = '<div style="color:var(--dim); text-align:center; padding:10px;">No links yet.</div>';
         return;
     }
-    const editIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>`;
-    const deleteIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`;
+    const editIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>`;
+    const deleteIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`;
+    
     links.forEach(link => {
         const item = document.createElement('div');
         item.className = 'link-manager-item';
-        item.innerHTML = `
-            <span class="link-name">${link.name}</span>
-            <div class="link-actions">
-                <button class="icon-btn secondary" onclick="editLink('${link.id}')" title="Edit">${editIcon}</button>
-                <button class="icon-btn delete-btn" onclick="deleteLink('${link.id}')" title="Delete">${deleteIcon}</button>
-            </div>
-        `;
+        
+        // Name
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'link-name';
+        nameSpan.innerText = link.name;
+        
+        // Actions Container
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'link-actions';
+        
+        // Edit Button
+        const editBtn = document.createElement('button');
+        editBtn.className = 'icon-btn secondary';
+        editBtn.innerHTML = editIconSVG;
+        editBtn.title = 'Edit';
+        editBtn.addEventListener('click', (e) => editLink(link.id, e));
+        
+        // Delete Button
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'icon-btn delete-btn';
+        deleteBtn.innerHTML = deleteIconSVG;
+        deleteBtn.title = 'Delete';
+        deleteBtn.addEventListener('click', (e) => deleteLink(link.id, e));
+        
+        actionsDiv.appendChild(editBtn);
+        actionsDiv.appendChild(deleteBtn);
+        item.appendChild(nameSpan);
+        item.appendChild(actionsDiv);
+        
         linkManagerContent.appendChild(item);
     });
 }
@@ -267,7 +347,7 @@ function loadSettings() {
     for(let r of radios) { if(r.value === settings.clockFormat) r.checked = true; }
     
     document.getElementById('externalSuggestToggle').checked = settings.externalSuggest;
-    document.getElementById('historyEnabledToggle').checked = settings.historyEnabled; // <--- ADDED TOGGLE LOAD
+    document.getElementById('historyEnabledToggle').checked = settings.historyEnabled;
     
     updateClock(); 
     renderEngineDropdown();
@@ -279,7 +359,7 @@ function autoSaveSettings() {
     const radios = document.getElementsByName('clockFormat');
     for(let r of radios) if(r.checked) settings.clockFormat = r.value;
     settings.externalSuggest = document.getElementById('externalSuggestToggle').checked;
-    settings.historyEnabled = document.getElementById('historyEnabledToggle').checked; // <--- ADDED TOGGLE SAVE
+    settings.historyEnabled = document.getElementById('historyEnabledToggle').checked;
     
     localStorage.setItem('0fluff_settings', JSON.stringify(settings));
     loadSettings();
@@ -301,11 +381,13 @@ function renderEngineDropdown() {
     const current = searchEngines.find(s => s.name === settings.searchEngine) || searchEngines[0];
     const iconEl = document.getElementById('currentEngineIcon');
     if(iconEl) iconEl.innerText = current.initial;
+    
     searchEngines.forEach(e => {
         const div = document.createElement('div');
         div.className = `engine-option ${e.name === settings.searchEngine ? 'selected' : ''}`;
         div.innerHTML = `<span>${e.name}</span> <span>${e.initial}</span>`;
-        div.onclick = () => selectEngine(e.name);
+        // Attached via JS
+        div.addEventListener('click', () => selectEngine(e.name));
         dropdown.appendChild(div);
     });
 }
@@ -341,6 +423,7 @@ function selectSuggestion(suggestion) {
     }
 }
 
+// Exports
 window.handleImageUpload = handleImageUpload;
 window.clearBackground = clearBackground;
 window.renderLinks = renderLinks;
@@ -359,3 +442,5 @@ window.cancelEdit = cancelEdit;
 window.autoSaveSettings = autoSaveSettings;
 window.toggleAdvanced = toggleAdvanced;
 window.clearHistory = clearHistory;
+window.backupData = backupData;
+window.restoreData = restoreData;
