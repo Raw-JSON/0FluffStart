@@ -1,46 +1,70 @@
-# 👑 0FluffStart: The Final Minimal Homepage & Extension
+# 👑 0FluffStart
+**The Final Minimalist Dashboard for Desktop & Mobile.**
 
-### 🚀 Zero-Fluff. All Speed.
-> Relentlessly minimal. Privacy-first. **No ads. No trackers. Zero backend.** Lightning-fast vibes that live entirely in your browser.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Version: 1.2.0](https://img.shields.io/badge/Version-1.2.0-blue)
+![Platform: Web | Extension](https://img.shields.io/badge/Platform-Web%20%7C%20Extension-brightgreen)
 
-[🔗 **Launch Live Web Version**](https://raw-json.github.io/0FluffStart/)
+0FluffStart is a high-performance, privacy-focused start page designed to replace bloated default homepages. It operates as a local-first application, ensuring that your data—links, settings, and search history—never leaves your device.
 
----
-
-## 🛠️ HOW TO USE (Desktop vs. Mobile)
-
-### 📱 For Mobile (Web Version)
-Since most mobile browsers do not support extensions, use the hosted web version to get a premium dashboard experience on your phone.
-* **iOS (Safari):** Open the link, tap the **Share** icon, and select **"Add to Home Screen."** It will now launch like a native, full-screen app without the browser address bar.
-* **Android (Chrome):** Open the link, tap the three dots, and select **"Install App"** or **"Add to Home Screen."**
-* **Set as Homepage:** In mobile Firefox or Edge settings, set the Homepage URL to: `https://raw-json.github.io/0FluffStart/`
-
-### 💻 For Desktop (Browser Extension)
-Transform every new tab into your 0Fluff dashboard.
-1. **Download** the source code from this repository.
-2. **Extract** the folder to a safe spot on your PC.
-3. **Open Extensions Page:** Go to `chrome://extensions` or `edge://extensions`.
-4. **Enable "Developer Mode"** (top right toggle).
-5. **Click "Load Unpacked"** and select the folder you extracted.
+[**🚀 Launch Web Version**](https://raw-json.github.io/0FluffStart/)
 
 ---
 
-## 🔥 CORE FEATURES
-* **Extension & Web Hybrid:** Optimized for both local desktop installation and hosted mobile use.
-* **100% Client-Side:** Your links, settings, and history stay on your device.
-* **Data Portability:** Use the **Backup & Restore** feature to move your setup from your Desktop Extension to your Mobile browser in seconds.
-* **Custom Vibes:** 7+ built-in themes + custom local wallpaper support.
-* **Privacy-First:** Zero trackers. Optional local search history and opt-in DuckDuckGo suggestions.
+## 📖 Overview
+0FluffStart is built on a "Zero-Fluff" philosophy: no trackers, no backend latency, and zero dependencies. It serves a dual purpose:
+1.  **Desktop:** A fully integrated browser extension (Manifest V3).
+2.  **Mobile:** A lightweight web-based homepage for browsers that lack extension support.
 
 ---
 
-## 💾 DATA SYNC (Manual)
-Since there is no backend (for privacy), you can sync your data across devices manually:
-1.  On your Computer: Go to **Settings → Advanced → Backup (Save)**.
-2.  Send that `.json` file to your phone.
-3.  On your Phone: Go to **Settings → Advanced → Restore (Load)** and select that file.
+## 🛠️ Deployment & Installation
+
+### Desktop (Browser Extension)
+Install 0FluffStart locally to override your "New Tab" page.
+1.  **Download** the latest source code from the [Releases](https://github.com/Raw-JSON/0FluffStart/releases) page.
+2.  **Extract** the archive to a local directory.
+3.  Navigate to your browser's extension management page (`chrome://extensions` or `edge://extensions`).
+4.  Enable **Developer Mode** in the top-right corner.
+5.  Select **Load Unpacked** and point to the extracted folder.
+
+### Mobile (Web Homepage)
+Since mobile browsers typically do not support local extensions, use the hosted version as your primary entry point.
+
+#### Android (Chrome)
+1.  Navigate to **Settings** > **Homepage**.
+2.  Toggle to **On**.
+3.  Select **Enter custom web address** and input: `https://raw-json.github.io/0FluffStart/`
+
+#### iOS (Safari)
+1.  Open the URL in Safari.
+2.  Tap the **Share** icon and select **Add to Home Screen**.
+3.  The dashboard will now launch in full-screen mode without the browser UI.
 
 ---
 
-### 📄 License
-**[MIT License](LICENSE)** — Free forever. Built with ⚡ 
+## 🔥 Key Features
+* **Privacy-First Architecture:** No external analytics or trackers.
+* **Dynamic Theming:** 7+ pre-configured themes (OLED, Cyberpunk, Material 3) plus custom CSS background support.
+* **Data Portability:** Manual "Sync" via JSON Backup & Restore.
+* **Smart Search:** Instant engine switching and optional, privacy-focused DuckDuckGo suggestions.
+* **Optimized Performance:** Built with pure Vanilla JS/CSS for sub-second load times.
+
+---
+
+## 💾 Data Management
+All configuration is stored in the browser's `localStorage`. To move your setup from Desktop to Mobile:
+1.  **Export:** Go to *Settings > Advanced* and click **Backup**.
+2.  **Transfer:** Send the generated `.json` file to your mobile device.
+3.  **Import:** Open the mobile web link, go to *Settings > Advanced*, and select **Restore**.
+
+---
+
+## 🏛️ Project Structure
+```text
+├── manifest.json      # Extension configuration (MV3)
+├── index.html         # Application entry point
+├── state.js           # Data persistence & state management
+├── ui-logic.js        # DOM interaction & event handling
+├── utilities.js       # Search APIs & helper functions
+└── *.css              # Modular stylesheets (Themes, Core, Layout)
