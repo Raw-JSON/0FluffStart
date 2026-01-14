@@ -10,14 +10,6 @@
 
 ---
 
-### 🛑 FINALITY: This Project is **DONE.**
-
-* **Stable & Complete:** The architecture is rock-solid and fulfills its core minimal mission.  
-* **Archived Status:** No feature updates or active development will occur.  
-* **Fork It:** Need new features? Massive changes? **Fork it.** 0FluffStart remains pure, zero-fluff, unchanging.
-
----
-
 ### 🔥 CORE VIBE: Why 0Fluff?
 
 Reject bloated modern web pages. Keep it simple, fast, private.
