@@ -1,0 +1,50 @@
+/* 0flufThemes.css - Extension Pack 01 */
+
+/* Nord (Frosty & Professional) */
+body.nord {
+    --bg: #2e3440;
+    --card: #3b4252;
+    --card-hover: #434c5e;
+    --text: #eceff4;
+    --accent: #88c0d0;
+    --dim: #d8dee9;
+    --border: #4c566a;
+    --radius: 8px;
+}
+
+/* Dracula (Vibrant Dark) */
+body.dracula {
+    --bg: #282a36;
+    --card: #44475a;
+    --card-hover: #6272a4;
+    --text: #f8f8f2;
+    --accent: #bd93f9;
+    --dim: #6272a4;
+    --border: #44475a;
+    --radius: 12px;
+}
+
+/* Retro Amber (Terminal Vibe) */
+body.retro {
+    --bg: #0d0202;
+    --card: #1a0505;
+    --card-hover: #260808;
+    --text: #ffb000;
+    --accent: #ffb000;
+    --dim: #7f5800;
+    --border: #ffb000;
+    --radius: 0px;
+    --font-main: "Courier New", Courier, monospace;
+}
+
+/* Rose Pine (Soft & Muted) */
+body.rose {
+    --bg: #191724;
+    --card: #1f1d2e;
+    --card-hover: #26233a;
+    --text: #e0def4;
+    --accent: #ebbcba;
+    --dim: #908caa;
+    --border: #403d52;
+    --radius: 16px;
+}
