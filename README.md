@@ -5,7 +5,7 @@
 ![Version: 3.0.0](https://img.shields.io/badge/Version-3.0.0-blue)
 ![Platform: Web | Extension](https://img.shields.io/badge/Platform-Web%20%7C%20Extension-brightgreen)
 
-0FluffStart is a high-performance, privacy-focused start page designed to replace bloated default homepages. It operates as a local-first application, ensuring that your data—links, settings, and search history—never leaves your device.
+> 0FluffStart is a high-performance, privacy-focused start page designed to replace bloated default homepages. It operates as a local-first application, ensuring that your data links, settings, and search history never leaves your device.
 
 [**🚀 Launch Web Version**](https://raw-json.github.io/0FluffStart/)
 
