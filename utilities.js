@@ -2,6 +2,56 @@
 
 /* global links, settings, searchHistory, searchEngines, selectSuggestion, autoSaveSettings */ 
 
+// --- INDEXEDDB STORAGE (v3.1.0) ---
+// We use IndexedDB for heavy assets to avoid LocalStorage quota limits (typically ~5MB).
+const DB_CONFIG = { name: '0FluffDB', version: 1, store: 'assets' };
+
+function openDB() {
+    return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_CONFIG.name, DB_CONFIG.version);
+        req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(DB_CONFIG.store)) {
+                db.createObjectStore(DB_CONFIG.store);
+            }
+        };
+        req.onsuccess = (e) => resolve(e.target.result);
+        req.onerror = (e) => reject(e.target.error);
+    });
+}
+
+async function saveBgToDB(data) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(DB_CONFIG.store, 'readwrite');
+        const store = tx.objectStore(DB_CONFIG.store);
+        const req = store.put(data, 'backgroundImage');
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+    });
+}
+
+async function getBgFromDB() {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(DB_CONFIG.store, 'readonly');
+        const store = tx.objectStore(DB_CONFIG.store);
+        const req = store.get('backgroundImage');
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+async function clearBgFromDB() {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(DB_CONFIG.store, 'readwrite');
+        const store = tx.objectStore(DB_CONFIG.store);
+        store.delete('backgroundImage');
+        tx.oncomplete = () => resolve();
+    });
+}
+
 // --- SEARCH ENGINE UTILITY ---
 
 function getCurrentSearchEngine() {
@@ -42,8 +92,6 @@ async function fetchExternalSuggestions(query) {
 
     return [];
 }
-
-// --- UTILS ---
 
 function handleSuggestions() {
     const inputEl = document.getElementById('searchInput');
@@ -102,7 +150,6 @@ function renderSuggestions(suggestions, container) {
         const item = document.createElement('div');
         item.className = 'suggestion-item';
         
-        // --- CSP COMPLIANCE CHANGE: Event Listener instead of onclick attribute ---
         item.addEventListener('click', () => {
             selectSuggestion({ name: s.name, url: s.url || '', type: s.type });
         });
@@ -169,34 +216,51 @@ function updateClock() {
     document.getElementById('greetingDisplay').innerText = getGreeting(settings.userName);
 }
 
-function handleImageUpload(input) {
+// --- UPDATED IMAGE HANDLER (v3.1.0) ---
+async function handleImageUpload(input) {
     const file = input.files[0];
     const fileNameEl = document.getElementById('bgFileName');
     const resetBtn = document.getElementById('resetBgBtn');
     
     if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            settings.backgroundImage = e.target.result; 
+        try {
+            // Store raw file in IndexedDB
+            await saveBgToDB(file);
+            
+            // Update settings to flag IDB usage
+            settings.backgroundImage = 'indexeddb';
             autoSaveSettings();
+            
+            // Apply immediately using ObjectURL for zero-latency preview
+            const objectUrl = URL.createObjectURL(file);
+            document.body.style.backgroundImage = `url('${objectUrl}')`;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+            document.body.style.backgroundAttachment = 'fixed';
+            
             fileNameEl.innerText = file.name;
             resetBtn.style.display = 'inline-block';
-        };
-        reader.readAsDataURL(file);
+            document.getElementById('bgOverlay').style.opacity = '1';
+
+        } catch (e) {
+            console.error("Failed to save background to DB", e);
+            alert("Failed to save background image. Database error.");
+        }
     } else {
-        settings.backgroundImage = null;
-        autoSaveSettings();
-        fileNameEl.innerText = 'No image selected.';
-        resetBtn.style.display = 'none';
+        clearBackground();
     }
 }
 
-function clearBackground() {
+async function clearBackground() {
     settings.backgroundImage = null;
     autoSaveSettings();
+    await clearBgFromDB(); // Purge from IDB
+    
+    document.body.style.backgroundImage = '';
     document.getElementById('bgImageInput').value = '';
     document.getElementById('bgFileName').innerText = 'No image selected.';
     document.getElementById('resetBgBtn').style.display = 'none';
+    document.getElementById('bgOverlay').style.opacity = '0';
 }
 
 // Exports
@@ -209,3 +273,5 @@ window.updateClock = updateClock;
 window.handleImageUpload = handleImageUpload;
 window.clearBackground = clearBackground;
 window.getCurrentSearchEngine = getCurrentSearchEngine;
+window.saveBgToDB = saveBgToDB;
+window.getBgFromDB = getBgFromDB;
