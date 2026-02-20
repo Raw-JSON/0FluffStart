@@ -2,25 +2,20 @@
 
 /* global links:writable, settings, isEditMode, isEditingId:writable, searchEngines */
 /* global renderEngineDropdown, loadSettings, updateClock, autoSaveSettings, logSearch, handleSuggestions, clearHistory */
-/* global fetchExternalSuggestions, selectSuggestion */
+/* global fetchExternalSuggestions, selectSuggestion, saveBgToDB, getBgFromDB */
 
 // --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Bind Static Events (CSP Requirement)
     bindStaticEvents();
-
-    // 2. Initial Render
     renderLinks();
     loadSettings(); 
     renderEngineDropdown(); 
     updateClock(); 
     setInterval(updateClock, 1000);
 
-    // 3. Focus
     const searchInput = document.getElementById('searchInput');
     if(searchInput) searchInput.focus();
 
-    // 4. Global Click Listeners (Delegation for closing dropdowns)
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.engine-switcher')) {
             document.getElementById('engineDropdown')?.classList.add('hidden');
@@ -30,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // 5. Global Key Listeners
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             document.getElementById('settingsModal')?.classList.remove('active');
@@ -67,8 +61,9 @@ function bindStaticEvents() {
     searchInput.addEventListener('input', handleSuggestions);
     searchInput.addEventListener('keypress', handleSearch);
 
-    // Settings Panel Inputs
-    document.getElementById('githubBtn').addEventListener('click', () => window.open('https://github.com/Raw-JSON/0FluffStart/issues', '_blank'));
+    // Repointed GitHub Button to main repo
+    document.getElementById('githubBtn').addEventListener('click', () => window.open('https://github.com/Raw-JSON/0FluffStart', '_blank'));
+    
     document.getElementById('addLinkBtn').addEventListener('click', () => openEditor());
     document.getElementById('saveLinkBtn').addEventListener('click', saveLink);
     document.getElementById('cancelEditBtn').addEventListener('click', cancelEdit);
@@ -91,13 +86,11 @@ function bindStaticEvents() {
     document.getElementById('restoreDataBtn').addEventListener('click', () => document.getElementById('restoreInput').click());
     document.getElementById('restoreInput').addEventListener('change', restoreData);
 
-    // Radio buttons for clock need iteration
     document.querySelectorAll('.clock-radio').forEach(radio => {
         radio.addEventListener('change', autoSaveSettings);
     });
 }
 
-// --- INTERACTIONS ---
 function toggleAdvanced() {
     const content = document.getElementById('advancedSettings');
     const btn = document.getElementById('advancedToggleBtn');
@@ -137,8 +130,6 @@ function restoreData(e) {
     reader.onload = (event) => {
         try {
             const data = JSON.parse(event.target.result);
-            
-            // Simple validation
             if (!data.links && !data.settings) {
                 alert("Invalid backup file. Missing core data.");
                 return;
@@ -157,7 +148,6 @@ function restoreData(e) {
         }
     };
     reader.readAsText(file);
-    // Reset input so same file can be selected again if needed
     e.target.value = '';
 }
 
@@ -168,7 +158,6 @@ function renderLinks() {
     grid.innerHTML = '';
     
     links.forEach(link => {
-        // Monogram Logic
         const words = link.name.split(' ').filter(w => w.length > 0);
         let acronym = words.map(word => word.charAt(0).toUpperCase()).join('');
         if (words.length === 1 && acronym.length === 1 && link.name.length > 1) {
@@ -199,14 +188,11 @@ function renderLinks() {
             <div class="link-name">${link.name}</div>
         `;
         
-        // Left Click: Go to URL (Attached via JS)
         item.addEventListener('click', () => {
             const finalUrl = link.url.startsWith('http') ? link.url : `https://${link.url}`;
-            // Extensions behave better with window.location update for same-tab
             window.location.href = finalUrl; 
         });
 
-        // Right Click: Quick Edit
         item.addEventListener('contextmenu', (e) => {
             e.preventDefault(); 
             toggleSettings();
@@ -217,7 +203,6 @@ function renderLinks() {
     });
 }
 
-// --- LINK MANAGER (Settings) ---
 function renderLinkManager() {
     const linkManagerContent = document.getElementById('linkManagerContent');
     if(!linkManagerContent) return;
@@ -233,23 +218,19 @@ function renderLinkManager() {
         const item = document.createElement('div');
         item.className = 'link-manager-item';
         
-        // Name
         const nameSpan = document.createElement('span');
         nameSpan.className = 'link-name';
         nameSpan.innerText = link.name;
         
-        // Actions Container
         const actionsDiv = document.createElement('div');
         actionsDiv.className = 'link-actions';
         
-        // Edit Button
         const editBtn = document.createElement('button');
         editBtn.className = 'icon-btn secondary';
         editBtn.innerHTML = editIconSVG;
         editBtn.title = 'Edit';
         editBtn.addEventListener('click', (e) => editLink(link.id, e));
         
-        // Delete Button
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'icon-btn delete-btn';
         deleteBtn.innerHTML = deleteIconSVG;
@@ -320,20 +301,49 @@ function deleteLink(id, e) {
 }
 
 // --- SETTINGS ---
-function loadSettings() {
+async function loadSettings() {
     document.body.className = settings.theme; 
     const overlay = document.getElementById('bgOverlay');
     const resetBtn = document.getElementById('resetBgBtn');
     const fileNameInfo = document.getElementById('bgFileName');
 
-    if (settings.backgroundImage) {
-        document.body.style.backgroundImage = `url('${settings.backgroundImage}')`;
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundPosition = 'center';
-        document.body.style.backgroundAttachment = 'fixed';
-        if(overlay) overlay.style.opacity = '1';
-        if(resetBtn) resetBtn.style.display = 'block';
-        if(fileNameInfo) fileNameInfo.innerText = "Custom image active";
+    // --- BACKGROUND MIGRATION & LOAD ---
+    // Zero-data-loss migration: Detect legacy base64 format and move it to IndexedDB
+    if (settings.backgroundImage && settings.backgroundImage.length > 100 && settings.backgroundImage !== 'indexeddb') {
+        console.log("0fluf DB Action: Migrating background from LocalStorage to IndexedDB.");
+        try {
+            await saveBgToDB(settings.backgroundImage); // Store the legacy DataURL in IDB
+            settings.backgroundImage = 'indexeddb'; // Clean up localStorage pointer
+            autoSaveSettings(); 
+        } catch(e) {
+            console.error("Migration failed:", e);
+        }
+    }
+
+    if (settings.backgroundImage === 'indexeddb') {
+        try {
+            const bgData = await getBgFromDB();
+            if (bgData) {
+                // Determine if it's a native File/Blob or a migrated Base64 string
+                const url = (bgData instanceof Blob || bgData instanceof File) 
+                    ? URL.createObjectURL(bgData) 
+                    : bgData;
+                
+                document.body.style.backgroundImage = `url('${url}')`;
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.backgroundPosition = 'center';
+                document.body.style.backgroundAttachment = 'fixed';
+                
+                if(overlay) overlay.style.opacity = '1';
+                if(resetBtn) resetBtn.style.display = 'block';
+                if(fileNameInfo) fileNameInfo.innerText = "Custom image active";
+            } else {
+                settings.backgroundImage = null;
+                autoSaveSettings();
+            }
+        } catch(e) {
+            console.error("Failed to load background from DB:", e);
+        }
     } else {
         document.body.style.backgroundImage = ''; 
         if(overlay) overlay.style.opacity = '0';
@@ -386,11 +396,11 @@ function renderEngineDropdown() {
         const div = document.createElement('div');
         div.className = `engine-option ${e.name === settings.searchEngine ? 'selected' : ''}`;
         div.innerHTML = `<span>${e.name}</span> <span>${e.initial}</span>`;
-        // Attached via JS
         div.addEventListener('click', () => selectEngine(e.name));
         dropdown.appendChild(div);
     });
 }
+
 function toggleEngineDropdown() { document.getElementById('engineDropdown').classList.toggle('hidden'); }
 function selectEngine(name) {
     settings.searchEngine = name;
@@ -398,6 +408,7 @@ function selectEngine(name) {
     renderEngineDropdown(); 
     toggleEngineDropdown(); 
 }
+
 function handleSearch(e) {
     if (e.key === 'Enter' || e.type === 'click') {
         const val = document.getElementById('searchInput').value.trim();
@@ -411,6 +422,7 @@ function handleSearch(e) {
         }
     }
 }
+
 function selectSuggestion(suggestion) {
     const inputEl = document.getElementById('searchInput');
     inputEl.value = suggestion.name;
