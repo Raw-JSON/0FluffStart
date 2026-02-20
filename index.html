@@ -46,17 +46,19 @@
 
     <div id="linkGrid" class="link-grid"></div>
 
-    </div>
+</div>
 
 <div class="modal" id="settingsModal">
     <div class="modal-content">
         <div class="modal-header">
             <h2>Settings</h2>
-            <div class="header-actions" style="display:flex; gap:10px;">
-                <button id="githubBtn" class="icon-btn" title="GitHub / Report Issue">
+            <div class="header-actions" style="display:flex; gap:10px; align-items:center;">
+                <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--dim); font-weight: 600;">v3.1.0</span>
+                <button id="githubBtn" class="icon-btn" title="View Source on GitHub">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 3c0 0-1.03-.39-3.41 1.05A16.3 16.3 0 0 0 12 2.88 16.3 16.3 0 0 0 7.4 4.04c-2.38-1.44-3.41-1.05-3.41-1.05A5.07 5.07 0 0 0 3.91 4.77 5.44 5.44 0 0 0 4 9.47c0 5.42 3.3 6.61 6.44 7.37-.4.34-.78 1-1.15 2.06v4.31"></path></svg>
                 </button>
-                <button id="closeSettingsBtn" class="icon-btn">
+                <div style="width: 1px; height: 20px; background-color: var(--border); margin: 0 5px;"></div>
+                <button id="closeSettingsBtn" class="icon-btn" title="Close Settings">
                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
             </div>
@@ -157,9 +159,9 @@
                 </div>
                 <input type="file" id="restoreInput" accept=".json" style="display:none;">
             </div>
-            </div>
-        
         </div>
+        
+    </div>
 </div>
 
 <script src="state.js"></script>
